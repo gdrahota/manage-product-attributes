@@ -10,14 +10,14 @@ import { registerProductToProductGroupRoutes } from "./product-to-product-group"
 
 export const registerRoutes = ( app: Router ) => {
   const routes = Router()
-    .use( '/product', registerProductRoutes() )
-    .use( '/product-group', registerProductGroupRoutes() )
-    .use( '/manufacturer', registerManufacturerRoutes() )
+    .use( '/products', registerProductRoutes() )
+    .use( '/product-groups', registerProductGroupRoutes() )
+    .use( '/manufacturers', registerManufacturerRoutes() )
     .use( '/product-attributes', registerProductAttributeRoutes() )
-    .use( '/product-attributes-of-product-group', registerProductAttributesOfProductGroupRoutes() )
-    .use( '/product-attribute-value', registerProductAttributeValueRoutes() )
-    .use( '/product-to-attribute-value', registerProductToAttributeValueRoutes() )
-    .use( '/product-to-product-group', registerProductToProductGroupRoutes() )
+    .use( '/product-attributes-of-product-groups', registerProductAttributesOfProductGroupRoutes() )
+    .use( '/product-attribute-values', registerProductAttributeValueRoutes() )
+    .use( '/product-to-attribute-values', registerProductToAttributeValueRoutes() )
+    .use( '/product-to-product-groups', registerProductToProductGroupRoutes() )
 
   app.use( '/api', routes )
 }
