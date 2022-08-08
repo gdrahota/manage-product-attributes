@@ -1,7 +1,17 @@
 import { Request, Response, Router } from "express"
 import { errorHandler } from "../error-handler"
+import { camelToSnakeRecord } from "../../db/helper"
 
 export class DefaultRestEndpoint<T> {
+  static registerDefaultRoutes( model: any, router: Router = Router() ) {
+    return router
+      .get( '/', ( req, res ) => DefaultRestEndpoint.getAll( req, res, model ) )
+      .get( '/:id', ( req, res ) => DefaultRestEndpoint.getById( req, res, model ) )
+      .post( '/', ( req, res ) => DefaultRestEndpoint.add( req, res, model ) )
+      .put( '/', ( req, res ) => DefaultRestEndpoint.update( req, res, model ) )
+      .delete( '/:id', ( req, res ) => DefaultRestEndpoint.remove( req, res, model ) )
+  }
+
   private static async getAll( req: Request, res: Response, model: any ): Promise<void> {
     try {
       const items = await model.getAll()
@@ -22,7 +32,7 @@ export class DefaultRestEndpoint<T> {
 
   private static async add( req: Request, res: Response, model: any ): Promise<void> {
     try {
-      res.send( await model.add( req.body ) )
+      res.send( await model.add( camelToSnakeRecord( req.body ) ) )
     } catch ( err ) {
       errorHandler( req, res, err )
     }
@@ -43,14 +53,5 @@ export class DefaultRestEndpoint<T> {
     } catch ( err ) {
       errorHandler( req, res, err )
     }
-  }
-
-  static registerDefaultRoutes( model: any, router: Router = Router() ) {
-    return router
-      .get( '/', ( req, res ) => DefaultRestEndpoint.getAll( req, res, model ) )
-      .get( '/:id', ( req, res ) => DefaultRestEndpoint.getById( req, res, model ) )
-      .post( '/', ( req, res ) => DefaultRestEndpoint.add( req, res, model ) )
-      .put( '/', ( req, res ) => DefaultRestEndpoint.update( req, res, model ) )
-      .delete( '/:id', ( req, res ) => DefaultRestEndpoint.remove( req, res, model ) )
   }
 }

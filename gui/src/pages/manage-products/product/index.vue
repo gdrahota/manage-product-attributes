@@ -1,0 +1,188 @@
+<template>
+  <div v-if="product && workingCopy" class="q-pa-md">
+    <div class="row">
+      <div class="col-2 q-pr-sm">
+        <manufacturer
+          :manufacturer="workingCopy.manufacturer"
+          @set="setManufacturer"
+        />
+      </div>
+      <div class="col-10">
+        <product-name
+          :name="workingCopy.name"
+          @set="setName"
+        />
+      </div>
+    </div>
+
+    <div class="row q-mb-lg">
+      <div class="col-2 q-pr-sm">
+        <manufacturer-product-id
+          :manufacturer-product-id="workingCopy.manufacturerProductId"
+          @set="setManufacturerProductId"
+        />
+      </div>
+      <div class="col-2 q-pr-sm">
+        <ean-code
+          :ean-code="workingCopy.eanCode"
+          @set="setEanCode"
+        />
+      </div>
+    </div>
+
+    <product-to-product-groups
+      :product-group-ids="productGroupIds"
+      @add="addProductGroup"
+      @remove="removeProductGroup"
+    />
+
+    <div class="col-12 q-py-lg">
+      <attributes
+        :product="workingCopy"
+        :product-groups="productGroups"
+        @createAndAddValue="createAndAddValue"
+        @removeProductAttributeValue="removeProductAttributeValue"
+        @selectProductAttributeValue="selectProductAttributeValue"
+      />
+    </div>
+
+    <q-separator />
+
+    <div class="row q-mt-lg">
+      <div class="col-12">
+        <q-btn
+          :color="hasChanged ? 'primary' : 'grey'"
+          :disable="!hasChanged"
+          @click="save"
+        >
+          <q-icon left name="save" />
+          Save
+        </q-btn>
+      </div>
+    </div>
+  </div>
+</template>
+
+<script>
+import { mapActions, mapGetters } from 'vuex'
+import isEqual from 'lodash.isequal'
+
+import Attributes from './attributes'
+import EanCode from './ean-code'
+import Manufacturer from './manufacturer'
+import ManufacturerProductId from './manucaturer-product-id'
+import ProductName from './name'
+import ProductToProductGroups from './product-to-product-groups'
+
+export default {
+  components: {
+    Attributes,
+    EanCode,
+    Manufacturer,
+    ManufacturerProductId,
+    ProductName,
+    ProductToProductGroups,
+  },
+
+  computed: {
+    ...mapGetters({
+      getById: 'products/getById',
+      products: 'products/getAll',
+      getByProductId: 'productToProductGroups/getByProductId',
+      getProductGroupById: 'productGroups/getById',
+      getProductAttributeById: 'productAttributes/getById',
+    }),
+    product() {
+      return this.getById(this.$route.params.id)
+    },
+    productGroups() {
+      return this.workingCopy.productGroups.map(productGroup => this.getProductGroupById(productGroup.id))
+    },
+    productGroupIds() {
+      return this.workingCopy.productGroups.map(( { id } ) => id)
+    },
+    hasChanged() {
+      return !isEqual(this.product, this.workingCopy)
+    },
+  },
+
+  created() {
+    this.init()
+  },
+
+  data: () => ({
+    workingCopy: null,
+  }),
+
+  methods: {
+    ...mapActions({
+      saveChanges: 'products/save',
+      addProductAttributeValue: 'productGroups/addProductAttributeValue',
+      pullProductAttributeById: 'productAttributes/getById',
+    }),
+    setManufacturer( value ) {
+      this.$set(this.workingCopy, 'manufacturer', value)
+    },
+    setName( value ) {
+      this.$set(this.workingCopy, 'name', value)
+    },
+    setManufacturerProductId( value ) {
+      this.$set(this.workingCopy, 'manufacturerProductId', value)
+    },
+    setEanCode( value ) {
+      this.$set(this.workingCopy, 'eanCode', value)
+    },
+    removeProductGroup( id ) {
+      const idx = this.workingCopy.productGroups.findIndex(pg => pg.id === id)
+      if ( idx !== -1 ) {
+        this.$delete(this.workingCopy.productGroups, idx)
+      }
+    },
+    addProductGroup( productGroupId ) {
+      const pg = this.getProductGroupById(productGroupId)
+      this.workingCopy.productGroups.push(pg)
+    },
+    selectProductAttributeValue( value ) {
+      if ( value === null ) {
+        return
+      }
+
+      const idx = this.workingCopy.attributeValue.findIndex(( { attrId } ) => attrId === value.attrId)
+
+      if ( idx !== -1 ) {
+        this.$set(this.workingCopy.attributeValue, idx, value)
+      } else {
+        this.workingCopy.attributeValue.push(value)
+      }
+    },
+    removeProductAttributeValue( attrId ) {
+      const idx = this.workingCopy.attributeValue.findIndex(attributeValue => attributeValue.attrId === attrId)
+      this.$delete(this.workingCopy.attributeValue, idx)
+    },
+    async createAndAddValue( obj ) {
+      const newProductAttributeValue = await this.addProductAttributeValue(obj)
+      this.pullProductAttributeById(newProductAttributeValue.attrId)
+      this.selectProductAttributeValue(newProductAttributeValue)
+    },
+    save() {
+      if ( this.hasChanged ) {
+        this.saveChanges(this.workingCopy)
+      }
+    },
+    init() {
+      if ( this.product ) {
+        this.workingCopy = JSON.parse(JSON.stringify(this.product))
+      }
+    },
+  },
+
+  watch: {
+    '$route.params.id'() {
+      this.init()
+    },
+    products() {
+      this.init()
+    },
+  },
+}
+</script>

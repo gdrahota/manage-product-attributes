@@ -1,27 +1,59 @@
 <template>
-  <div id="app">
-    <home />
-  </div>
+  <q-layout view="hHh lpR fFf">
+    <q-header class="bg-primary text-white" elevated>
+      <q-toolbar>
+        <q-toolbar-title>
+          Manage Products
+        </q-toolbar-title>
+      </q-toolbar>
+
+      <Menu />
+    </q-header>
+
+    <router-view />
+
+    <q-footer class="bg-grey-8 text-white" elevated>
+      <q-toolbar>
+        <q-toolbar-title>
+          <q-avatar>
+          </q-avatar>
+          Footer
+        </q-toolbar-title>
+      </q-toolbar>
+    </q-footer>
+
+  </q-layout>
 </template>
 
 <script>
-import Home from './pages/home'
-
 import { mapActions } from 'vuex'
+import Menu from '@/pages/app/menu'
 
 export default {
   components: {
-    Home,
+    Menu,
   },
+
+  data: () => ({
+    left: false,
+  }),
 
   methods: {
     ...mapActions({
       loadProducts: 'products/loadAll',
+      loadManufacturers: 'manufacturers/loadAll',
+      loadProductGroups: 'productGroups/loadAll',
+      loadProductToProductGroups: 'productToProductGroups/loadAll',
+      loadProductAttributes: 'productAttributes/loadAll',
     }),
   },
 
   mounted() {
+    this.loadManufacturers()
     this.loadProducts()
+    this.loadProductGroups()
+    this.loadProductToProductGroups()
+    this.loadProductAttributes()
   },
 }
 </script>

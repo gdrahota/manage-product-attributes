@@ -1,0 +1,16 @@
+export const manageProductRouts = [
+  {
+    path: '/manage-products',
+    name: 'manage-products',
+    component: () => import('@/pages/manage-products'),
+    meta: {},
+    children: [
+      {
+        path: ':id',
+        name: 'manage-product',
+        component: () => import('@/pages/manage-products/product'),
+        meta: {},
+      },
+    ],
+  },
+]

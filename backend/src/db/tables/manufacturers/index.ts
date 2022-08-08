@@ -1,6 +1,6 @@
 import { GenericClass } from "../_base_class"
 
-interface IManufacturer {
+export interface IManufacturerTable {
   id: number;
   name: string;
   manufacturerId: string;
@@ -10,7 +10,7 @@ interface IManufacturer {
 
 const TABLE_NAME = 'manufacturers'
 
-export class Manufacturer extends GenericClass<IManufacturer> {
+export class ManufacturerTable extends GenericClass<IManufacturerTable> {
   constructor() {
     super( TABLE_NAME )
   }

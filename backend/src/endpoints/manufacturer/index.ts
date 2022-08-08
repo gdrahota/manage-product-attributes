@@ -1,10 +1,10 @@
 import { DefaultRestEndpoint } from "../_base_class"
-import { IProduct } from "../../db/tables/products"
-import { Manufacturer } from "../../db/tables/manufacturers"
+import { IProductTable } from "../../db/tables/products"
+import { ManufacturerTable } from "../../db/tables/manufacturers"
 
-class ManufacturerRoutes extends DefaultRestEndpoint<IProduct> {
+class ManufacturerRoutes extends DefaultRestEndpoint<IProductTable> {
   static registerRoutes() {
-    const model = new Manufacturer()
+    const model = new ManufacturerTable()
     return ManufacturerRoutes.registerDefaultRoutes( model )
   }
 }

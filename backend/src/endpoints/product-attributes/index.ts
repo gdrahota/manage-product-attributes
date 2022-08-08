@@ -1,5 +1,5 @@
 import { DefaultRestEndpoint } from "../_base_class"
-import { IProductAttribute, ProductAttribute } from "../../db/tables/product-attributes"
+import { IProductAttribute, ProductAttribute } from "../../models/product-attribute"
 
 class ProductAttributeEndpoint extends DefaultRestEndpoint<IProductAttribute> {
   static registerRoutes() {

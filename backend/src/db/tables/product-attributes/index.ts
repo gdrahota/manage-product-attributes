@@ -1,7 +1,8 @@
 import { GenericClass } from "../_base_class"
 
-export interface IProductAttribute {
+export interface IProductAttributeTable {
   id: number
+  type: string
   name: string
   unit: string | null
   description: string | null
@@ -9,7 +10,7 @@ export interface IProductAttribute {
 
 const TABLE_NAME = 'attrs'
 
-export class ProductAttribute<IProductAttribute> extends GenericClass<IProductAttribute> {
+export class ProductAttributeTable<IProductAttributeTable> extends GenericClass<IProductAttributeTable> {
   constructor() {
     super( TABLE_NAME )
   }

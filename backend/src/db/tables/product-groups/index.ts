@@ -1,6 +1,6 @@
 import { GenericClass } from "../_base_class"
 
-export interface IProductGroup {
+export interface IProductGroupTable {
   id: number
   name: string
   description: string | null
@@ -8,7 +8,7 @@ export interface IProductGroup {
 
 const TABLE_NAME = 'product_groups'
 
-export class ProductGroup extends GenericClass<IProductGroup> {
+export class ProductGroupTable extends GenericClass<IProductGroupTable> {
   constructor() {
     super( TABLE_NAME )
   }

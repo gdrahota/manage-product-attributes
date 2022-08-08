@@ -1,10 +1,10 @@
 import { DefaultRestEndpoint } from "../_base_class"
-import { IProductAttributeValue } from "../../db/tables/product-attribute-values"
-import { ProductToAttributeValue } from "../../db/tables/product-attribute-to-values"
+import { IProductAttributeValueTable } from "../../db/tables/product-attribute-values"
+import { ProductToAttributeValueTable } from "../../db/tables/product-attribute-to-values"
 
-class ProductToAttributeValueEndpoint extends DefaultRestEndpoint<IProductAttributeValue> {
+class ProductToAttributeValueEndpoint extends DefaultRestEndpoint<IProductAttributeValueTable> {
   static registerRoutes() {
-    const model = new ProductToAttributeValue()
+    const model = new ProductToAttributeValueTable()
     return ProductToAttributeValueEndpoint.registerDefaultRoutes( model )
   }
 }
