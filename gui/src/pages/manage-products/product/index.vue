@@ -60,6 +60,7 @@
         </q-btn>
       </div>
     </div>
+    <pre>{{ product.attributeValue }}</pre>
   </div>
 </template>
 
@@ -156,6 +157,7 @@ export default {
       }
     },
     removeProductAttributeValue( attrId ) {
+      console.log(attrId)
       const idx = this.workingCopy.attributeValue.findIndex(attributeValue => attributeValue.attrId === attrId)
       this.$delete(this.workingCopy.attributeValue, idx)
     },

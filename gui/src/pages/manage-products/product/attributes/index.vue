@@ -28,13 +28,26 @@
         :key="pg.id"
         :name="pos"
       >
-        <attributes-of-product-group
-          :product="product"
-          :product-group="pg"
-          @createAndAddValue="obj => createAndAddValue(pg.id, obj)"
-          @removeProductAttributeValue="removeProductAttributeValue"
-          @selectProductAttributeValue="selectProductAttributeValue"
-        />
+        <div class="row">
+          <div class="col">
+            <attributes-of-product-group
+              :product="product"
+              :product-group="pg"
+              @createAndAddValue="obj => createAndAddValue(pg.id, obj)"
+              @removeProductAttributeValue="removeProductAttributeValue"
+              @selectProductAttributeValue="selectProductAttributeValue"
+            />
+          </div>
+          <div class="col">
+            <customers-preview
+              :product="product"
+              :product-group="pg"
+              @createAndAddValue="obj => createAndAddValue(pg.id, obj)"
+              @removeProductAttributeValue="removeProductAttributeValue"
+              @selectProductAttributeValue="selectProductAttributeValue"
+            />
+          </div>
+        </div>
       </q-tab-panel>
     </q-tab-panels>
   </div>
@@ -42,10 +55,12 @@
 
 <script>
 import AttributesOfProductGroup from './attributes-of-product-group'
+import CustomersPreview from './customers-preview'
 
 export default {
   components: {
     AttributesOfProductGroup,
+    CustomersPreview,
   },
 
   computed: {

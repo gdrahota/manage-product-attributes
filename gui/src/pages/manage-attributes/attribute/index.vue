@@ -9,20 +9,26 @@
       </div>
       <div class="col-1 q-pr-sm">
         <unit
-          :unit="workingCopy.unit"
-          @set="setUnit"
+            :unit="workingCopy.unit"
+            @set="setUnit"
         />
       </div>
       <div class="col-1 q-pr-sm">
         <type
-          :attr-type="workingCopy.type"
-          @set="setType"
+            :attr-type="workingCopy.type"
+            @set="setType"
         />
       </div>
-      <div class="col-8 q-pr-sm">
+      <div class="col-2 q-pr-sm">
+        <fractional-digits
+            :value="workingCopy.fractionalDigits"
+            @set="setFractionalDigits"
+        />
+      </div>
+      <div class="col-6 q-pr-sm">
         <description
-          :description="workingCopy.description"
-          @set="setDescription"
+            :description="workingCopy.description"
+            @set="setDescription"
         />
       </div>
     </div>
@@ -40,8 +46,7 @@
         />
       </div>
     </div>
-
-    <pre>{{ workingCopy.values }}</pre>
+    <pre>{{ workingCopy }}</pre>
   </div>
 </template>
 
@@ -50,6 +55,7 @@ import { mapActions, mapGetters } from 'vuex'
 import isEqual from 'lodash.isequal'
 
 import Description from './description'
+import FractionalDigits from './fractional-digits'
 import Name from './name'
 import Type from './type'
 import Unit from './unit'
@@ -57,6 +63,7 @@ import Unit from './unit'
 export default {
   components: {
     Description,
+    FractionalDigits,
     Name,
     Type,
     Unit,
@@ -109,6 +116,9 @@ export default {
     setType( type ) {
       this.$set(this.workingCopy, 'type', type)
     },
+    setFractionalDigits( value ) {
+      this.$set(this.workingCopy, 'fractionalDigits', value)
+    },
     setDescription( description ) {
       this.$set(this.workingCopy, 'description', description)
     },
@@ -121,6 +131,7 @@ export default {
             unit: this.workingCopy.unit,
             type: this.workingCopy.type,
             description: this.workingCopy.description,
+            fractionalDigits: this.workingCopy.fractionalDigits,
           })
         } else {
           this.add({
@@ -128,6 +139,7 @@ export default {
             unit: this.workingCopy.unit,
             type: this.workingCopy.type,
             description: this.workingCopy.description,
+            fractionalDigits: this.workingCopy.fractionalDigits,
           })
         }
       }

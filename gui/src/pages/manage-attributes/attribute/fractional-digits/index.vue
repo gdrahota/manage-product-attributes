@@ -1,10 +1,10 @@
 <template>
   <q-input
     :rules="rules"
+    :step="1"
     :value="value"
-    dense
     filled
-    label="Factor"
+    label="Fractional Digits"
     stack-label
     type="number"
     @input="setValue"
@@ -16,22 +16,23 @@ export default {
   computed: {
     rules() {
       return [
-        v => !!v || 'The factor is required!',
-        v => !!v && v > 0 || 'The factor must be bigger than zero (0)!',
+        v => !isNaN(v) || 'The number of fractional digits are required!',
+        v => v <= 10 || 'maximal: 10',
+        v => v >= 0 || 'minimal: 0',
       ]
     },
   },
 
   methods: {
     setValue( value ) {
-      console.log('set', value)
       this.$emit('set', parseFloat(value))
     },
   },
 
   props: {
     value: {
-      default: null,
+      type: Number,
+      default: 0,
     },
   },
 }

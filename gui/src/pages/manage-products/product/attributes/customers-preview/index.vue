@@ -4,7 +4,6 @@
       <tr>
         <th>Product Property</th>
         <th>Value</th>
-        <th>Description</th>
       </tr>
     </thead>
     <tbody>
@@ -13,21 +12,17 @@
         :key="pos"
       >
         <td>
-          {{ getById(attr.attrId).name }} ({{ getById(attr.attrId).unit }})
+          {{ getById(attr.attrId).name }}
         </td>
         <td style="padding: 0">
           <decimal-value
+            :product-group="productGroup"
             :attribute="attr"
             :attribute-value="getProductAttributeValue(attr)"
-            :type="getById(attr.attrId).type"
-            :unit="getById(attr.attrId).unit"
             @createAndAddValue="createAndAddValue"
             @remove="removeProductAttributeValue"
             @select="selectProductAttributeValue"
           />
-        </td>
-        <td>
-          {{ getById(attr.attrId).description }}
         </td>
       </tr>
     </tbody>

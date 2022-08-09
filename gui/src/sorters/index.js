@@ -1,12 +1,12 @@
 import Vue from 'vue'
 
 export const sortByPosition = ( a, b ) => {
-  if ( a.id === b.id ) {
+  if ( a.position === b.position ) {
     return 0
-  } else if ( a.id > b.id ) {
-    return -1
+  } else if ( a.position > b.position ) {
+    return 1
   }
-  return 1
+  return -1
 }
 
 export const sortByTitle = ( a, b ) => a.title.localeCompare(b.title)

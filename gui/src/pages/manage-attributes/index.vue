@@ -11,7 +11,8 @@
           @click="routeTo('new')"
         />
 
-        <q-list class="q-my-sm" dense padding>
+        <q-list dense padding>
+          <q-separator />
           <template v-for="(attribute, pos) of attributes">
             <q-item
               :key="pos"

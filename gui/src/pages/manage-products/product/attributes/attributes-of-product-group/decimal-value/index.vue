@@ -1,5 +1,6 @@
 <template>
   <q-select
+    v-if="attributeAndValues"
     :options="options"
     :value="attributeValue.id"
     clearable
@@ -26,15 +27,15 @@ export default {
       getById: 'productAttributes/getById',
     }),
     attributeAndValues() {
-      return this.getById(this.attribute.id)
+      return this.getById(this.attribute.attrId)
     },
     options() {
       let mapFn = v => ({
         ...v,
-        value: `${ this.$root.$options.filters.number(v.value) } ${ this.attribute.unit }`,
+        value: `${ this.$root.$options.filters.number(v.value, this.getById(this.attribute.attrId).fractionalDigits || 0) } ${ this.unit }`,
       })
 
-      switch ( this.attribute.type ) {
+      switch ( this.type ) {
         case 'decimal':
           return this.attributeAndValues.values.map(mapFn)
         default:
@@ -48,13 +49,13 @@ export default {
       if ( value ) {
         this.$emit('select', this.attributeAndValues.values.find(( { id } ) => id === value.id))
       } else {
-        this.$emit('remove', this.attribute.id)
+        this.$emit('remove', this.attribute.attrId)
       }
     },
     addNewValue( value ) {
       this.$emit('createAndAddValue', {
         decimalValue: value,
-        attrId: this.attribute.id,
+        attrId: this.attribute.attrId,
       })
     },
   },
@@ -66,6 +67,14 @@ export default {
     },
     attributeValue: {
       default: null,
+    },
+    unit: {
+      type: String,
+      default: '',
+    },
+    type: {
+      type: String,
+      required: true,
     },
   },
 }

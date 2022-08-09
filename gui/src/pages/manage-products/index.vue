@@ -1,8 +1,18 @@
 <template>
   <q-page-container class="full-height window-height">
     <q-drawer :width="400" show-if-above side="left">
-      <q-scroll-area class="fit bg-teal-1 q-py-sm">
+      <q-scroll-area class="fit bg-teal-1">
+        <q-btn
+          color="secondary"
+          icon="add"
+          label="neu"
+          size="14px"
+          style="margin: 10px 5px"
+          @click="routeTo('new')"
+        />
+
         <q-list dense padding>
+          <q-separator />
           <template v-for="(product, pos) in products">
             <q-item
               :key="pos"

@@ -4,7 +4,6 @@ import {
   IProductAttributesOfProductGroupTable,
   ProductAttributesOfProductGroupTable
 } from "../../db/tables/product-attributes-of-product-group"
-import { IProductAttributeTable, ProductAttributeTable } from "../../db/tables/product-attributes"
 import { camelToSnakeRecord } from "../../db/helper"
 
 export interface IProductGroup {
@@ -16,7 +15,6 @@ export interface IProductGroup {
 
 export class ProductGroup {
   private productGroupTable = new ProductGroupTable()
-  private productAttributeTable = new ProductAttributeTable()
   private productAttributesOfProductGroupTable = new ProductAttributesOfProductGroupTable<IProductAttributesOfProductGroupTable>()
 
   async getById( id: number ): Promise<IProductGroup> {
@@ -26,20 +24,11 @@ export class ProductGroup {
       throw Error( `NO PRODUCT GROUP WITH ID "${ id }"` )
     }
 
-    const productAttributesOfProductGroupTable = await this.productAttributesOfProductGroupTable.getByProductGroup( id )
-
-    const productAttributesOfProductGroup = await BluebirdPromise.map( productAttributesOfProductGroupTable, async productAttributesOfProductGroup => {
-      const baseAttrDate = await this.productAttributeTable.getById( productAttributesOfProductGroup.attrId ) as IProductAttributeTable
-      return {
-        ...productAttributesOfProductGroup,
-        ...baseAttrDate,
-      }
-    } )
-
+    const attributes = await this.productAttributesOfProductGroupTable.getByProductGroup( id )
 
     return {
       ...baseData,
-      attributes: productAttributesOfProductGroup
+      attributes: attributes
     }
   }
 
@@ -56,32 +45,36 @@ export class ProductGroup {
     await this.productGroupTable.update( { id, name, description } )
 
     // check product group's attributes
-    await BluebirdPromise.each( productGroup.attributes, attr => {
-      this.productAttributesOfProductGroupTable.update( camelToSnakeRecord( {
-        id: attr.attrId,
-        representationUnit: attr.representationUnit,
-        representationUnitFactor: attr.representationUnitFactor,
-        position: attr.position,
-      } ) )
+    await BluebirdPromise.each( productGroup.attributes, async attr => {
+      if ( attr.id ) {
+        await this.productAttributesOfProductGroupTable.update( camelToSnakeRecord( {
+          id: attr.id,
+          representationUnit: attr.representationUnit,
+          representationUnitFactor: attr.representationUnitFactor,
+          fractionalDigits: attr.fractionalDigits,
+          position: attr.position,
+        } ) )
+      }
     } )
 
     const oldAttrs = await this.productAttributesOfProductGroupTable.getByProductGroup( productGroup.id )
     const newAttrs = productGroup.attributes
 
     const attrsToBeDeleted = oldAttrs.filter( ( { id } ) => ! newAttrs.map( ( i: any ) => i.id ).includes( id ) )
-    const attrsToBeAdded = newAttrs.filter( ( { id } ) => ! oldAttrs.map( ( i: any ) => i.attrId ).includes( id ) )
-
-    console.log( attrsToBeDeleted, attrsToBeAdded )
+    const attrsToBeAdded = newAttrs.filter( ( { attrId } ) => ! oldAttrs.map( ( i: any ) => i.attrId ).includes( attrId ) )
 
     await BluebirdPromise.each( attrsToBeDeleted, ( { id } ) => {
       return this.productAttributesOfProductGroupTable.delete( id )
     } )
 
-    await BluebirdPromise.each( attrsToBeAdded, productAttributeValueId => {
+    await BluebirdPromise.each( attrsToBeAdded, attr => {
       return this.productAttributesOfProductGroupTable.add( camelToSnakeRecord( {
         productGroupId: productGroup.id,
-        attrId:
-        productAttributeValueId,
+        attrId: attr.attrId,
+        representationUnit: attr.representationUnit,
+        representationUnitFactor: attr.representationUnitFactor,
+        fractionalDigits: attr.fractionalDigits,
+        position: attr.position,
       } ) )
     } )
 

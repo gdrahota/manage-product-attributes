@@ -11,8 +11,7 @@
           @click="routeTo('new')"
         />
 
-
-        <q-list class="q-my-sm" dense padding>
+        <q-list dense padding>
           <q-separator />
           <template v-for="(item, pos) of items">
             <q-item
@@ -34,6 +33,7 @@
     </q-drawer>
 
     <router-view />
+
   </q-page-container>
 </template>
 

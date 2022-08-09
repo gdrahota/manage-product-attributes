@@ -56,6 +56,11 @@ export class Product {
 
     const attributeValue = await BluebirdPromise.map( productToAttributeRawValues, async ( attributeRawValue: IProductToAttributeValueTable ) => {
       const attrValue = await this.productAttributeValueTable.getById( attributeRawValue.productAttributeValueId ) as unknown as IProductAttributeValueTable
+
+      if ( ! attrValue ) {
+        return
+      }
+
       const attribute = (await this.productAttributeTable.getById( attrValue.attrId )) as IProductAttributeTable
 
       if ( ! attribute || ! attrValue ) {
@@ -83,7 +88,7 @@ export class Product {
 
       return value
 
-    } ) as unknown as IAttributeValue[]
+    } ).filter( i => !! i ) as unknown as IAttributeValue[]
 
     return {
       id: baseData.id,

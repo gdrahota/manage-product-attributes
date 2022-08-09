@@ -7,6 +7,7 @@
           @set="setName"
         />
       </div>
+
       <div class="col-10 q-pr-sm">
         <description
           :description="workingCopy.description"
@@ -15,7 +16,11 @@
       </div>
     </div>
 
-    <attributes :attributes="workingCopy.attributes" />
+    <attributes
+      :attributes="workingCopy.attributes"
+      :product-group-id="workingCopy.id"
+      class="q-pb-lg"
+    />
 
     <q-separator />
 
@@ -31,7 +36,6 @@
         </q-btn>
       </div>
     </div>
-
     <pre>{{ workingCopy }}</pre>
   </div>
 </template>
@@ -43,6 +47,7 @@ import isEqual from 'lodash.isequal'
 import Attributes from './attributes'
 import Description from './description'
 import Name from './name'
+import { sortByPosition } from '@/sorters'
 
 export default {
   components: {
@@ -77,7 +82,11 @@ export default {
     }),
     init() {
       if ( this.item ) {
-        this.workingCopy = JSON.parse(JSON.stringify(this.item))
+        const attributes = [ ...this.item.attributes ].sort(sortByPosition)
+        this.workingCopy = JSON.parse(JSON.stringify({
+          ...this.item,
+          attributes,
+        }))
       }
     },
     setName( name ) {

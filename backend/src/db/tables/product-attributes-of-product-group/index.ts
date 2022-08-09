@@ -8,7 +8,6 @@ export interface IProductAttributesOfProductGroupTable {
   attrId: number
   representationUnit: string
   representationUnitFactor: number
-  name: string
   position: number
 }
 
