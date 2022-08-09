@@ -1,0 +1,37 @@
+<template>
+  <q-input
+    :rules="rules"
+    :value="value"
+    dense
+    filled
+    label="Factor"
+    stack-label
+    type="number"
+    @input="setValue"
+  />
+</template>
+
+<script>
+export default {
+  computed: {
+    rules() {
+      return [
+        v => !!v || 'The factor is required!',
+        v => !!v && v > 0 || 'The factor must be bigger than zero (0)!',
+      ]
+    },
+  },
+
+  methods: {
+    setValue( value ) {
+      this.$emit('set', value)
+    },
+  },
+
+  props: {
+    value: {
+      default: null,
+    },
+  },
+}
+</script>

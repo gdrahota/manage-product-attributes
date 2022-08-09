@@ -15,6 +15,8 @@
       </div>
     </div>
 
+    <attributes :attributes="workingCopy.attributes" />
+
     <q-separator />
 
     <div class="row q-mt-lg">
@@ -38,11 +40,13 @@
 import { mapActions, mapGetters } from 'vuex'
 import isEqual from 'lodash.isequal'
 
+import Attributes from './attributes'
 import Description from './description'
 import Name from './name'
 
 export default {
   components: {
+    Attributes,
     Description,
     Name,
   },
@@ -55,7 +59,7 @@ export default {
       return this.getById(this.$route.params.id)
     },
     hasChanged() {
-      return !isEqual(this.attribute, this.workingCopy)
+      return !isEqual(this.item, this.workingCopy)
     },
   },
 
