@@ -13,6 +13,21 @@ services:
     networks:
       - default
 
+  backend:
+    container_name: backend
+    build: .
+    restart: always
+    depends_on:
+      - db
+    networks:
+      - default
+    environment:
+      - PORT=8888
+      - NODE_ENV=development
+      - POSTGRES_HOST=db
+    ports:
+      - 8888:8888
+
 volumes:
   pgdata:
 

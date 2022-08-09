@@ -23,8 +23,6 @@ B
 backend/.gitignore,7/e/7e16691a9fc60084a157565ec422c8094d3df67c
 A
 backend/yarn.lock,4/f/4f2f30c812f116d7d7980710a3d6789027dbb398
-D
-backend/package.json,2/d/2d67691333633e849af94af966942f0c1b3151c6
 L
 gui/src/store/http-client.js,c/2/c23246bd01323bd7894164d979c21a1264d25a57
 M

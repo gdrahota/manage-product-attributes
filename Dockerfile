@@ -12,10 +12,14 @@ WORKDIR /usr/src/app
 COPY ./backend/node_modules ./node_modules
 COPY ./backend/package.json ./package.json
 COPY ./backend/tsconfig.json ./tsconfig.json
-COPY ./backend/build ./build
-COPY ./backend/config ./config
-COPY ./gui/dist ./public
+COPY ./backend/.env ./.env
+#COPY ./backend/build ./build
+COPY ./backend/src ./src
+COPY ./backend/dist ./dist
 
-EXPOSE 8082
+RUN yarn
+CMD ["yarn", "build"]
+
+EXPOSE 8888
 
 CMD ["npm", "run", "start"]
