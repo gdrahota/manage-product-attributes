@@ -80,4 +80,10 @@ export class ProductGroup {
 
     return this.getById( productGroup.id )
   }
+
+  async add( item: Omit<IProductGroup, 'id'> ): Promise<IProductGroup | null> {
+    const { name, description } = item
+    const newItem = await this.productGroupTable.add( camelToSnakeRecord( { name, description } ) )
+    return this.getById( newItem.id )
+  }
 }

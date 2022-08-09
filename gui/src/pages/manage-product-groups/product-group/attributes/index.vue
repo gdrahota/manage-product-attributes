@@ -146,6 +146,7 @@ export default {
         representationUnit: '',
         representationUnitFactor: 1,
         position: this.attributes.length,
+        fractionalDigits: 0,
       })
     },
   },

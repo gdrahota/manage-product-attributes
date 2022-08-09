@@ -1,12 +1,9 @@
 <template>
   <q-input
     :rules="rules"
-    :value="value"
-    dense
+    :value="name"
     filled
-    label="Factor"
-    stack-label
-    type="number"
+    label="Manufacturer Name"
     @input="setValue"
   />
 </template>
@@ -16,20 +13,21 @@ export default {
   computed: {
     rules() {
       return [
-        v => !!v || 'The factor is required!',
-        v => !!v && v > 0 || 'The factor must be bigger than zero (0)!',
+        v => !!v || 'The manufacturer name is required!',
+        v => !!v && v.length > 4 || 'The manufacturer name must have at least 5 characters!',
       ]
     },
   },
 
   methods: {
     setValue( value ) {
-      this.$emit('set', parseFloat(value))
+      this.$emit('set', value)
     },
   },
 
   props: {
-    value: {
+    name: {
+      type: String,
       default: null,
     },
   },

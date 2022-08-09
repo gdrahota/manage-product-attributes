@@ -20,9 +20,17 @@ const save = async ( { commit }, changedItem ) => {
   commit('UPDATE_ITEM', item)
 }
 
+const add = async ( { commit }, changedItem ) => {
+  const { id } = changedItem
+  const item = await action('products.add', changedItem, { id })
+  commit('UPDATE_ITEM', item)
+  return item.id
+}
+
 const actions = {
   loadAll,
   save,
+  add,
 }
 
 // mutations

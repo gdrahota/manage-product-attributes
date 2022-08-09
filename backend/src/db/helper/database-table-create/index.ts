@@ -28,6 +28,10 @@ export const createTableFromModel = async ( model: ITableDef ): Promise<void> =>
             tblCol = tbl.decimal( columnName, 16, 6 )
             break
           }
+          case DataType.FLOAT: {
+            tblCol = tbl.float( columnName )
+            break
+          }
           case DataType.BOOLEAN: {
             tblCol = tbl.boolean( columnName )
             break

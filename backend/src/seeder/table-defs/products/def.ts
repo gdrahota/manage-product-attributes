@@ -1,24 +1,26 @@
+import { DataType } from "../../../db/enums/data-type"
+
 export default {
   name: "products",
   "fields": [
     {
       "name": "name",
-      "type": "string",
+      "type": DataType.STRING,
       "nullable": false
     },
     {
       "name": "ean_code",
-      "type": "string",
-      "nullable": false
+      "type": DataType.STRING,
+      "nullable": true
     },
     {
       "name": "manufacturer_product_id",
-      "type": "string",
-      "nullable": false
+      "type": DataType.STRING,
+      "nullable": true
     },
     {
       "name": "manufacturer_id",
-      "type": "integer",
+      "type": DataType.INTEGER,
       "nullable": false
     }
   ]

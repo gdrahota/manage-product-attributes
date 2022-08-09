@@ -26,6 +26,12 @@ export const action = async ( actionName, payload, params ) => {
       config.payload = payload
       break
     }
+    case 'products.add': {
+      config.url = `${ getUrls('products') }`
+      config.method = 'POST'
+      config.payload = payload
+      break
+    }
 
     case 'productGroups.loadAll': {
       config.url = `${ getUrls('productGroups') }`
@@ -35,6 +41,12 @@ export const action = async ( actionName, payload, params ) => {
     case 'productGroups.save': {
       config.url = `${ getUrls('productGroups') }`
       config.method = 'PUT'
+      config.payload = payload
+      break
+    }
+    case 'productGroups.add': {
+      config.url = `${ getUrls('productGroups') }`
+      config.method = 'POST'
       config.payload = payload
       break
     }

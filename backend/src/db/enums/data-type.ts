@@ -1,4 +1,5 @@
 export enum DataType {
+  FLOAT = 'float',
   INTEGER = 'integer',
   DECIMAL = 'decimal',
   STRING = 'string',
@@ -16,6 +17,8 @@ export const string2DataType = ( type: string ): DataType => {
       return DataType.SERIAL
     case 'integer':
       return DataType.INTEGER
+    case 'float':
+      return DataType.FLOAT
     case 'decimal':
       return DataType.DECIMAL
     case 'string':

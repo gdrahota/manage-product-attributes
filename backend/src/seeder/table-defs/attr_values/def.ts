@@ -1,24 +1,26 @@
+import { DataType } from "../../../db/enums/data-type"
+
 export default {
   "name": "attr_values",
   "fields": [
     {
       "name": "attr_id",
-      "type": "integer",
+      "type": DataType.INTEGER,
       "nullable": false
     },
     {
       "name": "decimal_value",
-      "type": "decimal",
+      "type": DataType.FLOAT,
       "nullable": true
     },
     {
       "name": "text_value",
-      "type": "string",
+      "type": DataType.STRING,
       "nullable": true
     },
     {
       "name": "bool_value",
-      "type": "boolean",
+      "type": DataType.BOOLEAN,
       "nullable": true
     }
   ]

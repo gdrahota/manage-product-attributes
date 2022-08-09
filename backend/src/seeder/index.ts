@@ -7,7 +7,7 @@ const dirNames: string[] = [
   'attrs',
   'manufacturers',
   'product_groups',
-  'product_to_attr_value',
+  'product_to_attr_values',
   'product_to_product_groups',
   'products',
 ]

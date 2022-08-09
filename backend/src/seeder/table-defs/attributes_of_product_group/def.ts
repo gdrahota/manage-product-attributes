@@ -1,25 +1,37 @@
+import { DataType } from "../../../db/enums/data-type"
+
 export default {
   "name": "attributes_of_product_group",
   "fields": [
     {
       "name": "product_group_id",
-      "type": "integer",
+      "type": DataType.INTEGER,
       "nullable": false
     },
     {
       "name": "attr_id",
-      "type": "integer",
+      "type": DataType.INTEGER,
       "nullable": false
     },
     {
       "name": "representation_unit",
-      "type": "string",
+      "type": DataType.STRING,
       "nullable": false
     },
     {
       "name": "representation_unit_factor",
-      "type": "integer",
+      "type": DataType.FLOAT,
       "nullable": false
-    }
+    },
+    {
+      "name": "position",
+      "type": DataType.INTEGER,
+      "nullable": false
+    },
+    {
+      "name": "fractional_digits",
+      "type": DataType.INTEGER,
+      "nullable": false
+    },
   ]
 }

@@ -23,6 +23,7 @@ export default {
     routes() {
       return Object.freeze([
         { to: '/', label: 'Home', exact: true },
+        { to: { name: 'manage-manufacturers' }, label: 'Manufacturers' },
         { to: { name: 'manage-attributes' }, label: 'Product Attributes' },
         { to: { name: 'manage-product-groups' }, label: 'Product Groups' },
         { to: { name: 'manage-products' }, label: 'Products' },

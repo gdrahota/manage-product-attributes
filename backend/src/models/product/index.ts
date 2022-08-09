@@ -176,4 +176,15 @@ export class Product {
 
     return this.getById( productId )
   }
+
+  async add( p: any ): Promise<IProduct | null> {
+    const product = await this.productTable.add( camelToSnakeRecord( {
+      name: p.name,
+      manufacturerId: p.manufacturer.id,
+      manufacturerProductId: p.manufacturer_product_id,
+      eanCode: p.ean_code,
+    } ) )
+
+    return this.getById( product.id )
+  }
 }

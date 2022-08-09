@@ -23,6 +23,14 @@ const save = async ( { commit }, attr ) => {
   }
 }
 
+const add = async ( { commit }, attr ) => {
+  try {
+    const item = await action('productGroups.add', attr)
+    commit('UPDATE_ITEM', item)
+  } catch ( err ) {
+    console.error('ERROR in store/productGroups/add', err)
+  }
+}
 const addProductAttributeValue = async ( { commit }, obj ) => {
   return await action('productAttributeValue.createProductAttributeValue', obj)
 }
@@ -31,6 +39,7 @@ const actions = {
   loadAll,
   save,
   addProductAttributeValue,
+  add,
 }
 
 // mutations

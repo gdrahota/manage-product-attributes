@@ -1,9 +1,11 @@
+import { DataType } from "../../../db/enums/data-type"
+
 export default {
   "name": "manufacturers",
   "fields": [
     {
       "name": "name",
-      "type": "string",
+      "type": DataType.STRING,
       "nullable": false
     }
   ]

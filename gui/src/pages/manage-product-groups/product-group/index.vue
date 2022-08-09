@@ -29,11 +29,10 @@
         <q-btn
           :color="hasChanged ? 'primary' : 'grey'"
           :disable="!hasChanged"
+          :label="workingCopy.id ? 'Save' : 'Add'"
+          icon-right="save"
           @click="save"
-        >
-          <q-icon left name="save" />
-          Save
-        </q-btn>
+        />
       </div>
     </div>
     <pre>{{ workingCopy }}</pre>
@@ -79,6 +78,7 @@ export default {
   methods: {
     ...mapActions({
       saveChanges: 'productGroups/save',
+      add: 'productGroups/add',
     }),
     init() {
       if ( this.item ) {
@@ -87,6 +87,12 @@ export default {
           ...this.item,
           attributes,
         }))
+      } else if ( this.$route.params.id === 'new' ) {
+        this.workingCopy = {
+          name: null,
+          description: null,
+          attributes: [],
+        }
       }
     },
     setName( name ) {
@@ -97,7 +103,11 @@ export default {
     },
     save() {
       if ( this.hasChanged ) {
-        this.saveChanges(this.workingCopy)
+        if ( this.workingCopy.id ) {
+          this.saveChanges(this.workingCopy)
+        } else {
+          this.add(this.workingCopy)
+        }
       }
     },
   },

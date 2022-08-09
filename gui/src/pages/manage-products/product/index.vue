@@ -1,5 +1,5 @@
 <template>
-  <div v-if="product && workingCopy" class="q-pa-md">
+  <div v-if="workingCopy" class="q-pa-md">
     <div class="row">
       <div class="col-2 q-pr-sm">
         <manufacturer
@@ -30,21 +30,23 @@
       </div>
     </div>
 
-    <product-to-product-groups
-      :product-group-ids="productGroupIds"
-      @add="addProductGroup"
-      @remove="removeProductGroup"
-    />
-
-    <div class="col-12 q-py-lg">
-      <attributes
-        :product="workingCopy"
-        :product-groups="productGroups"
-        @createAndAddValue="createAndAddValue"
-        @removeProductAttributeValue="removeProductAttributeValue"
-        @selectProductAttributeValue="selectProductAttributeValue"
+    <template v-if="workingCopy.productGroups">
+      <product-to-product-groups
+        :product-group-ids="productGroupIds"
+        @add="addProductGroup"
+        @remove="removeProductGroup"
       />
-    </div>
+
+      <div class="col-12 q-py-lg">
+        <attributes
+          :product="workingCopy"
+          :product-groups="productGroups"
+          @createAndAddValue="createAndAddValue"
+          @removeProductAttributeValue="removeProductAttributeValue"
+          @selectProductAttributeValue="selectProductAttributeValue"
+        />
+      </div>
+    </template>
 
     <q-separator />
 
@@ -60,7 +62,7 @@
         </q-btn>
       </div>
     </div>
-    <pre>{{ product.attributeValue }}</pre>
+    <!--    <pre>{{ workingCopy }}</pre>-->
   </div>
 </template>
 
@@ -100,7 +102,7 @@ export default {
       return this.workingCopy.productGroups.map(productGroup => this.getProductGroupById(productGroup.id))
     },
     productGroupIds() {
-      return this.workingCopy.productGroups.map(( { id } ) => id)
+      return this.workingCopy.productGroups.map(( { id } ) => id) || null
     },
     hasChanged() {
       return !isEqual(this.product, this.workingCopy)
@@ -118,6 +120,7 @@ export default {
   methods: {
     ...mapActions({
       saveChanges: 'products/save',
+      add: 'products/add',
       addProductAttributeValue: 'productGroups/addProductAttributeValue',
       pullProductAttributeById: 'productAttributes/getById',
     }),
@@ -157,7 +160,6 @@ export default {
       }
     },
     removeProductAttributeValue( attrId ) {
-      console.log(attrId)
       const idx = this.workingCopy.attributeValue.findIndex(attributeValue => attributeValue.attrId === attrId)
       this.$delete(this.workingCopy.attributeValue, idx)
     },
@@ -166,14 +168,26 @@ export default {
       this.pullProductAttributeById(newProductAttributeValue.attrId)
       this.selectProductAttributeValue(newProductAttributeValue)
     },
-    save() {
+    async save() {
       if ( this.hasChanged ) {
-        this.saveChanges(this.workingCopy)
+        if ( this.workingCopy.id ) {
+          this.saveChanges(this.workingCopy)
+        } else {
+          const newProductId = await this.add(this.workingCopy)
+          await this.$router.push({ params: { id: newProductId } })
+        }
       }
     },
     init() {
       if ( this.product ) {
         this.workingCopy = JSON.parse(JSON.stringify(this.product))
+      } else if ( this.$route.params.id === 'new' ) {
+        this.workingCopy = {
+          name: null,
+          manufacturer: null,
+          manufacturerProductId: null,
+          eanCode: null,
+        }
       }
     },
   },

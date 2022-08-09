@@ -9,26 +9,26 @@
       </div>
       <div class="col-1 q-pr-sm">
         <unit
-            :unit="workingCopy.unit"
-            @set="setUnit"
+          :unit="workingCopy.unit"
+          @set="setUnit"
         />
       </div>
       <div class="col-1 q-pr-sm">
         <type
-            :attr-type="workingCopy.type"
-            @set="setType"
+          :attr-type="workingCopy.type"
+          @set="setType"
         />
       </div>
       <div class="col-2 q-pr-sm">
         <fractional-digits
-            :value="workingCopy.fractionalDigits"
-            @set="setFractionalDigits"
+          :value="workingCopy.fractionalDigits"
+          @set="setFractionalDigits"
         />
       </div>
       <div class="col-6 q-pr-sm">
         <description
-            :description="workingCopy.description"
-            @set="setDescription"
+          :description="workingCopy.description"
+          @set="setDescription"
         />
       </div>
     </div>
@@ -97,13 +97,14 @@ export default {
     init() {
       if ( this.attribute ) {
         this.workingCopy = JSON.parse(JSON.stringify(this.attribute))
-      } else if ( this.$route.params.id ) {
+      } else if ( this.$route.params.id === 'new' ) {
         this.workingCopy = {
           id: null,
           name: null,
           unit: null,
           type: null,
           description: null,
+          fractionalDigits: 0,
         }
       }
     },

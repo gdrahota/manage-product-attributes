@@ -1,6 +1,7 @@
 import Vue from 'vue'
 import VueRouter from 'vue-router'
 // import { EventBus } from '@/plugins/event-bus'
+import { manageManufacturerRoutes } from '@/router/manage-manufacturers'
 import { manageProductRouts } from '@/router/manage-products'
 import { manageAttributeRouts } from '@/router/manage-attributes'
 import { manageProductGroupRoutes } from '@/router/manage-product-group'
@@ -10,6 +11,7 @@ import { manageProductGroupRoutes } from '@/router/manage-product-group'
 Vue.use(VueRouter)
 
 export const routes = [
+  ...manageManufacturerRoutes,
   ...manageAttributeRouts,
   ...manageProductRouts,
   ...manageProductGroupRoutes,
