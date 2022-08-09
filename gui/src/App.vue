@@ -1,13 +1,7 @@
 <template>
   <q-layout view="hHh lpR fFf">
-    <q-header class="bg-primary text-white" elevated>
-      <q-toolbar>
-        <q-toolbar-title>
-          Manage Products
-        </q-toolbar-title>
-      </q-toolbar>
-
-      <Menu />
+    <q-header class="bg-blue-4 text-white" elevated>
+      <Menu class="bg-primary" />
     </q-header>
 
     <router-view />

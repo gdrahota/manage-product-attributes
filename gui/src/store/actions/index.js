@@ -32,9 +32,9 @@ export const action = async ( actionName, payload, params ) => {
       config.method = 'GET'
       break
     }
-    case 'productGroups.patch': {
-      config.url = `${ getUrls('productGroups') }/${ params.id }`
-      config.method = 'PATCH'
+    case 'productGroups.save': {
+      config.url = `${ getUrls('productGroups') }`
+      config.method = 'PUT'
       config.payload = payload
       break
     }

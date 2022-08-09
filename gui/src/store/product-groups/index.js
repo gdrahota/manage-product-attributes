@@ -14,10 +14,13 @@ const loadAll = async ( { commit } ) => {
   }
 }
 
-const patch = async ( { commit }, patch ) => {
-  const { id } = patch
-  const item = await action('products.productGroups', patch, { id })
-  commit('UPDATE_ITEM', item)
+const save = async ( { commit }, attr ) => {
+  try {
+    const item = await action('productGroups.save', attr, { id: attr.id })
+    commit('UPDATE_ITEM', item)
+  } catch ( err ) {
+    console.error('ERROR in store/productGroups/save', err)
+  }
 }
 
 const addProductAttributeValue = async ( { commit }, obj ) => {
@@ -26,7 +29,7 @@ const addProductAttributeValue = async ( { commit }, obj ) => {
 
 const actions = {
   loadAll,
-  patch,
+  save,
   addProductAttributeValue,
 }
 

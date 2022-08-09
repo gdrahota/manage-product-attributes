@@ -18,28 +18,41 @@ export class ProductGroup {
   private productAttributeTable = new ProductAttributeTable()
   private productAttributesOfProductGroupTable = new ProductAttributesOfProductGroupTable<IProductAttributesOfProductGroupTable>()
 
-  async getById( id: number ): Promise<IProductAttributesOfProductGroupTable[]> {
-    return this.productAttributesOfProductGroupTable.getByProductGroup( id )
-  }
+  async getById( id: number ): Promise<IProductGroup> {
+    const baseData = await this.productGroupTable.getById( id )
 
-  async getAll(): Promise<any[]> {
-    const pgs = this.productGroupTable.getAll()
+    if ( ! baseData ) {
+      throw Error( `NO PRODUCT GROUP WITH ID "${ id }"` )
+    }
 
-    return BluebirdPromise.mapSeries( pgs, async pg => {
-      const productAttributesOfProductGroupTable = await this.productAttributesOfProductGroupTable.getByProductGroup( pg.id )
+    const productAttributesOfProductGroupTable = await this.productAttributesOfProductGroupTable.getByProductGroup( id )
 
-      const productAttributesOfProductGroup = await BluebirdPromise.map( productAttributesOfProductGroupTable, async productAttributesOfProductGroup => {
-        const baseAttrDate = await this.productAttributeTable.getById( productAttributesOfProductGroup.attrId ) as IProductAttributeTable
-        return {
-          ...productAttributesOfProductGroup,
-          ...baseAttrDate,
-        }
-      } )
-
+    const productAttributesOfProductGroup = await BluebirdPromise.map( productAttributesOfProductGroupTable, async productAttributesOfProductGroup => {
+      const baseAttrDate = await this.productAttributeTable.getById( productAttributesOfProductGroup.attrId ) as IProductAttributeTable
       return {
-        ...pg,
-        attributes: productAttributesOfProductGroup
+        ...productAttributesOfProductGroup,
+        ...baseAttrDate,
       }
     } )
+
+
+    return {
+      ...baseData,
+      attributes: productAttributesOfProductGroup
+    }
+  }
+
+  async getAll(): Promise<IProductGroup[]> {
+    const pgs = this.productGroupTable.getAll()
+
+    return BluebirdPromise.mapSeries( pgs, async ( { id } ) => {
+      return this.getById( id )
+    } )
+  }
+
+  async update( productGroup: IProductGroup ): Promise<IProductGroup | null> {
+    const { id, name, description } = productGroup
+    await this.productGroupTable.update( { id, name, description } )
+    return this.getById( productGroup.id )
   }
 }
