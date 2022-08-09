@@ -4,6 +4,7 @@
     :value="unit"
     filled
     label="Unit"
+    stack-label
     @input="setValue"
   />
 </template>

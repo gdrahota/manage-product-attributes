@@ -71,4 +71,9 @@ export class ProductAttribute {
 
     return this.getById( item.id )
   }
+
+  async add( item: Omit<IProductAttributeTable, 'id'> ): Promise<IProductAttribute | null> {
+    const newItem = await this.productAttributeTable.add( camelToSnakeRecord( item ) )
+    return this.getById( newItem.id )
+  }
 }

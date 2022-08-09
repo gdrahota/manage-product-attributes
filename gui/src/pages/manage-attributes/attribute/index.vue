@@ -34,11 +34,10 @@
         <q-btn
           :color="hasChanged ? 'primary' : 'grey'"
           :disable="!hasChanged"
+          :label="workingCopy.id ? 'Save' : 'Add'"
+          icon-right="save"
           @click="save"
-        >
-          <q-icon left name="save" />
-          Save
-        </q-btn>
+        />
       </div>
     </div>
 
@@ -86,10 +85,19 @@ export default {
   methods: {
     ...mapActions({
       saveChanges: 'productAttributes/save',
+      add: 'productAttributes/add',
     }),
     init() {
       if ( this.attribute ) {
         this.workingCopy = JSON.parse(JSON.stringify(this.attribute))
+      } else if ( this.$route.params.id ) {
+        this.workingCopy = {
+          id: null,
+          name: null,
+          unit: null,
+          type: null,
+          description: null,
+        }
       }
     },
     setName( name ) {
@@ -106,13 +114,22 @@ export default {
     },
     save() {
       if ( this.hasChanged ) {
-        this.saveChanges({
-          id: this.workingCopy.id,
-          name: this.workingCopy.name,
-          unit: this.workingCopy.unit,
-          type: this.workingCopy.type,
-          description: this.workingCopy.description,
-        })
+        if ( this.workingCopy.id ) {
+          this.saveChanges({
+            id: this.workingCopy.id,
+            name: this.workingCopy.name,
+            unit: this.workingCopy.unit,
+            type: this.workingCopy.type,
+            description: this.workingCopy.description,
+          })
+        } else {
+          this.add({
+            name: this.workingCopy.name,
+            unit: this.workingCopy.unit,
+            type: this.workingCopy.type,
+            description: this.workingCopy.description,
+          })
+        }
       }
     },
   },

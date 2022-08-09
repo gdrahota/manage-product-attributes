@@ -4,6 +4,7 @@
     :value="name"
     filled
     label="Property Name"
+    stack-label
     @input="setValue"
   />
 </template>

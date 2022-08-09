@@ -73,6 +73,12 @@ export const action = async ( actionName, payload, params ) => {
       config.payload = payload
       break
     }
+    case 'productAttributes.add': {
+      config.url = `${ getUrls('productAttributes') }`
+      config.method = 'POST'
+      config.payload = payload
+      break
+    }
 
     case 'productAttributeValue.createProductAttributeValue': {
       config.url = `${ getUrls('productAttributeValue') }/${ payload.productGroupId }/product-attribute/${ payload.attrId }`
