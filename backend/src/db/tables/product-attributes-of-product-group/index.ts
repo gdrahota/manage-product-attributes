@@ -25,4 +25,12 @@ export class ProductAttributesOfProductGroupTable<IProductAttributesOfProductGro
 
     return response.map( snakeToCamelRecord ) as unknown as IProductAttributesOfProductGroupTable[]
   }
+
+  async getByAttrId( id: number = 0 ): Promise<IProductAttributesOfProductGroupTable[]> {
+    const response = await pg<IProductAttributesOfProductGroupTable>( TABLE_NAME )
+      .where( 'attr_id', id )
+      .select() as Record<string, any>
+
+    return response.map( snakeToCamelRecord ) as unknown as IProductAttributesOfProductGroupTable[]
+  }
 }
