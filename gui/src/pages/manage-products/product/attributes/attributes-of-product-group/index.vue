@@ -16,10 +16,10 @@
           {{ getById(attr.attrId).name }} ({{ getById(attr.attrId).unit }})
         </td>
         <td style="padding: 0">
-          <decimal-value
+          <component
+            :is="getComponent(getById(attr.attrId).type)"
             :attribute="attr"
             :attribute-value="getProductAttributeValue(attr)"
-            :type="getById(attr.attrId).type"
             :unit="getById(attr.attrId).unit"
             @createAndAddValue="createAndAddValue"
             @remove="removeProductAttributeValue"
@@ -37,6 +37,7 @@
 <script>
 import { mapGetters } from 'vuex'
 import DecimalValue from './decimal-value'
+import TextValue from './text-value'
 import { sortByPosition } from '@/sorters'
 
 export default {
@@ -66,6 +67,15 @@ export default {
     },
     createAndAddValue( attrValueId ) {
       this.$emit('createAndAddValue', attrValueId)
+    },
+    getComponent( type ) {
+      switch ( type ) {
+        case 'decimal':
+          return DecimalValue
+        case 'text':
+        default:
+          return TextValue
+      }
     },
   },
 

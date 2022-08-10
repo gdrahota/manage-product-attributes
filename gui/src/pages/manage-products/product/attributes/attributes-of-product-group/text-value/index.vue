@@ -30,12 +30,7 @@ export default {
       return this.getById(this.attribute.attrId)
     },
     options() {
-      let mapFn = v => ({
-        ...v,
-        value: `${ this.$root.$options.filters.number(v.value, this.getById(this.attribute.attrId).fractionalDigits || 0) } ${ this.unit }`,
-      })
-
-      return this.attributeAndValues.values.map(mapFn)
+      return this.attributeAndValues.values
     },
   },
 
@@ -52,7 +47,7 @@ export default {
 
       if ( !foundValue ) {
         this.$emit('createAndAddValue', {
-          decimalValue: parseFloat(newValue),
+          textValue: newValue.trim(),
           attrId: this.attribute.attrId,
         })
       } else {
