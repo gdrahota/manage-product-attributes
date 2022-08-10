@@ -31,6 +31,7 @@ const add = async ( { commit }, attr ) => {
     console.error('ERROR in store/productGroups/add', err)
   }
 }
+
 const addProductAttributeValue = async ( { commit }, obj ) => {
   return await action('productAttributeValue.createProductAttributeValue', obj)
 }

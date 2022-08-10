@@ -68,6 +68,12 @@ export const action = async ( actionName, payload, params ) => {
       config.method = 'GET'
       break
     }
+    case 'manufacturers.add': {
+      config.url = `${ getUrls('manufacturers') }`
+      config.method = 'POST'
+      config.payload = payload
+      break
+    }
 
     case 'productAttributes.loadAll': {
       config.url = `${ getUrls('productAttributes') }`

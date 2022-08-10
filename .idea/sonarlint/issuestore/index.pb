@@ -69,8 +69,6 @@ J
 gui/src/filters/boolean.js,7/f/7fbb5e378f63951bd6323b1a12ba1480e9846b96
 I
 gui/src/filters/number.js,0/6/068fbc7a2993aa60cac8a52030e3e75c866403ef
-F
-gui/src/store/index.js,3/e/3e53e488362467d2accb9a75d6c0c8707f09b076
 W
 'backend/src/db/tables/products/index.ts,d/0/d0b2554944ccf762dbcac75d614f85c9c7009f21
 g
@@ -99,8 +97,6 @@ o
 ?gui/src/pages/manage-attributes/attribute/description/index.vue,6/f/6fca95e5d0c30ac6c77037dfe46c28aa90e61d39
 h
 8gui/src/pages/manage-attributes/attribute/type/index.vue,f/a/fa9f03f487005549d70da60fc9fabc9a97313e42
-T
-$gui/src/store/manufacturers/index.js,4/5/4514d69326e064eb49db182cd1a093f1775c9292
 `
 0gui/src/store/product-to-product-groups/index.js,2/5/252a949ba35c09246b1a963083cd5190367d6ac6
 Y

@@ -61,7 +61,7 @@ export default {
   methods: {
     ...mapActions({
       saveChanges: 'manufacturers/loadAll',
-      add: 'products/add',
+      add: 'manufacturers/add',
     }),
     setName( value ) {
       this.$set(this.workingCopy, 'name', value)

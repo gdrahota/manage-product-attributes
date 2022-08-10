@@ -13,12 +13,11 @@ COPY ./backend/node_modules ./node_modules
 COPY ./backend/package.json ./package.json
 COPY ./backend/tsconfig.json ./tsconfig.json
 COPY ./backend/.env ./.env
-#COPY ./backend/build ./build
-COPY ./backend/src ./src
+#COPY ./backend/src ./src
 COPY ./backend/dist ./dist
 
 RUN yarn
-CMD ["yarn", "build"]
+#CMD ["yarn", "build"]
 
 EXPOSE 8888
 
