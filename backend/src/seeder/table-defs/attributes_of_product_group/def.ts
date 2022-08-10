@@ -16,20 +16,20 @@ export default {
     {
       "name": "representation_unit",
       "type": DataType.STRING,
-      "nullable": false
+      "nullable": true
     },
     {
       "name": "representation_unit_factor",
       "type": DataType.FLOAT,
-      "nullable": false
-    },
-    {
-      "name": "position",
-      "type": DataType.INTEGER,
-      "nullable": false
+      "nullable": true
     },
     {
       "name": "fractional_digits",
+      "type": DataType.INTEGER,
+      "nullable": true
+    },
+    {
+      "name": "position",
       "type": DataType.INTEGER,
       "nullable": false
     },

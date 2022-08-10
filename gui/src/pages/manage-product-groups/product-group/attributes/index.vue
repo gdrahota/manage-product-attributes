@@ -5,10 +5,12 @@
         <tr>
           <th rowspan="2" scope="col"></th>
           <th rowspan="2" scope="col">Attribute</th>
+
           <th colspan="3" scope="col">
             Conversion
           </th>
           <th rowspan="2" scope="col">Description</th>
+          <th rowspan="2" scope="col"></th>
         </tr>
         <tr>
           <th scope="col">of (entry)</th>
@@ -37,34 +39,50 @@
           <td>
             {{ getAttrById(element.attrId).name }}
           </td>
-          <td>
-            1 {{ getAttrById(element.attrId).unit }}
-          </td>
-          <td class="row" style="padding: 0 10px">
-            <div class="col q-pr-xs q-pt-md">
-              <representation-unit-factor
-                :value="element.representationUnitFactor"
-                @set="data => element.representationUnitFactor = data"
-              />
-            </div>
-            <div class="col q-px-xs q-mt-md">
-              <representation-unit
-                :value="element.representationUnit"
-                @set="data => element.representationUnit = data"
-              />
-            </div>
-            <div class="col q-pl-sm q-mt-md">
-              <fractional-digits
-                :value="element.fractionalDigits"
-                @set="data => element.fractionalDigits = data"
-              />
-            </div>
-          </td>
-          <td>
-            {{ element.representationUnitFactor }} {{ element.representationUnit }} = 1 {{ getAttrById(element.attrId).unit }}
-          </td>
+          <template v-if="getAttrById(element.attrId).type === 'decimal'">
+            <td>
+              1 {{ getAttrById(element.attrId).unit }}
+            </td>
+            <td>
+              <div class="row" style="padding: 0 10px">
+                <div class="col q-pr-xs q-pt-md">
+                  <representation-unit-factor
+                    :value="element.representationUnitFactor"
+                    @set="data => element.representationUnitFactor = data"
+                  />
+                </div>
+                <div class="col q-px-xs q-mt-md">
+                  <representation-unit
+                    :value="element.representationUnit"
+                    @set="data => element.representationUnit = data"
+                  />
+                </div>
+                <div class="col q-pl-sm q-mt-md">
+                  <fractional-digits
+                    :value="element.fractionalDigits"
+                    @set="data => element.fractionalDigits = data"
+                  />
+                </div>
+              </div>
+            </td>
+            <td>
+              {{ element.representationUnitFactor }} {{ element.representationUnit }} = 1 {{ getAttrById(element.attrId).unit }}
+            </td>
+          </template>
+          <td v-else colspan="3" class="bg-grey-1"></td>
           <td>
             {{ getAttrById(element.attrId).description }}
+          </td>
+          <td>
+            <q-btn
+              flat
+              @click="deleteAttribute(element)"
+            >
+              <q-icon
+                color="red-6"
+                name="delete_forever"
+              />
+            </q-btn>
           </td>
         </tr>
       </draggable>
@@ -148,6 +166,13 @@ export default {
         position: this.attributes.length,
         fractionalDigits: 0,
       })
+    },
+    deleteAttribute( attr ) {
+      const idx = this.attributes.findIndex(a => a.id === attr.id)
+
+      if ( idx !== -1 ) {
+        this.$delete(this.attributes, idx)
+      }
     },
   },
 

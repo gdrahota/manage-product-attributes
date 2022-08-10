@@ -17,6 +17,7 @@
     </div>
 
     <attributes
+      v-if="workingCopy.id"
       :attributes="workingCopy.attributes"
       :product-group-id="workingCopy.id"
       class="q-pb-lg"
@@ -35,7 +36,7 @@
         />
       </div>
     </div>
-    <pre>{{ workingCopy }}</pre>
+    <!--    <pre>{{ workingCopy }}</pre>-->
   </div>
 </template>
 
@@ -101,12 +102,14 @@ export default {
     setDescription( description ) {
       this.$set(this.workingCopy, 'description', description)
     },
-    save() {
+    async save() {
       if ( this.hasChanged ) {
         if ( this.workingCopy.id ) {
           this.saveChanges(this.workingCopy)
         } else {
-          this.add(this.workingCopy)
+          const item = await this.add(this.workingCopy)
+
+          await this.$router.push({ params: { id: item.id } })
         }
       }
     },
