@@ -1,7 +1,7 @@
 {
-  "name": "manage-product-attributes",
-  "version": "1.0.0",
-  "description": "Can be used to manage attributes of products.",
+  "name": "manage-product-attributes--backend",
+  "version": "0.1.0",
+  "description": "Could be used to manage product attributes of products.",
   "main": "index.js",
   "scripts": {
     "build": "npx tsc",

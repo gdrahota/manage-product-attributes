@@ -1,6 +1,4 @@
 
-9
-	README.md,8/e/8ec9a00bfd09b3190ac6b22251dbb1aa95a0579d
 W
 'backend/src/seeder/table-defs/type.d.ts,5/e/5e6cce7260a69c35b2fa49290c2ae56469062e9a
 S
@@ -144,8 +142,6 @@ p
 Zgui/src/pages/manage-product-groups/product-group/attributes/representation-unit/index.vue,c/e/ce4eed1403c00b7bd21be4d9088b38b80aee9f9d
 =
 gui/yarn.lock,d/e/de27ac4bb28ba47a3c0c67438e71eb84a8f89fe4
-@
-gui/package.json,1/1/11dda6fedbd60519e8572c1d7aa4ce2687dcbd6d
 h
 8gui/src/pages/manage-attributes/attribute/unit/index.vue,0/3/039d16caaf9f9bdf9a06c7ea61afc9b87e9bc782
 a
