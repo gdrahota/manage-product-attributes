@@ -123,10 +123,10 @@ export default {
     setDescription( description ) {
       this.$set(this.workingCopy, 'description', description)
     },
-    save() {
+    async save() {
       if ( this.hasChanged ) {
         if ( this.workingCopy.id ) {
-          this.saveChanges({
+          await this.saveChanges({
             id: this.workingCopy.id,
             name: this.workingCopy.name,
             unit: this.workingCopy.unit,
@@ -135,13 +135,15 @@ export default {
             fractionalDigits: this.workingCopy.fractionalDigits,
           })
         } else {
-          this.add({
+          const item = await this.add({
             name: this.workingCopy.name,
             unit: this.workingCopy.unit,
             type: this.workingCopy.type,
             description: this.workingCopy.description,
             fractionalDigits: this.workingCopy.fractionalDigits,
           })
+
+          await this.$router.push({ params: { id: item.id } })
         }
       }
     },
