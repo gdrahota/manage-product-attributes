@@ -27,9 +27,19 @@ export class ProductGroup {
 
     const attributes = await this.productAttributesOfProductGroupTable.getByProductGroup( id )
 
+    const correctType = ( i: IProductAttributesOfProductGroupTable ) => {
+
+      return {
+        ...i,
+        representationUnitFactor: i.representationUnitFactor
+          ? parseFloat( <string>i.representationUnitFactor )
+          : null
+      }
+    }
+
     return {
       ...baseData,
-      attributes: attributes
+      attributes: attributes.map( correctType )
     }
   }
 

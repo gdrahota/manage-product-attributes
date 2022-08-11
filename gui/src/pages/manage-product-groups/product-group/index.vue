@@ -36,7 +36,7 @@
         />
       </div>
     </div>
-    <!--    <pre>{{ workingCopy }}</pre>-->
+        <pre>{{ workingCopy }}</pre>
   </div>
 </template>
 

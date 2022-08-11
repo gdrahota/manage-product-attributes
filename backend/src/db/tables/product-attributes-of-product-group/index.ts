@@ -7,7 +7,7 @@ export interface IProductAttributesOfProductGroupTable {
   productGroupId: number
   attrId: number
   representationUnit: string | null
-  representationUnitFactor: number | null
+  representationUnitFactor: number | string | null
   position: number
   searchStrategy: string | null
 }
