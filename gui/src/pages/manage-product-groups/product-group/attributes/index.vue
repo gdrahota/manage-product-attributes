@@ -9,6 +9,7 @@
           <th colspan="3" scope="col">
             Conversion
           </th>
+          <th rowspan="2" scope="col">Search Strategy</th>
           <th rowspan="2" scope="col">Description</th>
           <th rowspan="2" scope="col"></th>
         </tr>
@@ -69,7 +70,14 @@
               {{ element.representationUnitFactor }} {{ element.representationUnit }} = 1 {{ getAttrById(element.attrId).unit }}
             </td>
           </template>
-          <td v-else colspan="3" class="bg-grey-1"></td>
+          <td v-else class="bg-grey-1" colspan="3"></td>
+          <td>
+            <search-strategy
+              :type="getAttrById(element.attrId).type"
+              :value="element.searchStrategy"
+              @set="data => element.searchStrategy = data"
+            />
+          </td>
           <td>
             {{ getAttrById(element.attrId).description }}
           </td>
@@ -118,6 +126,7 @@ import { sortByPosition } from '@/sorters'
 import FractionalDigits from './fractional-digits'
 import RepresentationUnitFactor from './representation-unit-factor'
 import RepresentationUnit from './representation-unit'
+import SearchStrategy from './search-strategy'
 
 export default {
   components: {
@@ -125,6 +134,7 @@ export default {
     FractionalDigits,
     RepresentationUnit,
     RepresentationUnitFactor,
+    SearchStrategy,
   },
 
   computed: {

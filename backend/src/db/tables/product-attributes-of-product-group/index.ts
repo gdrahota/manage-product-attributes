@@ -6,9 +6,10 @@ export interface IProductAttributesOfProductGroupTable {
   id: number
   productGroupId: number
   attrId: number
-  representationUnit: string
-  representationUnitFactor: number
+  representationUnit: string | null
+  representationUnitFactor: number | null
   position: number
+  searchStrategy: string | null
 }
 
 const TABLE_NAME = 'attributes_of_product_group'

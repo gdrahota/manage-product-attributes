@@ -5,7 +5,7 @@
         <q-btn
           color="secondary"
           icon="add"
-          label="neu"
+          label="new"
           size="14px"
           style="margin: 10px 5px"
           @click="routeTo('new')"

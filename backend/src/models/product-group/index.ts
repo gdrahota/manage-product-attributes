@@ -46,7 +46,7 @@ export class ProductGroup {
     await this.productGroupTable.update( { id, name, description } )
 
     // check product group's attributes
-    await BluebirdPromise.each( productGroup.attributes, async attr => {
+    await BluebirdPromise.each( attributes, async attr => {
       if ( attr.id ) {
         await this.productAttributesOfProductGroupTable.update( camelToSnakeRecord( {
           id: attr.id,
@@ -54,12 +54,13 @@ export class ProductGroup {
           representationUnitFactor: attr.representationUnitFactor,
           fractionalDigits: attr.fractionalDigits,
           position: attr.position,
+          searchStrategy: attr.searchStrategy,
         } ) )
       }
     } )
 
     const oldAttrs = await this.productAttributesOfProductGroupTable.getByProductGroup( productGroup.id )
-    const newAttrs = productGroup.attributes
+    const newAttrs = attributes
 
     const attrsToBeDeleted = oldAttrs.filter( ( { id } ) => ! newAttrs.map( ( i: any ) => i.id ).includes( id ) )
     const attrsToBeAdded = newAttrs.filter( ( { attrId } ) => ! oldAttrs.map( ( i: any ) => i.attrId ).includes( attrId ) )

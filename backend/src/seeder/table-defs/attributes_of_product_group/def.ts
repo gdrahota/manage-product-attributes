@@ -33,5 +33,10 @@ export default {
       "type": DataType.INTEGER,
       "nullable": false
     },
+    {
+      "name": "search_strategy",
+      "type": DataType.STRING,
+      "nullable": true
+    },
   ]
 }
