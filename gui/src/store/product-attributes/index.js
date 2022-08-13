@@ -79,7 +79,7 @@ const mutations = {
 
 const getters = {
   getAll: state => state.items,
-  getById: state => id => state.items.find(i => i.id.toString() === id.toString()),
+  getById: state => id => state.items.find(i => i.id === id),
 }
 
 export default {

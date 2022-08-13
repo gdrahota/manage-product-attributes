@@ -38,6 +38,4 @@ class ProductRoutes extends DefaultRestEndpoint<IProductTable> {
   }
 }
 
-export const registerProductRoutes = () => {
-  return ProductRoutes.registerRoutes()
-}
+export const registerProductRoutes = () => ProductRoutes.registerRoutes()

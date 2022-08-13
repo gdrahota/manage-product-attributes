@@ -1,5 +1,6 @@
 import { action } from '@/store/actions'
 import Vue from 'vue'
+import { sortByName } from '@/sorters'
 
 const state = {
   items: [],
@@ -18,6 +19,16 @@ const add = async ( { commit }, attr ) => {
   try {
     const item = await action('manufacturers.add', attr)
     commit('UPDATE_ITEM', item)
+    return item
+  } catch ( err ) {
+    console.error('ERROR in store/manufacturers/add', err)
+  }
+}
+
+const save = async ( { commit }, changedItem ) => {
+  try {
+    const item = await action('manufacturers.save', changedItem)
+    commit('UPDATE_ITEM', item)
   } catch ( err ) {
     console.error('ERROR in store/manufacturers/add', err)
   }
@@ -26,6 +37,7 @@ const add = async ( { commit }, attr ) => {
 const actions = {
   loadAll,
   add,
+  save,
 }
 
 // mutations
@@ -49,7 +61,7 @@ const mutations = {
 }
 
 const getters = {
-  getAll: state => state.items,
+  getAll: state => [ ...state.items ].sort(sortByName),
   getById: state => id => state.items.find(i => i.id.toString() === id.toString()),
 }
 

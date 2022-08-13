@@ -8,23 +8,25 @@
         />
       </div>
       <div class="col-1 q-pr-sm">
-        <unit
-          :unit="workingCopy.unit"
-          @set="setUnit"
-        />
-      </div>
-      <div class="col-1 q-pr-sm">
         <type
           :attr-type="workingCopy.type"
           @set="setType"
         />
       </div>
-      <div class="col-2 q-pr-sm">
-        <fractional-digits
-          :value="workingCopy.fractionalDigits"
-          @set="setFractionalDigits"
-        />
-      </div>
+      <template v-if="workingCopy.type === 'decimal'">
+        <div class="col-1 q-pr-sm">
+          <unit
+            :unit="workingCopy.unit"
+            @set="setUnit"
+          />
+        </div>
+        <div class="col-2 q-pr-sm">
+          <fractional-digits
+            :value="workingCopy.fractionalDigits"
+            @set="setFractionalDigits"
+          />
+        </div>
+      </template>
       <div class="col-6 q-pr-sm">
         <description
           :description="workingCopy.description"
@@ -46,7 +48,7 @@
         />
       </div>
     </div>
-    <pre>{{ workingCopy }}</pre>
+    <!--    <pre>{{ workingCopy }}</pre>-->
   </div>
 </template>
 

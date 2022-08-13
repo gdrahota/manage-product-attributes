@@ -39,6 +39,7 @@ export default {
       loadProductGroups: 'productGroups/loadAll',
       loadProductToProductGroups: 'productToProductGroups/loadAll',
       loadProductAttributes: 'productAttributes/loadAll',
+      loadProductAttributeGroupsOfProductGroups: 'productAttributeGroupsOfProductGroups/loadAll',
     }),
   },
 
@@ -48,6 +49,7 @@ export default {
     this.loadProductGroups()
     this.loadProductToProductGroups()
     this.loadProductAttributes()
+    this.loadProductAttributeGroupsOfProductGroups()
   },
 }
 </script>

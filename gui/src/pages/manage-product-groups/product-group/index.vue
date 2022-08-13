@@ -1,70 +1,79 @@
 <template>
-  <div v-if="workingCopy" class="q-pa-md">
+  <div v-if="workingCopyProductGroup" class="q-pa-md q-pr-lg">
     <div class="row">
       <div class="col-2 q-pr-sm">
         <name
-          :name="workingCopy.name"
+          :name="workingCopyProductGroup.name"
           @set="setName"
         />
       </div>
 
-      <div class="col-10 q-pr-sm">
+      <div class="col-10 q-pl-sm">
         <description
-          :description="workingCopy.description"
+          :description="workingCopyProductGroup.description"
           @set="setDescription"
         />
       </div>
     </div>
 
-    <attributes
-      v-if="workingCopy.id"
-      :attributes="workingCopy.attributes"
-      :product-group-id="workingCopy.id"
+    <attributes-and-groups
+      v-if="workingCopyProductGroup.id"
+      :attribute-groups="workingCopyAttributeGroups"
+      :product-group="workingCopyProductGroup"
       class="q-pb-lg"
     />
 
-    <q-separator />
-
-    <div class="row q-mt-lg">
-      <div class="col-12">
-        <q-btn
-          :color="hasChanged ? 'primary' : 'grey'"
-          :disable="!hasChanged"
-          :label="workingCopy.id ? 'Save' : 'Add'"
-          icon-right="save"
-          @click="save"
-        />
-      </div>
+    <div class="q-mb-lg q-pb-lg">
+      <q-btn
+        :color="hasChanged ? 'primary' : 'grey'"
+        :disable="!hasChanged"
+        :label="workingCopyProductGroup.id ? 'Save' : 'Add'"
+        icon-right="save"
+        @click="save"
+      />
     </div>
-        <pre>{{ workingCopy }}</pre>
+
+    <!--    <div class="row">-->
+    <!--      <div class="col">-->
+    <!--        <pre>{{ workingCopyProductGroup }}</pre>-->
+    <!--      </div>-->
+    <!--      <div class="col">-->
+    <!--        <pre>{{ workingCopyAttributeGroups }}</pre>-->
+    <!--      </div>-->
+    <!--    </div>-->
   </div>
 </template>
 
 <script>
 import { mapActions, mapGetters } from 'vuex'
 import isEqual from 'lodash.isequal'
+import { sortByPosition } from '@/sorters'
 
-import Attributes from './attributes'
+import AttributesAndGroups from './attributes-and-groups'
 import Description from './description'
 import Name from './name'
-import { sortByPosition } from '@/sorters'
 
 export default {
   components: {
-    Attributes,
+    AttributesAndGroups,
     Description,
     Name,
   },
 
   computed: {
     ...mapGetters({
-      getById: 'productGroups/getById',
+      getProductGroupsById: 'productGroups/getById',
+      getProductAttributeGroupsOfProductGroupByProductGroupId: 'productAttributeGroupsOfProductGroups/getByProductGroupId',
+
     }),
     item() {
-      return this.getById(this.$route.params.id)
+      return this.getProductGroupsById(this.$route.params.id)
+    },
+    productAttributeGroups() {
+      return this.getProductAttributeGroupsOfProductGroupByProductGroupId(this.$route.params.id)
     },
     hasChanged() {
-      return !isEqual(this.item, this.workingCopy)
+      return !isEqual(this.item, this.workingCopyProductGroup) || !isEqual(this.productAttributeGroups, this.workingCopyAttributeGroups)
     },
   },
 
@@ -73,41 +82,54 @@ export default {
   },
 
   data: () => ({
-    workingCopy: null,
+    workingCopyProductGroup: null,
+    workingCopyAttributeGroups: null,
   }),
 
   methods: {
     ...mapActions({
-      saveChanges: 'productGroups/save',
+      saveProductGroup: 'productGroups/save',
+      saveAttributeGroupsOfProductGroup: 'productAttributeGroupsOfProductGroups/save',
       add: 'productGroups/add',
     }),
     init() {
       if ( this.item ) {
         const attributes = [ ...this.item.attributes ].sort(sortByPosition)
-        this.workingCopy = JSON.parse(JSON.stringify({
+        this.workingCopyProductGroup = JSON.parse(JSON.stringify({
           ...this.item,
           attributes,
         }))
       } else if ( this.$route.params.id === 'new' ) {
-        this.workingCopy = {
+        this.workingCopyProductGroup = {
           name: null,
           description: null,
           attributes: [],
         }
       }
+
+      this.workingCopyAttributeGroups = JSON.parse(JSON.stringify(this.productAttributeGroups))
     },
     setName( name ) {
-      this.$set(this.workingCopy, 'name', name)
+      this.$set(this.workingCopyProductGroup, 'name', name)
     },
     setDescription( description ) {
-      this.$set(this.workingCopy, 'description', description)
+      this.$set(this.workingCopyProductGroup, 'description', description)
     },
     async save() {
       if ( this.hasChanged ) {
-        if ( this.workingCopy.id ) {
-          this.saveChanges(this.workingCopy)
+        if ( this.workingCopyProductGroup.id ) {
+          if ( !isEqual(this.item, this.workingCopyProductGroup) ) {
+            this.saveProductGroup(this.workingCopyProductGroup)
+          }
+
+          if ( !isEqual(this.productAttributeGroups, this.workingCopyAttributeGroups) ) {
+            this.saveAttributeGroupsOfProductGroup({
+              productGroupId: this.workingCopyProductGroup.id,
+              items: this.workingCopyAttributeGroups,
+            })
+          }
         } else {
-          const item = await this.add(this.workingCopy)
+          const item = await this.add(this.workingCopyProductGroup)
 
           await this.$router.push({ params: { id: item.id } })
         }
@@ -120,6 +142,9 @@ export default {
       this.init()
     },
     item() {
+      this.init()
+    },
+    productAttributeGroups() {
       this.init()
     },
   },

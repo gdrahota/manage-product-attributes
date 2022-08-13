@@ -2,9 +2,10 @@ import Vue from 'vue'
 import VueRouter from 'vue-router'
 // import { EventBus } from '@/plugins/event-bus'
 import { manageManufacturerRoutes } from '@/router/manage-manufacturers'
-import { manageProductRouts } from '@/router/manage-products'
-import { manageAttributeRouts } from '@/router/manage-attributes'
+import { manageProductRoutes } from '@/router/manage-products'
+import { manageAttributeRoutes } from '@/router/manage-attributes'
 import { manageProductGroupRoutes } from '@/router/manage-product-group'
+import { managePreviewRoutes } from '@/router/preview'
 
 // import store from '@/store'
 
@@ -12,9 +13,10 @@ Vue.use(VueRouter)
 
 export const routes = [
   ...manageManufacturerRoutes,
-  ...manageAttributeRouts,
-  ...manageProductRouts,
+  ...manageAttributeRoutes,
+  ...manageProductRoutes,
   ...manageProductGroupRoutes,
+  ...managePreviewRoutes,
 ]
 
 const router = new VueRouter({

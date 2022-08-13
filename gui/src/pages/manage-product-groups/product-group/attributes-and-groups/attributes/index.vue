@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div v-if="getAll.length > 0">
     <table>
       <thead>
         <tr>
@@ -16,7 +16,7 @@
         <tr>
           <th scope="col">of (entry)</th>
           <th scope="col">into (display)</th>
-          <th></th>
+          <th scope="col">Result</th>
         </tr>
       </thead>
 
@@ -30,19 +30,19 @@
         @end="onDragEnd"
       >
         <tr
-          v-for="element in [...items].sort(sortByPosition)"
-          :key="element.name"
+          v-for="(element, key) of items"
+          :key="key"
           class="list-group-item"
         >
           <td class="q-pa-none">
-            <q-btn class="handle" flat icon="menu" />
+            <q-btn class="handle" dense flat icon="menu" />
           </td>
-          <td>
+          <td v-if="getAttrById(element.attrId)">
             {{ getAttrById(element.attrId).name }}
           </td>
           <template v-if="getAttrById(element.attrId).type === 'decimal'">
             <td>
-              1 {{ getAttrById(element.attrId).unit }}
+              {{ getAttrById(element.attrId).unit }}
             </td>
             <td>
               <div class="row" style="padding: 0 10px">
@@ -67,15 +67,18 @@
               </div>
             </td>
             <td>
-              {{ element.representationUnitFactor }} {{ element.representationUnit }} = 1 {{ getAttrById(element.attrId).unit }}
+              <template v-if="element.representationUnitFactor">
+                {{ element.representationUnitFactor.toLocaleString('de-DE') }} {{ element.representationUnit }} = 1
+                {{ getAttrById(element.attrId).unit }}
+              </template>
             </td>
           </template>
           <td v-else class="bg-grey-1" colspan="3"></td>
           <td>
             <search-strategy
+              :search-strategy="element.searchStrategy"
               :type="getAttrById(element.attrId).type"
-              :value="element.searchStrategy"
-              @set="data => element.searchStrategy = data"
+              @set="data => setValue(key,'searchStrategy', data)"
             />
           </td>
           <td>
@@ -83,6 +86,7 @@
           </td>
           <td>
             <q-btn
+              dense
               flat
               @click="deleteAttribute(element)"
             >
@@ -143,7 +147,7 @@ export default {
       getAll: 'productAttributes/getAll',
     }),
     items() {
-      return this.attributes
+      return [ ...this.attributes ].sort(sortByPosition)
     },
     unusedAttrs() {
       const usedAttrIds = this.items.map(( { attrId } ) => attrId)
@@ -158,9 +162,6 @@ export default {
   },
 
   methods: {
-    add: function() {
-      this.list.push({ name: 'Juan ' + id, id: id++ })
-    },
     onDragEnd() {
       this.items.forEach(( a, pos ) => a.position = pos)
     },
@@ -183,6 +184,9 @@ export default {
       if ( idx !== -1 ) {
         this.$delete(this.attributes, idx)
       }
+    },
+    setValue( pos, attrName, value ) {
+      this.$set(this.items[ pos ], attrName, value)
     },
   },
 
@@ -222,6 +226,11 @@ table
   tr:last-child
     td
       border-bottom: 1px solid #ccc
+
+  tbody
+    tr
+      td:first-child
+        padding: 0 10px
 
 .ghost
   opacity: 0.5

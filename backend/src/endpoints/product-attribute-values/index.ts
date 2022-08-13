@@ -30,6 +30,4 @@ class ProductAttributeValueEndpoint extends DefaultRestEndpoint<IProductAttribut
   }
 }
 
-export const registerProductAttributeValueRoutes = () => {
-  return ProductAttributeValueEndpoint.registerRoutes()
-}
+export const registerProductAttributeValueRoutes = () => ProductAttributeValueEndpoint.registerRoutes()

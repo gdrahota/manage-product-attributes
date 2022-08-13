@@ -1,5 +1,6 @@
 import Vue from 'vue'
 import { action } from '@/store/actions'
+import { sortByName } from '@/sorters'
 
 const state = {
   items: [],
@@ -34,7 +35,7 @@ const add = async ( { commit }, attr ) => {
 }
 
 const addProductAttributeValue = async ( { commit }, obj ) => {
-  return await action('productAttributeValue.createProductAttributeValue', obj)
+  return await action('productAttributeValues.createProductAttributeValue', obj)
 }
 
 const actions = {
@@ -65,7 +66,7 @@ const mutations = {
 }
 
 const getters = {
-  getAll: state => state.items,
+  getAll: state => [ ...state.items ].sort(sortByName),
   getById: state => id => state.items.find(i => i.id.toString() === id.toString()),
 }
 

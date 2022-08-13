@@ -4,7 +4,9 @@ import Vuex from 'vuex'
 import manufacturers from './manufacturers'
 import products from './products'
 import productAttributes from './product-attributes'
+import productAttributeGroupsOfProductGroups from './product-attribute-groups-of-product-groups'
 import productGroups from './product-groups'
+import productSearch from './product-search'
 import productToProductGroups from './product-to-product-groups'
 
 Vue.use(Vuex)
@@ -14,7 +16,9 @@ const store = new Vuex.Store({
     manufacturers,
     products,
     productAttributes,
+    productAttributeGroupsOfProductGroups,
     productGroups,
+    productSearch,
     productToProductGroups,
   },
   strict: process.env.env !== 'production',

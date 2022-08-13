@@ -1,4 +1,4 @@
-export const manageProductRouts = [
+export const manageProductRoutes = [
   {
     path: '/manage-products',
     name: 'manage-products',

@@ -8,6 +8,7 @@ export interface IProductAttributesOfProductGroupTable {
   attrId: number
   representationUnit: string | null
   representationUnitFactor: number | string | null
+  fractionalDigits: number | null
   position: number
   searchStrategy: string | null
 }

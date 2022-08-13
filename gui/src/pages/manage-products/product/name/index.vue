@@ -2,6 +2,7 @@
   <q-input
     :rules="rules"
     :value="name"
+    dense
     filled
     label="Item Name"
     @input="setValue"

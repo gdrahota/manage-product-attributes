@@ -6,4 +6,5 @@ class ProductToProductGroupRestEndpoints extends DefaultRestEndpoint<IProductGro
 }
 
 export const registerProductToProductGroupRoutes =
-  () => ProductToProductGroupRestEndpoints.registerDefaultRoutes( new ProductToProductGroupTable() )
+  () =>
+    ProductToProductGroupRestEndpoints.registerDefaultRoutes( new ProductToProductGroupTable() )

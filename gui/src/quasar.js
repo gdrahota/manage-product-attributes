@@ -33,4 +33,4 @@ Vue.use(Quasar, {
   },
 })
 
-window.document.title = 'DB Training'
+window.document.title = 'Product Search'

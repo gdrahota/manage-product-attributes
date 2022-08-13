@@ -18,6 +18,8 @@ const postgresConnectionConfig = {
   searchPath: [ SCHEMA_NAME ],
 }
 
+console.log( postgresConnectionConfig )
+
 export let pg: Knex
 
 export const connectToDatabases = (): void => {

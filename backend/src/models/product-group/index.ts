@@ -11,7 +11,7 @@ export interface IProductGroup {
   id: number
   name: string
   description: string | null,
-  attributes: any[]
+  attributes: IProductAttributesOfProductGroupTable[]
 }
 
 export class ProductGroup {
@@ -28,7 +28,6 @@ export class ProductGroup {
     const attributes = await this.productAttributesOfProductGroupTable.getByProductGroup( id )
 
     const correctType = ( i: IProductAttributesOfProductGroupTable ) => {
-
       return {
         ...i,
         representationUnitFactor: i.representationUnitFactor

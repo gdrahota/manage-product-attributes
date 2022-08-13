@@ -3,6 +3,7 @@
     :options="manufacturers"
     :rules="rules"
     :value="manufacturer"
+    dense
     filled
     label="Manufacturer"
     map-options-

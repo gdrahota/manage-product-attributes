@@ -1,5 +1,6 @@
 import Vue from 'vue'
 import { action } from '@/store/actions'
+import { sortByName } from '@/sorters'
 
 const state = {
   items: [],
@@ -56,8 +57,11 @@ const mutations = {
 }
 
 const getters = {
-  getAll: state => state.items,
+  getAll: state => [ ...state.items ].sort(sortByName),
   getById: state => id => state.items.find(i => i.id.toString() === id.toString()),
+  getByProductGroupId: state =>
+    productGroupId =>
+      [ ...state.items.filter(i => i.productGroups.some(( { id } ) => id === productGroupId)) ].sort(sortByName),
 }
 
 export default {

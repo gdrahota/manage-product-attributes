@@ -26,8 +26,15 @@ export class GenericClass<T> {
     return null
   }
 
-  async update( p: any ): Promise<T> {
-    return pg( this.name ).where( 'id', p.id ).update( p, [ '*' ] ) as Promise<unknown> as Promise<T>
+  async update( item: any ): Promise<T> {
+    await pg( this.name ).where( 'id', item.id ).update( item, [ '*' ] )
+    const response = await this.getById( item.id )
+
+    if ( ! response ) {
+      throw Error( `NO INSTANCE WITH ID "${ item.id }" FOUND` )
+    }
+
+    return snakeToCamelRecord( response ) as Promise<unknown> as Promise<T>
   }
 
   async add( p: any ): Promise<T> {

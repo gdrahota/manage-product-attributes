@@ -1,7 +1,7 @@
 <template>
   <q-select
     :options="options"
-    :value="value"
+    :value="searchStrategy"
     dense
     emit-value
     filled
@@ -37,9 +37,9 @@ export default {
   },
 
   props: {
-    value: {
+    searchStrategy: {
       type: String,
-      default: 0,
+      default: null,
     },
     type: {
       type: String,

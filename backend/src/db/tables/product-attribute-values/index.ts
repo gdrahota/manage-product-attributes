@@ -5,7 +5,7 @@ import { snakeToCamelRecord } from "../../helper"
 export interface IProductAttributeValueTable {
   id: number
   attrId: number
-  decimalValue: number | null
+  decimalValue: string | null
   textValue: string | null
   boolValue: boolean | null
 }

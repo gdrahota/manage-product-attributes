@@ -1,4 +1,4 @@
-export const manageAttributeRouts = [
+export const manageAttributeRoutes = [
   {
     path: '/manage-attributes',
     name: 'manage-attributes',

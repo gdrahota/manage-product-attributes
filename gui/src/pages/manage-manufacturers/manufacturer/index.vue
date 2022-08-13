@@ -23,7 +23,7 @@
         </q-btn>
       </div>
     </div>
-    <!--    <pre>{{ workingCopy }}</pre>-->
+    <pre>{{ workingCopy }}</pre>
   </div>
 </template>
 
@@ -60,7 +60,7 @@ export default {
 
   methods: {
     ...mapActions({
-      saveChanges: 'manufacturers/loadAll',
+      saveChanges: 'manufacturers/save',
       add: 'manufacturers/add',
     }),
     setName( value ) {
@@ -69,10 +69,10 @@ export default {
     async save() {
       if ( this.hasChanged ) {
         if ( this.workingCopy.id ) {
-          this.saveChanges(this.workingCopy)
+          await this.saveChanges(this.workingCopy)
         } else {
-          const newManufacturerId = await this.add(this.workingCopy)
-          await this.$router.push({ params: { id: newManufacturerId } })
+          const newManufacturer = await this.add(this.workingCopy)
+          await this.$router.push({ params: { id: newManufacturer.id } })
         }
       }
     },

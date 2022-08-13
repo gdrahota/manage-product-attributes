@@ -6,6 +6,8 @@ const getUrls = ( entityName ) => {
     productToProductGroups: 'product-to-product-groups',
     productAttributes: 'product-attributes',
     productAttributeValue: 'product-attribute-values',
+    productAttributeGroupOfProductGroup: 'product-attribute-groups-of-product-groups',
+    productSearch: 'product-search',
   }
 
   return `/api/${ urls[ entityName ] }`
@@ -15,6 +17,7 @@ export const action = async ( actionName, payload, params ) => {
   const config = { payload }
 
   switch ( actionName ) {
+    // products
     case 'products.loadAll': {
       config.url = `${ getUrls('products') }`
       config.method = 'GET'
@@ -33,6 +36,7 @@ export const action = async ( actionName, payload, params ) => {
       break
     }
 
+    // productGroups
     case 'productGroups.loadAll': {
       config.url = `${ getUrls('productGroups') }`
       config.method = 'GET'
@@ -51,6 +55,7 @@ export const action = async ( actionName, payload, params ) => {
       break
     }
 
+    // productToProductGroups
     case 'productToProductGroups.loadAll': {
       config.url = `${ getUrls('productToProductGroups') }`
       config.method = 'GET'
@@ -63,6 +68,7 @@ export const action = async ( actionName, payload, params ) => {
       break
     }
 
+    // manufacturers
     case 'manufacturers.loadAll': {
       config.url = `${ getUrls('manufacturers') }`
       config.method = 'GET'
@@ -74,7 +80,14 @@ export const action = async ( actionName, payload, params ) => {
       config.payload = payload
       break
     }
+    case 'manufacturers.save': {
+      config.url = `${ getUrls('manufacturers') }`
+      config.method = 'PUT'
+      config.payload = payload
+      break
+    }
 
+    // productAttributeValues
     case 'productAttributes.loadAll': {
       config.url = `${ getUrls('productAttributes') }`
       config.method = 'GET'
@@ -97,9 +110,40 @@ export const action = async ( actionName, payload, params ) => {
       config.payload = payload
       break
     }
-
-    case 'productAttributeValue.createProductAttributeValue': {
+    case 'productAttributeValues.createProductAttributeValue': {
       config.url = `${ getUrls('productAttributeValue') }/${ payload.productGroupId }/product-attribute/${ payload.attrId }`
+      config.method = 'POST'
+      config.payload = payload
+      break
+    }
+
+    // productAttributeGroupOfProductGroup
+    case 'productAttributeGroupOfProductGroup.getAll': {
+      config.url = `${ getUrls('productAttributeGroupOfProductGroup') }`
+      config.method = 'GET'
+      break
+    }
+    case 'productAttributeGroupOfProductGroup.getById': {
+      config.url = `${ getUrls('productAttributeGroupOfProductGroup') }/${ params.id }`
+      config.method = 'GET'
+      break
+    }
+    case 'productAttributeGroupOfProductGroup.save': {
+      config.url = `${ getUrls('productAttributeGroupOfProductGroup') }`
+      config.method = 'PUT'
+      config.payload = payload
+      break
+    }
+    case 'productAttributeGroupOfProductGroup.add': {
+      config.url = `${ getUrls('productAttributeGroupOfProductGroup') }`
+      config.method = 'POST'
+      config.payload = payload
+      break
+    }
+
+    // productSearch
+    case 'productSearch.search': {
+      config.url = `${ getUrls('productSearch') }/${ params.productGroupId }`
       config.method = 'POST'
       config.payload = payload
       break

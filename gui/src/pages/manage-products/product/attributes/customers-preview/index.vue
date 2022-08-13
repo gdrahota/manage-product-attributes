@@ -2,7 +2,7 @@
   <table>
     <thead>
       <tr>
-        <th>Product Property</th>
+        <th>Product Attribute</th>
         <th>Value</th>
       </tr>
     </thead>

@@ -14,12 +14,10 @@ export const sortByText = ( a, b ) => a.text.localeCompare(b.text)
 export const sortByClassName = ( a, b ) => a.className.localeCompare(b.className)
 export const sortByUpdatedAt = ( a, b ) => b.updatedAt.localeCompare(a.updatedAt)
 export const sortByLabel = ( a, b ) => a.label.localeCompare(b.label)
-export const sortByName = ( a, b ) => {
-  if ( a == null || b == null || a.name == null || b.name == null ) {
-    return 0
-  }
-  return a.name.localeCompare(b.name)
-}
+export const sortByName = ( a, b ) =>
+  a == null || b == null || a.name == null || b.name == null
+    ? 0
+    : a.name.localeCompare(b.name)
 
 export const sortById = ( a, b ) => {
   if ( a.id === b.id ) {

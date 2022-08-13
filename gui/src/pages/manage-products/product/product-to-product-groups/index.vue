@@ -1,8 +1,8 @@
 <template>
   <q-field
-    label="Item Group(s)"
-    stack-label
     filled
+    label="Product Group(s)"
+    stack-label
   >
     <template v-slot:control>
       <q-chip
@@ -18,28 +18,31 @@
         {{ getName(productGroupId) }}
       </q-chip>
 
-      <q-btn-dropdown
+
+      <q-btn
         v-if="options.length > 0"
         :color="options.length > 0 ? 'secondary' : 'grey'"
-        icon="add"
-        flat
-        dense
         class="q-ml-md"
+        dense
+        fab-mini
+        icon="add"
       >
-        <q-list>
-          <q-item
-            v-for="group of options"
-            :key="group.id"
-            v-close-popup
-            clickable
-            @click="addValue(group)"
-          >
-            <q-item-section>
-              <q-item-label>{{ group.name }}</q-item-label>
-            </q-item-section>
-          </q-item>
-        </q-list>
-      </q-btn-dropdown>
+        <q-menu>
+          <q-list>
+            <q-item
+              v-for="group of options"
+              :key="group.id"
+              v-close-popup
+              clickable
+              @click="addValue(group)"
+            >
+              <q-item-section>
+                <q-item-label>{{ group.name }}</q-item-label>
+              </q-item-section>
+            </q-item>
+          </q-list>
+        </q-menu>
+      </q-btn>
     </template>
   </q-field>
 </template>

@@ -4,7 +4,7 @@
     :value="value"
     dense
     filled
-    label="Factor"
+    label="Conversion Factor"
     stack-label
     type="number"
     @input="setValue"

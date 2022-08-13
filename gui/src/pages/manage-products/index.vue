@@ -1,7 +1,7 @@
 <template>
   <q-page-container class="full-height window-height">
     <q-drawer :width="400" show-if-above side="left">
-      <q-scroll-area class="fit bg-teal-1">
+      <q-scroll-area class="fit border-right">
         <q-btn
           color="secondary"
           icon="add"
@@ -11,24 +11,59 @@
           @click="routeTo('new')"
         />
 
-        <q-list dense padding>
-          <q-separator />
-          <template v-for="(product, pos) in products">
-            <q-item
-              :key="pos"
-              v-ripple
-              :class="{ 'bg-teal-6': isSelected(product), 'text-white': isSelected(product), 'text-bold': isSelected(product) }"
-              clickable
-            >
-              <q-item-section @click="routeTo(product.id)">
-                <q-item-label>
-                  {{ getManufacturerName(product.manufacturerId)?.name }}&nbsp;{{ product.name }}
-                </q-item-label>
-              </q-item-section>
-            </q-item>
-            <q-separator :key="pos + '-sep'" />
-          </template>
-        </q-list>
+        <div class="q-pa-md">
+          <q-select
+            v-model="productGroup"
+            :options="productGroups"
+            class="bg-indigo-1"
+            dense
+            filled
+            label="Product Group"
+            square
+          >
+            <template v-slot:option="{ opt, itemProps, itemEvents }">
+              <q-item v-bind="itemProps" v-on="itemEvents">
+                <q-item-section>
+                  <q-item-label>{{ opt.name }}</q-item-label>
+                </q-item-section>
+              </q-item>
+            </template>
+
+            <template v-slot:selected-item="{ opt }">
+              <q-item>
+                <q-item-section>
+                  <q-item-label>{{ opt.name }}</q-item-label>
+                </q-item-section>
+              </q-item>
+            </template>
+          </q-select>
+
+          <q-list
+            v-if="products.length > 0"
+            bordered
+            class="q-mt-md- q-pa-none"
+            dense
+            padding
+            separator
+          >
+            <template v-for="(product, pos) in products">
+              <q-item
+                :key="pos"
+                v-ripple
+                :class="{ 'bg-primary': isSelected(product), 'text-white': isSelected(product), 'text-bold': isSelected(product) }"
+                clickable
+              >
+                <q-item-section @click="routeTo(product.id)">
+                  <q-item-label>
+                    <!--                  {{ product }}-->
+                    {{ product.manufacturer.name }}&nbsp;{{ product.name }}
+                  </q-item-label>
+                </q-item-section>
+              </q-item>
+              <q-separator :key="pos + '-sep'" />
+            </template>
+          </q-list>
+        </div>
       </q-scroll-area>
     </q-drawer>
 
@@ -42,19 +77,29 @@ import { mapGetters } from 'vuex'
 export default {
   computed: {
     ...mapGetters({
-      products: 'products/getAll',
+      getByProductGroupId: 'products/getByProductGroupId',
       manufacturers: 'manufacturers/getAll',
+      getAllProductGroups: 'productGroups/getAll',
     }),
+    productGroups() {
+      return this.getAllProductGroups
+    },
+    products() {
+      return this.productGroup?.id
+        ? this.getByProductGroupId(this.productGroup.id)
+        : []
+    },
   },
+
+  data: () => ({
+    productGroup: null,
+  }),
 
   methods: {
     isSelected( product ) {
       return this.$route.params.id && product
         ? parseInt(product.id) === parseInt(this.$route.params.id)
         : false
-    },
-    getManufacturerName( manufacturerId ) {
-      return this.manufacturers.find(( { id } ) => id === manufacturerId)
     },
     routeTo( id ) {
       this.$router.push({
@@ -65,3 +110,8 @@ export default {
   },
 }
 </script>
+
+<style lang="sass" scoped>
+.border-right
+  border-right: 1px solid #ddd
+</style>
