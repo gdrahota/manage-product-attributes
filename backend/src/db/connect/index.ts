@@ -15,6 +15,7 @@ const postgresConnectionConfig = {
   //   password: POSTGRES_PASSWORD,
   //   database: TABLE_CATALOG,
   // },
+  secure: true,
   debug: false,
   searchPath: [ SCHEMA_NAME ],
 }
