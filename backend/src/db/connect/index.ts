@@ -8,7 +8,7 @@ const { DB_STRING, SCHEMA_NAME } = process.env
 const postgresConnectionConfig = {
   client: 'pg',
   connection: DB_STRING,
-  debug: false,
+  debug: true,
   secure: true,
   searchPath: [ SCHEMA_NAME ],
 }
