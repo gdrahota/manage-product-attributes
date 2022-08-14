@@ -8,7 +8,6 @@ import { ensureDefaultTables } from "./seeder"
   Error.stackTraceLimit = Infinity
   dotenv.config()
 
-  console.log( 'connection...' )
   connectToDatabases()
   console.log( 'connected' )
 

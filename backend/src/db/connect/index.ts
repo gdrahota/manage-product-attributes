@@ -3,20 +3,13 @@ import dotenv from "dotenv"
 
 dotenv.config()
 
-const { POSTGRES_PORT, POSTGRES_HOST, POSTGRES_PASSWORD, POSTGRES_USER, TABLE_CATALOG, SCHEMA_NAME } = process.env
+const { DB_STRING, SCHEMA_NAME } = process.env
 
 const postgresConnectionConfig = {
   client: 'pg',
-  connection: process.env.DB_STRING,
-  //   {
-  //   host: POSTGRES_HOST,
-  //   port: POSTGRES_PORT,
-  //   user: POSTGRES_USER,
-  //   password: POSTGRES_PASSWORD,
-  //   database: TABLE_CATALOG,
-  // },
-  secure: true,
+  connection: DB_STRING,
   debug: false,
+  secure: true,
   searchPath: [ SCHEMA_NAME ],
 }
 
@@ -27,6 +20,7 @@ console.debug( '===========================' )
 export let pg: Knex
 
 export const connectToDatabases = (): void => {
+  console.log( 'trying to connect to postgres db server...' )
   pg = require( 'knex' )( postgresConnectionConfig )
 }
 

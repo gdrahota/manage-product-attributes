@@ -19,8 +19,10 @@ export const ensureDefaultTables = async () => {
     try {
       const tableDefDDL = require( `./table-defs/${ dirName }/def` ).default
       await createTableFromModel( tableDefDDL )
-    } catch ( err ) {
-      console.error( `ERROR on ensuring default table "${ dirNames }":`, err )
+    } catch ( err: any ) {
+      if ( err.code !== '42P07' ) {
+        console.error( `ERROR on ensuring default table "${ dirNames }":`, err )
+      }
     }
   } )
 }
