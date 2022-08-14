@@ -13,8 +13,6 @@ F
 backend/jest.config.js,3/d/3dc555004fcf9b9c4a4e91527738e6863c393392
 \
 ,backend/src/db/tables/products/index.spec.ts,f/1/f18766817c3aa79ab4867fc93f0427bf2c6e19cf
-B
-backend/.gitignore,7/e/7e16691a9fc60084a157565ec422c8094d3df67c
 A
 backend/yarn.lock,4/f/4f2f30c812f116d7d7980710a3d6789027dbb398
 L

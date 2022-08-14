@@ -31,5 +31,5 @@ yarn serve
 
 ### Post Setup
 
-If using the dev env, in your browser call http://localhost:8082/ to start the app. Go to "Manufacturers" and create one. Then create at
+If using the dev env, in your browser call http://localhost:8080/ to start the app. Go to "Manufacturers" and create one. Then create at
 least one product attribute, any number of product group and finally any number of products.

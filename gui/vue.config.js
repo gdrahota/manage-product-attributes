@@ -9,11 +9,11 @@ module.exports = {
     'quasar',
   ],
   devServer: {
-    port: 8082,
+    port: 8080,
     proxy: {
       '^/api': {
         changeOrigin: true,
-        target: 'http://localhost:8888',
+        target: 'http://localhost:3000',
         headers: {
           Connection: 'keep-alive',
         },

@@ -9,9 +9,14 @@ export default {
       "nullable": false
     },
     {
-      "name": "unit",
+      "name": "type",
       "type": DataType.STRING,
       "nullable": false
+    },
+    {
+      "name": "unit",
+      "type": DataType.STRING,
+      "nullable": true
     },
     {
       "name": "description",
@@ -19,14 +24,9 @@ export default {
       "nullable": true
     },
     {
-      "name": "type",
-      "type": DataType.STRING,
-      "nullable": false
-    },
-    {
       "name": "fractional_digits",
       "type": DataType.INTEGER,
-      "nullable": false
+      "nullable": true
     },
   ]
 }

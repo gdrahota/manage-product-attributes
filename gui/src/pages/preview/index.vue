@@ -44,14 +44,14 @@
                       <div class="col-6">
                         <q-img
                           class="q-ma-md"
-                          src="http://localhost:8082/product-example.jpeg"
+                          src="/product-example.jpeg"
                           style="height: 80px; max-width: 80px"
                         />
                       </div>
                       <div class="col-6">
                         <q-img
                           class="q-ma-md"
-                          src="http://localhost:8082/product-example-2.jpeg"
+                          src="/product-example-2.jpeg"
                           style="height: 80px; max-width: 80px"
                         />
                       </div>
