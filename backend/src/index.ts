@@ -12,13 +12,13 @@ import { ensureDefaultTables } from "./seeder"
   await ensureDefaultTables()
 
   const app: Express = express()
-  const port = process.env.PORT
+  const port = process.env.PORT || 3000
 
   app.use( express.json() )
 
   registerRoutes( app )
 
   app.listen( port, () => {
-    console.log( `⚡️[server]: Server is running at https://localhost:${ port }` )
+    console.log( `⚡️[server]: Server is listening on port ${ port }` )
   } )
 })()

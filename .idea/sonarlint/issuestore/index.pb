@@ -104,8 +104,6 @@ h
 8gui/src/pages/manage-attributes/attribute/unit/index.vue,0/3/039d16caaf9f9bdf9a06c7ea61afc9b87e9bc782
 a
 1backend/src/db/tables/product-attributes/index.ts,2/5/25d946ccf36b3075280415ffaf82112268526ccb
-D
-backend/src/index.ts,c/a/cadccc3f718c67fe80df9a5bc7dcc79a0a032c23
 h
 8gui/src/pages/manage-attributes/attribute/name/index.vue,1/f/1f49ec7a20198bc6ccedc78843fb1a5016371174
 ˆ

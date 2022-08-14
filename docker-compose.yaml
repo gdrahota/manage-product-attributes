@@ -22,11 +22,11 @@ services:
     networks:
       - default
     environment:
-      - PORT=8888
+      - PORT=3000
       - NODE_ENV=development
       - POSTGRES_HOST=db
     ports:
-      - 8888:8888
+      - 3000:3000
 
 volumes:
   pgdata:

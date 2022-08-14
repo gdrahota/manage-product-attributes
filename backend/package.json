@@ -3,6 +3,9 @@
   "version": "0.1.0",
   "description": "Could be used to manage product attributes of products.",
   "main": "index.js",
+  "engines": {
+    "node": "16.x"
+  },
   "scripts": {
     "build": "npx tsc",
     "start": "node dist/index.js",
