@@ -9,11 +9,11 @@ module.exports = {
     'quasar',
   ],
   devServer: {
-    port: 8080,
+    port: 9000,
     proxy: {
       '^/api': {
         changeOrigin: true,
-        target: 'http://localhost:3000',
+        target: 'https://jellyfish-app-ksy6w.ondigitalocean.app/',
         headers: {
           Connection: 'keep-alive',
         },
