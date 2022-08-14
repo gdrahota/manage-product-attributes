@@ -20,7 +20,7 @@ export const ensureDefaultTables = async () => {
       const tableDefDDL = require( `./table-defs/${ dirName }/def` ).default
       await createTableFromModel( tableDefDDL )
     } catch ( err ) {
-      // noop
+      console.error( `ERROR on ensuring default table "${ dirNames }":`, err )
     }
   } )
 }

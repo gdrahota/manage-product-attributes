@@ -2,7 +2,7 @@ import { registerManufacturerRoutes } from "./manufacturer"
 import { registerProductAttributeRoutes } from "./product-attributes"
 import { registerProductAttributesOfProductGroupRoutes } from "./product-attributes-of-product-group"
 import { registerProductAttributeValueRoutes } from "./product-attribute-values"
-import { NextFunction, Request, Response, Router } from "express"
+import { Router } from "express"
 import { registerProductGroupRoutes } from "./product-group"
 import { registerProductRoutes } from "./product"
 import { registerProductToAttributeValueRoutes } from "./product-to-attribute-values"
@@ -10,14 +10,8 @@ import { registerProductToProductGroupRoutes } from "./product-to-product-group"
 import { registerProductAttributeGroupOfProductGroupRoutes } from "./product-attribute-groups-of-product-groups"
 import { registerProductSearchRoutes } from "./product-seach"
 
-const log = ( req: Request, res: Response, next: NextFunction ) => {
-  console.log( req.path )
-  next()
-}
-
 export const registerRoutes = ( app: Router ) => {
   const routes = Router()
-    .use( log )
     .use( '/products', registerProductRoutes() )
     .use( '/product-groups', registerProductGroupRoutes() )
     .use( '/manufacturers', registerManufacturerRoutes() )
