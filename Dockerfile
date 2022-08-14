@@ -17,6 +17,6 @@ COPY ./backend/src ./src
 RUN yarn
 RUN yarn build
 
-EXPOSE 8888
+EXPOSE 3000
 
 CMD ["npm", "run", "dev"]
