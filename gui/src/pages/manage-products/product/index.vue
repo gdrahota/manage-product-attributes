@@ -159,17 +159,17 @@ export default {
         return
       }
 
-      const idx = this.workingCopy.attributeValue.findIndex(( { attrId } ) => attrId === value.attrId)
+      const idx = this.workingCopy.attributeValues.findIndex(( { attrId } ) => attrId === value.attrId)
 
       if ( idx !== -1 ) {
-        this.$set(this.workingCopy.attributeValue, idx, value)
+        this.$set(this.workingCopy.attributeValues, idx, value)
       } else {
-        this.workingCopy.attributeValue.push(value)
+        this.workingCopy.attributeValues.push(value)
       }
     },
     removeProductAttributeValue( attrId ) {
-      const idx = this.workingCopy.attributeValue.findIndex(attributeValue => attributeValue.attrId === attrId)
-      this.$delete(this.workingCopy.attributeValue, idx)
+      const idx = this.workingCopy.attributeValues.findIndex(attributeValue => attributeValue.attrId === attrId)
+      this.$delete(this.workingCopy.attributeValues, idx)
     },
     async createAndAddValue( { attrValue } ) {
       const newProductAttributeValue = await this.addProductAttributeValue(attrValue)

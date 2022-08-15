@@ -56,14 +56,17 @@
         @click="search"
       />
     </div>
-    <!--    <pre>{{ filters }}</pre>-->
+<!--    <pre>{{ filters }}</pre>-->
   </div>
 </template>
 
 <script>
 import { mapGetters } from 'vuex'
+
+import { EnumSearchStrategy } from '@/store/enums/search-strategy'
 import Between from './between'
 import Equal from './equal'
+import LessThanEqual from './less-than-equal'
 
 export default {
   computed: {
@@ -114,10 +117,12 @@ export default {
     },
     getComponent( searchStrategy ) {
       switch ( searchStrategy ) {
-        case 'BETWEEN':
+        case EnumSearchStrategy.BETWEEN:
           return Between
-        case 'EQ':
+        case EnumSearchStrategy.EQUAL:
           return Equal
+        case EnumSearchStrategy.LTE:
+          return LessThanEqual
         default:
           console.error(`Unknown search strategy: "${ searchStrategy }"`)
 
@@ -132,6 +137,9 @@ export default {
         ...data,
       })
     },
+    isNullOrUndefined( val ) {
+      return val === undefined || val === null
+    },
     search() {
       const filters = Object.values(this.filters).map(obj => {
         const response = {
@@ -141,26 +149,35 @@ export default {
         }
 
         switch ( obj.searchStrategy ) {
-          case 'BETWEEN': {
-            if ( obj.valueFrom ) {
+          case 'BETWEEN':
+            if ( this.isNullOrUndefined(obj.valueFrom) && this.isNullOrUndefined(obj.valueTill) ) {
+              return
+            }
+
+            if ( !this.isNullOrUndefined(obj.valueFrom) ) {
               response.valueIdFrom = obj.valueFrom.id
             }
 
-            if ( obj.valueTill ) {
+            if ( !this.isNullOrUndefined(obj.valueTill) ) {
               response.valueIdTill = obj.valueTill.id
             }
-          }
             break
 
-          case 'EQ': {
-            if ( obj.value ) {
-              response.valueId = obj.value.id
+          case 'EQ':
+          case 'LT':
+          case 'LTE':
+          case 'GT':
+          case 'GTE':
+            if ( this.isNullOrUndefined(obj.value) ) {
+              return
             }
-          }
+
+            response.valueId = obj.value.id
+            break
         }
 
         return response
-      })
+      }).filter(i => !!i)
 
       this.$emit('searchProducts', { productGroupId: this.productGroupId, filters })
     },

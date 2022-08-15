@@ -1,5 +1,7 @@
 <template>
   <q-page-container class="full-height window-height bg-grey-3">
+    <is-loading-overlay :is-search-in-progress="isSearchInProgress" />
+
     <q-scroll-area class="fit border-right">
       <div class="preview-page bg-white" style="height: calc(100%); min-height: calc(100vh - 100px)">
         <q-tabs align="left">
@@ -15,10 +17,10 @@
 
         <q-expansion-item
           v-if="selectedProductGroupId"
+          :label="filterLabel"
           caption-="Select products based on their properties"
           class="q-mt-md border shadow-2 bg-teal-2 q-ma-md"
           icon="mdi-filter-outline"
-          label="Filter products..."
         >
           <q-card class="bg-teal-1">
             <q-card-section>
@@ -79,10 +81,12 @@
 import { mapActions, mapGetters } from 'vuex'
 
 import Filters from './filters'
+import IsLoadingOverlay from './is-loading'
 
 export default {
   components: {
     Filters,
+    IsLoadingOverlay,
   },
 
   computed: {
@@ -90,6 +94,7 @@ export default {
       products: 'productSearch/getProducts',
       manufacturers: 'manufacturers/getAll',
       getAllProductGroups: 'productGroups/getAll',
+      isSearchInProgress: 'productSearch/isSearchInProgress',
     }),
     selectedProductGroupId() {
       return parseInt(this.$route.params.id)
@@ -97,10 +102,17 @@ export default {
     productGroups() {
       return this.getAllProductGroups
     },
+    filterLabel() {
+      return this.products
+        ? `Filter ${ this.products.length } products...`
+        : `Filter products...`
+    },
   },
 
   created() {
-    this.search({ productGroupId: this.selectedProductGroupId, filters: [] })
+    if ( this.selectedProductGroupId ) {
+      this.search({ productGroupId: this.selectedProductGroupId, filters: [] })
+    }
   },
 
   data: () => ({

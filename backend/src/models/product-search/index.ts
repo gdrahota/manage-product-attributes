@@ -204,12 +204,52 @@ export class ProductSearch {
         }
       }
         break
+
+      case EnumSearchStrategy.LT:
+      case EnumSearchStrategy.LTE:
+      case EnumSearchStrategy.GT:
+      case EnumSearchStrategy.GTE: {
+        query.innerJoin( `product_to_attr_values as p2at${ idx }`, `p2pg.product_id`, `p2at${ idx }.product_id` )
+
+        if ( filter.valueId ) {
+          const tillObj = await this.productAttributeValueTable.getById( filter.valueId )
+
+          if ( tillObj ) {
+            const valueTill = tillObj.decimalValue
+              ? parseFloat( tillObj.decimalValue )
+              : null
+
+            if ( valueTill !== null ) {
+              let operator
+              switch ( filter.searchStrategy ) {
+                case EnumSearchStrategy.LT:
+                  operator = '<'
+                  break
+                case EnumSearchStrategy.LTE:
+                  operator = '<='
+                  break
+                case EnumSearchStrategy.GT:
+                  operator = '>'
+                  break
+                case EnumSearchStrategy.GTE:
+                  operator = '>='
+                  break
+              }
+
+              const records = await pg.queryBuilder()
+                .select( 'id' )
+                .from( 'attr_values' )
+                .where( 'attr_id', filter.attrId )
+                .where( 'decimal_value', operator, valueTill )
+
+              const valuesIds = records.map( ( { id } ) => id )
+
+              query.whereIn( `p2at${ idx }.product_attribute_value_id`, valuesIds )
+            }
+          }
+        }
+      }
+        break
     }
-  }
-
-  private async searchEqual( productGroupId: number, filter: IProductSearchFilter ): Promise<any> {
-  }
-
-  private async searchBetween( productGroupId: number, filter: IProductSearchFilter ): Promise<any> {
   }
 }

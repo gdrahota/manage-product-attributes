@@ -6,7 +6,7 @@
       unit="px"
     >
       <template v-slot:before>
-        <q-scroll-area class="fit border-right">
+        <q-scroll-area class="fit border-right bg-teal-1">
           <q-btn
             color="secondary"
             icon="add"
@@ -58,7 +58,8 @@
                 <q-item
                   :key="pos"
                   v-ripple
-                  :class="{ 'bg-primary': isSelected(product), 'text-white': isSelected(product), 'text-bold': isSelected(product) }"
+                  :class="{ 'bg-teal-6': isSelected(product), 'text-white': isSelected(product), 'text-bold': isSelected(product) }"
+                  class="bg-white"
                   clickable
                 >
                   <q-item-section @click="routeToProduct(product.id)">
