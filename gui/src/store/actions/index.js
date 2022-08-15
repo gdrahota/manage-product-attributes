@@ -5,7 +5,7 @@ const getUrls = ( entityName ) => {
     productGroups: 'product-groups',
     productToProductGroups: 'product-to-product-groups',
     productAttributes: 'product-attributes',
-    productAttributeValue: 'product-attribute-values',
+    productAttributeValues: 'product-attribute-values',
     productAttributeGroupOfProductGroup: 'product-attribute-groups-of-product-groups',
     productSearch: 'product-search',
   }
@@ -88,6 +88,19 @@ export const action = async ( actionName, payload, params ) => {
     }
 
     // productAttributeValues
+    case 'productAttributeValues.loadAll': {
+      config.url = `${ getUrls('productAttributeValues') }`
+      config.method = 'GET'
+      break
+    }
+    case 'productAttributeValues.add': {
+      config.url = `${ getUrls('productAttributeValues') }`
+      config.method = 'POST'
+      config.payload = payload
+      break
+    }
+
+    // productAttributes
     case 'productAttributes.loadAll': {
       config.url = `${ getUrls('productAttributes') }`
       config.method = 'GET'
@@ -106,12 +119,6 @@ export const action = async ( actionName, payload, params ) => {
     }
     case 'productAttributes.add': {
       config.url = `${ getUrls('productAttributes') }`
-      config.method = 'POST'
-      config.payload = payload
-      break
-    }
-    case 'productAttributeValues.createProductAttributeValue': {
-      config.url = `${ getUrls('productAttributeValue') }/${ payload.productGroupId }/product-attribute/${ payload.attrId }`
       config.method = 'POST'
       config.payload = payload
       break

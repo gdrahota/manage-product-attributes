@@ -1,8 +1,8 @@
 import { GenericClass } from "../_base_class"
 import { pg } from "../../connect"
-import { snakeToCamelRecord } from "../../helper"
+import { camelToSnakeRecord, snakeToCamelRecord } from "../../helper"
 
-export interface IProductAttributeValueTable {
+export type tProductAttributeValueTable = {
   id: number
   attrId: number
   decimalValue: string | null
@@ -12,13 +12,21 @@ export interface IProductAttributeValueTable {
 
 const TABLE_NAME = 'attr_values'
 
-export class ProductAttributeValueTable<IProductAttributeValueTable> extends GenericClass<IProductAttributeValueTable> {
+export class ProductAttributeValueTable extends GenericClass<tProductAttributeValueTable> {
   constructor() {
     super( TABLE_NAME )
   }
 
-  async getByProductAttributeId( attrId: number ): Promise<IProductAttributeValueTable[]> {
+  async getByProductAttributeId( attrId: number ): Promise<tProductAttributeValueTable[]> {
     const items = await pg( TABLE_NAME ).where( 'attr_id', attrId ).select()
-    return items.map( snakeToCamelRecord ) as unknown as IProductAttributeValueTable[]
+    return items.map( snakeToCamelRecord ) as unknown as tProductAttributeValueTable[]
+  }
+
+  async doesValueExist( valueObj: Omit<tProductAttributeValueTable, 'id'> ): Promise<tProductAttributeValueTable | null> {
+    const records = await pg( TABLE_NAME ).where( camelToSnakeRecord( valueObj ) )
+
+    return records.length === 0
+      ? null
+      : records[0]
   }
 }

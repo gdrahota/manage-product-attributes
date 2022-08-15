@@ -6,7 +6,7 @@ import { IProductGroup } from "../product-group"
 import { Promise as BluebirdPromise } from 'bluebird'
 import { IProductToAttributeValueTable, ProductToAttributeValueTable } from "../../db/tables/product-attribute-to-values"
 import { IProductAttributeTable, ProductAttributeTable } from "../../db/tables/product-attributes"
-import { IProductAttributeValueTable, ProductAttributeValueTable } from "../../db/tables/product-attribute-values"
+import { ProductAttributeValueTable, tProductAttributeValueTable } from "../../db/tables/product-attribute-values"
 import { camelToSnakeRecord } from "../../db/helper"
 
 export interface IAttributeValue {
@@ -32,7 +32,7 @@ export class Product {
   private manufacturerTable = new ManufacturerTable()
   private productToAttributeValueTable = new ProductToAttributeValueTable()
   private productAttributeTable = new ProductAttributeTable()
-  private productAttributeValueTable = new ProductAttributeValueTable<IProductAttributeValueTable>()
+  private productAttributeValueTable = new ProductAttributeValueTable()
 
   async getById( id: number ): Promise<IProduct> {
     const baseData = await this.productTable.getById( id )
@@ -55,7 +55,7 @@ export class Product {
     const productToAttributeRawValues = await this.productToAttributeValueTable.getByProductId( id ) as IProductToAttributeValueTable[]
 
     const attributeValue = await BluebirdPromise.map( productToAttributeRawValues, async ( attributeRawValue: IProductToAttributeValueTable ) => {
-      const attrValue = await this.productAttributeValueTable.getById( attributeRawValue.productAttributeValueId ) as unknown as IProductAttributeValueTable
+      const attrValue = await this.productAttributeValueTable.getById( attributeRawValue.productAttributeValueId ) as unknown as tProductAttributeValueTable
 
       if ( ! attrValue ) {
         return

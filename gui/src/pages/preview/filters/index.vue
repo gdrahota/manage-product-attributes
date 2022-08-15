@@ -119,7 +119,7 @@ export default {
         case 'EQ':
           return Equal
         default:
-          console.log(searchStrategy)
+          console.error(`Unknown search strategy: "${ searchStrategy }"`)
 
           return null
       }

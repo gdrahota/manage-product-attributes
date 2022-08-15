@@ -121,7 +121,7 @@ export default {
     ...mapActions({
       saveChanges: 'products/save',
       add: 'products/add',
-      addProductAttributeValue: 'productGroups/addProductAttributeValue',
+      addProductAttributeValue: 'productAttributes/addValue',
       pullProductAttributeById: 'productAttributes/getById',
     }),
     setManufacturer( value ) {
@@ -163,9 +163,9 @@ export default {
       const idx = this.workingCopy.attributeValue.findIndex(attributeValue => attributeValue.attrId === attrId)
       this.$delete(this.workingCopy.attributeValue, idx)
     },
-    async createAndAddValue( obj ) {
-      const newProductAttributeValue = await this.addProductAttributeValue(obj)
-      this.pullProductAttributeById(newProductAttributeValue.attrId)
+    async createAndAddValue( { productGroupId, attrValue } ) {
+      const newProductAttributeValue = await this.addProductAttributeValue(attrValue)
+      this.pullProductAttributeById(attrValue.attrId)
       this.selectProductAttributeValue(newProductAttributeValue)
     },
     async save() {

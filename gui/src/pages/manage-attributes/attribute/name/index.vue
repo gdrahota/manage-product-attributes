@@ -15,7 +15,7 @@ export default {
     rules() {
       return [
         v => !!v || 'A property name is required!',
-        v => !!v && v.length > 4 || 'The property name must have at least one character!',
+        v => !!v && v.length > 3 || 'The property name must have at four (4) characters!',
       ]
     },
   },

@@ -42,11 +42,22 @@ const add = async ( { commit }, attr ) => {
   }
 }
 
+const addValue = async ( { commit }, attr ) => {
+  try {
+    const updatedProductAttribute = await action('productAttributeValues.add', attr)
+    commit('UPDATE_ITEM', updatedProductAttribute)
+    return updatedProductAttribute
+  } catch ( err ) {
+    console.error('ERROR in store/productAttributes/addValue', err)
+  }
+}
+
 const actions = {
   loadAll,
   getById,
   save,
   add,
+  addValue,
 }
 
 // mutations

@@ -80,10 +80,10 @@ export default {
     removeProductAttributeValue( value ) {
       this.$emit('removeProductAttributeValue', value)
     },
-    createAndAddValue( productGroupId, obj ) {
+    createAndAddValue( productGroupId, attrValue ) {
       this.$emit('createAndAddValue', {
         productGroupId,
-        ...obj,
+        attrValue,
       })
     },
   },

@@ -1,6 +1,5 @@
 import { Request, Response, Router } from "express"
 import { errorHandler } from "../error-handler"
-import { camelToSnakeRecord } from "../../db/helper"
 
 export class DefaultRestEndpoint<T> {
   static registerDefaultRoutes( model: any, router: Router = Router() ) {
@@ -32,7 +31,7 @@ export class DefaultRestEndpoint<T> {
 
   private static async add( req: Request, res: Response, model: any ): Promise<void> {
     try {
-      res.send( await model.add( camelToSnakeRecord( req.body ) ) )
+      res.send( await model.add( req.body ) )
     } catch ( err ) {
       errorHandler( req, res, err )
     }

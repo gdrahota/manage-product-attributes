@@ -34,14 +34,9 @@ const add = async ( { commit }, attr ) => {
   }
 }
 
-const addProductAttributeValue = async ( { commit }, obj ) => {
-  return await action('productAttributeValues.createProductAttributeValue', obj)
-}
-
 const actions = {
   loadAll,
   save,
-  addProductAttributeValue,
   add,
 }
 

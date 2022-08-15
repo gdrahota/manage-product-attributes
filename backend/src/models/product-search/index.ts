@@ -3,7 +3,7 @@ import { EnumSearchStrategy } from "../../db/enums/search-strategy"
 import { ProductGroup } from "../product-group"
 import { EnumProductValueType } from "../../db/enums/product-value-type"
 import { pg } from "../../db/connect"
-import { IProductAttributeValueTable, ProductAttributeValueTable } from "../../db/tables/product-attribute-values"
+import { ProductAttributeValueTable, tProductAttributeValueTable } from "../../db/tables/product-attribute-values"
 import Bluebird from "bluebird"
 import { IProductAttributeTable, ProductAttributeTable } from "../../db/tables/product-attributes"
 import { snakeToCamelRecord } from "../../db/helper"
@@ -45,7 +45,7 @@ interface IResponse {
 export class ProductSearch {
   private product = new Product()
   private productGroup = new ProductGroup()
-  private productAttributeValueTable = new ProductAttributeValueTable<IProductAttributeValueTable>()
+  private productAttributeValueTable = new ProductAttributeValueTable()
   private productAttributeTable = new ProductAttributeTable<IProductAttributeTable>()
 
   async searchProductsAndAttributeValues( productGroupId: number, params: ISearchProductsProp ): Promise<IResponse> {
@@ -97,11 +97,11 @@ export class ProductSearch {
         }
       } )
 
-      const results = (await query).map( snakeToCamelRecord ) as IProductAttributeValueTable[]
+      const results = (await query).map( snakeToCamelRecord ) as tProductAttributeValueTable[]
 
       const attrDef = await this.productAttributeTable.getById( attribute.attrId ) as IProductAttributeTable
 
-      response[attribute.attrId] = results.map( ( r: IProductAttributeValueTable ) => {
+      response[attribute.attrId] = results.map( ( r: tProductAttributeValueTable ) => {
         const commonAttrs: any = {
           id: r.id,
           attrId: r.attrId

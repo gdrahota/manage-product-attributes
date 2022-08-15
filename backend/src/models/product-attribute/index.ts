@@ -1,12 +1,8 @@
 import { IAttributeValue } from "../product"
-import { IProductAttributeValueTable, ProductAttributeValueTable } from "../../db/tables/product-attribute-values"
+import { ProductAttributeValueTable } from "../../db/tables/product-attribute-values"
 import { IProductAttributeTable, ProductAttributeTable } from "../../db/tables/product-attributes"
 import Bluebird from "bluebird"
 import { camelToSnakeRecord } from "../../db/helper"
-import {
-  IProductAttributesOfProductGroupTable,
-  ProductAttributesOfProductGroupTable
-} from "../../db/tables/product-attributes-of-product-group"
 
 export interface IProductAttribute {
   id: number
@@ -19,8 +15,7 @@ export interface IProductAttribute {
 
 export class ProductAttribute {
   private productAttributeTable = new ProductAttributeTable<IProductAttributeTable>()
-  private productAttributeValueTable = new ProductAttributeValueTable<IProductAttributeValueTable>()
-  private productAttributesOfProductGroupTable = new ProductAttributesOfProductGroupTable<IProductAttributesOfProductGroupTable>()
+  private productAttributeValueTable = new ProductAttributeValueTable()
 
   async getById( id: number ): Promise<IProductAttribute | null> {
     const attr = await this.productAttributeTable.getById( id )
@@ -54,12 +49,9 @@ export class ProductAttribute {
       return value
     } )
 
-    const assignedToProductGroups = await this.productAttributesOfProductGroupTable.getByAttrId( id )
-
     return {
       ...attr,
       values,
-      // assignedToProductGroups,
     }
   }
 

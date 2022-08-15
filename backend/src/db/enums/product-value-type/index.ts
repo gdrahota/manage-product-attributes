@@ -1,18 +1,18 @@
 export enum EnumProductValueType {
-  DECIMAL = 'decimalValue',
-  BOOLEAN = 'booleanValue',
-  TEXT = 'textValue'
+  DECIMAL = 'decimal',
+  BOOLEAN = 'boolean',
+  TEXT = 'text'
 }
 
 export const getEnumProductValueType = ( val: string ): EnumProductValueType => {
   switch ( val.toLowerCase() ) {
-    case 'decimalvalue':
+    case 'decimal':
       return EnumProductValueType.DECIMAL
 
-    case 'booleanvalue':
+    case 'boolean':
       return EnumProductValueType.BOOLEAN
 
-    case 'textvalue':
+    case 'text':
     default:
       return EnumProductValueType.TEXT
   }
