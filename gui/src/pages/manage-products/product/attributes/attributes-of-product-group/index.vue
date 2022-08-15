@@ -13,7 +13,10 @@
         :key="pos"
       >
         <td>
-          {{ getById(attr.attrId).name }} ({{ getById(attr.attrId).unit }})
+          {{ getById(attr.attrId).name }}
+          <template v-if="getById(attr.attrId).unit">
+            ({{ getById(attr.attrId).unit }})
+          </template>
         </td>
         <td style="padding: 0">
           <component

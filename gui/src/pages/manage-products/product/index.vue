@@ -1,5 +1,5 @@
 <template>
-  <div v-if="workingCopy" class="q-pa-md">
+  <div v-if="productGroupId && productId && workingCopy" class="q-pa-md">
     <div class="row">
       <div class="col-2 q-pr-sm">
         <manufacturer
@@ -62,7 +62,7 @@
         </q-btn>
       </div>
     </div>
-    <!--    <pre>{{ workingCopy }}</pre>-->
+    <pre>{{ $route.params }}</pre>
   </div>
 </template>
 
@@ -95,11 +95,19 @@ export default {
       getProductGroupById: 'productGroups/getById',
       getProductAttributeById: 'productAttributes/getById',
     }),
+    productId() {
+      return this.$route.params.id
+    },
     product() {
-      return this.getById(this.$route.params.id)
+      return this.productId
+        ? this.getById(this.productId)
+        : null
     },
     productGroups() {
       return this.workingCopy.productGroups.map(productGroup => this.getProductGroupById(productGroup.id))
+    },
+    productGroupId() {
+      return this.$route.params.productGroupId
     },
     productGroupIds() {
       return this.workingCopy.productGroups.map(( { id } ) => id) || null
@@ -163,7 +171,7 @@ export default {
       const idx = this.workingCopy.attributeValue.findIndex(attributeValue => attributeValue.attrId === attrId)
       this.$delete(this.workingCopy.attributeValue, idx)
     },
-    async createAndAddValue( { productGroupId, attrValue } ) {
+    async createAndAddValue( { attrValue } ) {
       const newProductAttributeValue = await this.addProductAttributeValue(attrValue)
       this.pullProductAttributeById(attrValue.attrId)
       this.selectProductAttributeValue(newProductAttributeValue)
@@ -175,7 +183,7 @@ export default {
         } else {
           const newProductId = await this.add({
             product: this.workingCopy,
-            productGroupId: this.$route.params.productGroupId,
+            productGroupId: this.productGroupId,
           })
           await this.$router.push({ params: { id: newProductId } })
         }
