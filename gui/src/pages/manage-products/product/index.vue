@@ -173,7 +173,10 @@ export default {
         if ( this.workingCopy.id ) {
           this.saveChanges(this.workingCopy)
         } else {
-          const newProductId = await this.add(this.workingCopy)
+          const newProductId = await this.add({
+            product: this.workingCopy,
+            productGroupId: this.$route.params.productGroupId,
+          })
           await this.$router.push({ params: { id: newProductId } })
         }
       }

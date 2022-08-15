@@ -56,7 +56,7 @@ export default {
 
   methods: {
     getProductAttributeValue( attr ) {
-      const attrValue = this.product.attributeValue.find(( { attrId } ) => attrId === attr.attrId)
+      const attrValue = this.product.attributeValues.find(( { attrId } ) => attrId === attr.attrId)
       return attrValue || { id: null, values: [] }
     },
     selectProductAttributeValue( value ) {

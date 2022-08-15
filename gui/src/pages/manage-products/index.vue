@@ -104,7 +104,10 @@ export default {
     routeTo( id ) {
       this.$router.push({
         name: 'manage-product',
-        params: { id },
+        params: {
+          productGroupId: this.productGroup.id,
+          id,
+        },
       })
     },
   },

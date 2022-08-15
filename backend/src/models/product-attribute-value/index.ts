@@ -1,5 +1,4 @@
 import { ProductAttributeValueTable, tProductAttributeValueTable } from "../../db/tables/product-attribute-values"
-import { camelToSnakeRecord } from "../../db/helper"
 import { ProductAttribute } from "../product-attribute"
 import { IAttributeValue } from "../product"
 import { EnumProductValueType } from "../../db/enums/product-value-type"
@@ -56,7 +55,7 @@ export class ProductAttributeValue {
     }
 
 
-    const newItem = await this.productAttributeValueTable.add( camelToSnakeRecord( attrValue ) )
+    const newItem = await this.productAttributeValueTable.add( attrValue )
 
     return this.getById( newItem.id, attrDef?.type )
   }

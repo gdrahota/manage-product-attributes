@@ -1,5 +1,5 @@
 import { pg } from "../../connect"
-import { snakeToCamelRecord } from "../../helper"
+import { camelToSnakeRecord, snakeToCamelRecord } from "../../helper"
 
 export class GenericClass<T> {
   constructor( private name: string ) {
@@ -37,8 +37,8 @@ export class GenericClass<T> {
     return snakeToCamelRecord( response ) as Promise<unknown> as Promise<T>
   }
 
-  async add( p: any ): Promise<T> {
-    const [ newId ] = await pg( this.name ).insert( p, [ 'id' ] )
+  async add( item: any ): Promise<T> {
+    const [ newId ] = await pg( this.name ).insert( camelToSnakeRecord( item ), [ 'id' ] )
     return this.getById( newId.id ) as Promise<T>
   }
 

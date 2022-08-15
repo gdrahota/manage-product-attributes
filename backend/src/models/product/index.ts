@@ -2,7 +2,7 @@ import { IManufacturerTable, ManufacturerTable } from "../../db/tables/manufactu
 import { ProductGroupTable } from "../../db/tables/product-groups"
 import { ProductTable } from "../../db/tables/products"
 import { ProductToProductGroupTable } from "../../db/tables/product-to_product-groups"
-import { IProductGroup } from "../product-group"
+import { IProductGroup, ProductGroup } from "../product-group"
 import { Promise as BluebirdPromise } from 'bluebird'
 import { IProductToAttributeValueTable, ProductToAttributeValueTable } from "../../db/tables/product-attribute-to-values"
 import { IProductAttributeTable, ProductAttributeTable } from "../../db/tables/product-attributes"
@@ -22,12 +22,13 @@ export interface IProduct {
   productGroups: IProductGroup[]
   eanCode: string | null
   manufacturerProductId: string | null
-  attributeValue: IAttributeValue[]
+  attributeValues: IAttributeValue[]
 }
 
 export class Product {
   private productTable = new ProductTable()
   private productToProductGroupTable = new ProductToProductGroupTable()
+  private productGroup = new ProductGroup()
   private productGroupTable = new ProductGroupTable()
   private manufacturerTable = new ManufacturerTable()
   private productToAttributeValueTable = new ProductToAttributeValueTable()
@@ -54,7 +55,7 @@ export class Product {
 
     const productToAttributeRawValues = await this.productToAttributeValueTable.getByProductId( id ) as IProductToAttributeValueTable[]
 
-    const attributeValue = await BluebirdPromise.map( productToAttributeRawValues, async ( attributeRawValue: IProductToAttributeValueTable ) => {
+    const attributeValues = await BluebirdPromise.map( productToAttributeRawValues, async ( attributeRawValue: IProductToAttributeValueTable ) => {
       const attrValue = await this.productAttributeValueTable.getById( attributeRawValue.productAttributeValueId ) as unknown as tProductAttributeValueTable
 
       if ( ! attrValue ) {
@@ -97,7 +98,7 @@ export class Product {
       productGroups,
       eanCode: baseData.eanCode,
       manufacturerProductId: baseData.manufacturerProductId,
-      attributeValue
+      attributeValues
     }
   }
 
@@ -160,8 +161,8 @@ export class Product {
     } )
 
     // check attribute values
-    const oldAttrValues = old.attributeValue.map( mapId )
-    const newAttrValues = product.attributeValue.map( mapId )
+    const oldAttrValues = old.attributeValues.map( mapId )
+    const newAttrValues = product.attributeValues.map( mapId )
 
     const attrValuesToBeDeleted = oldAttrValues.filter( oId => ! newAttrValues.includes( oId ) )
     const attrValuesToBeAdded = newAttrValues.filter( ( nId: number ) => ! oldAttrValues.includes( nId ) )
@@ -177,14 +178,32 @@ export class Product {
     return this.getById( productId )
   }
 
-  async add( p: any ): Promise<IProduct | null> {
-    const product = await this.productTable.add( camelToSnakeRecord( {
-      name: p.name,
-      manufacturerId: p.manufacturer.id,
-      manufacturerProductId: p.manufacturer_product_id,
-      eanCode: p.ean_code,
-    } ) )
+  async add( { product, productGroupId }: tProductWithFirstGroupId ): Promise<IProduct | null> {
+    const productGroup = await this.productGroup.getById( productGroupId )
 
-    return this.getById( product.id )
+    if ( ! productGroup ) {
+      throw Error()
+    }
+
+    const newProductTable = await this.productTable.add( {
+      name: product.name,
+      manufacturerId: product.manufacturer.id,
+      manufacturerProductId: product.manufacturerProductId,
+      eanCode: product.eanCode,
+    } )
+
+    const newProduct = await this.getById( newProductTable.id )
+
+    await this.saveChanges( newProduct.id, {
+      ...newProduct,
+      productGroups: [ productGroup ],
+    } )
+
+    return this.getById( newProductTable.id )
   }
+}
+
+type tProductWithFirstGroupId = {
+  product: any,
+  productGroupId: number
 }

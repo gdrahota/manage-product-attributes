@@ -6,7 +6,7 @@ export const manageProductRoutes = [
     meta: {},
     children: [
       {
-        path: ':id',
+        path: ':productGroupId/:id',
         name: 'manage-product',
         component: () => import('@/pages/manage-products/product'),
         meta: {},

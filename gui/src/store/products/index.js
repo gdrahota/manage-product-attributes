@@ -21,9 +21,8 @@ const save = async ( { commit }, changedItem ) => {
   commit('UPDATE_ITEM', item)
 }
 
-const add = async ( { commit }, changedItem ) => {
-  const { id } = changedItem
-  const item = await action('products.add', changedItem, { id })
+const add = async ( { commit }, { product, productGroupId } ) => {
+  const item = await action('products.add', { product, productGroupId })
   commit('UPDATE_ITEM', item)
   return item.id
 }
