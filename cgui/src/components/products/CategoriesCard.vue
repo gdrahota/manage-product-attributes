@@ -1,9 +1,9 @@
 <template>
   <div :class="`shadow-1`" class="shadow-box q-ma-sm">
-    <div v-for="i in 20" :key="i">
+    <div v-for="(category, index) in productGroups" :key="index">
         <div class="q-pa-md my-card">
             <div class="row text-bold items-center justify-between">
-                Category Name
+                {{ category.name }}
                 <q-icon name="mdi-chevron-right" />
             </div>
             <q-menu
@@ -25,6 +25,7 @@
 </template>
 
 <script>
+import { mapGetters } from 'vuex'
 export default {
     name: 'CategoriesCard',
 
@@ -32,7 +33,15 @@ export default {
         return{
             show: false
         }
-    }
+    },
+
+    computed: {
+        ...mapGetters({
+            productGroups: 'productGroups/getAll'
+        })
+    },
+
+
 
 }
 </script>

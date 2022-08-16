@@ -16,7 +16,7 @@
                 <div class="row justify-baseline items-baseline">
                     <p class="text-subtitle-1 text-white q-pr-md">Find anything solar here</p>
                 </div>
-                <search-container></search-container>
+                <auto-search></auto-search>
                 <!-- <div class="q-pt-lg row justify-center">
                     <div v-for="(category, index) in categories" :key="index">
                         <q-chip clickable style="background:linear-gradient(to right, #36454F, #71797E)" @click="searchCategory(category)" class="chip q-mx-md text-white text-subtitle-1" icon="directions">
@@ -63,7 +63,7 @@
 <script>
 import ProductCard from '@/components/products/ProductCard.vue'
 import CategoriesCard from '@/components/products/CategoriesCard'
-import SearchContainer from '../../components/search/SearchContainer.vue'
+import AutoSearch from '../../components/search/AutoSearch.vue'
 import { mapGetters } from 'vuex'
 import { watch } from 'fs'
 export default {
@@ -71,7 +71,7 @@ export default {
     components:{
         ProductCard,
         CategoriesCard,
-        SearchContainer
+        AutoSearch
     },
     data(){
         return{
@@ -93,10 +93,7 @@ export default {
     },
 
     watch: {
-        products(val) {
-            console.log('logging===>')
-            console.log(val)
-        }
+        
     }
 
 

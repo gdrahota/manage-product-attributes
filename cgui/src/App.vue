@@ -19,13 +19,15 @@ export default {
 
   methods: {
     ...mapActions({
-      loadProducts: 'products/loadAll'
-    })
+      loadProducts: 'products/loadAll',
+      loadProductGroups: 'productGroups/loadAll'
+    }),
   },
 
   mounted() {
-    this.loadProducts()
-  },
+    this.loadProducts(),
+    this.loadProductGroups()
+  }
 }
 </script>
 

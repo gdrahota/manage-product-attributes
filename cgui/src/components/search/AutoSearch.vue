@@ -1,6 +1,6 @@
 <template>
     <div class="">
-        <div style="width: 800px">
+        <div class="bg-white" style="width: 800px">
             <q-select
                 :input-style="{paddingLeft: '20px'}"
                 color="white"
@@ -8,7 +8,7 @@
                 use-input
                 :loading="isLoading"
                 @filter="filterFxn"
-                
+                option-value="id"
                 :options="options"
                 :value="model"
                 hide-dropdown-icon
@@ -22,7 +22,7 @@
                         <q-item-section>Find PVC Panels, Solar Panels, etc...</q-item-section>
                     </q-item>
                 </template>
-                <template v-slot:option="{opt}">
+                <template v-slot:option="scope">
                     <q-item clickable>
                         <q-item-section avatar>
                             <q-avatar size="30px" font-size="52px" text-color="white">
@@ -34,7 +34,7 @@
                             </q-avatar>
                         </q-item-section>
                         <q-item-section>
-                            {{opt}}
+                            {{scope.opt.name}}
                         </q-item-section>
                     </q-item>
                 </template>
@@ -44,6 +44,7 @@
 </template>
 
 <script>
+import { mapGetters } from 'vuex'
     export default {
         data: () => ({
             isLoading: false,
@@ -61,42 +62,14 @@
             tab: null,
         }),
 
-        props: {
-            type: String
+        computed:{
+            ...mapGetters({
+                products: 'products/getAll'
+            })
         },
 
-        watch: {
-            something (val) {
-              let selectProduct = this.items.filter(e=>{
-                  return e.id === val;
-              })
-                console.log({selected:selectProduct});
-              this.$store.commit('setFoundProduct', selectProduct[0]);
-                this.$router.push(`/search_landing/${val}`);
-            },
-            select(val){
 
-            },
-            search (val){
-                // Items have already been loaded
-                if (this.items.length > 0) return
-                this.isLoading = true;
-                // Lazily load input items
-                this.$store.dispatch("searchProducts",val)
-                    // .then(res => res.json())
-                    .then(res => {
-                        this.items = res.data.products;
-                    })
-                    .catch(err => {
-                        console.log(err)
-                    })
-                    .finally(() => (this.isLoading = false))
-            },
-        },
         methods:{
-            searchForm(){
-                this.$router.push({name: 'products-search', params: {search: this.search}})
-            },
 
             filterFxn(val, update){
                 if(val === ""){
@@ -105,9 +78,10 @@
                     })
                     return
                 }
+                this.isLoading = true
                 update(() => {
                     const inputed = val.toLowerCase()
-                    this.options = this.items.filter((item) => item.toLowerCase().includes(inputed))
+                    this.options = this.products.filter((item) => (item.name.toLowerCase()).includes(inputed))
                 })
             },
 
@@ -118,6 +92,10 @@
             selected(){
                 // alert("pooped");
             },
+        },
+
+        mounted(){
+           
         }
     }
 </script>
