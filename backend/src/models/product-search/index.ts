@@ -37,7 +37,8 @@ interface IResponseAttributesWithValues {
   values: IResponseValue[]
 }
 
-interface IResponse {
+type tResponse = {
+  numberOfProducts: number
   products: IProduct[]
   attributes: IResponseAttributesWithValues[]
 }
@@ -48,32 +49,43 @@ export class ProductSearch {
   private productAttributeValueTable = new ProductAttributeValueTable()
   private productAttributeTable = new ProductAttributeTable<IProductAttributeTable>()
 
-  async searchProductsAndAttributeValues( productGroupId: number, params: ISearchProductsProp ): Promise<IResponse> {
+  async searchProductsAndAttributeValues( productGroupId: number, params: ISearchProductsProp ): Promise<tResponse> {
     return {
-      products: await this.searchProducts( productGroupId, params ),
+      ...await this.searchProducts( productGroupId, params ),
       attributes: await this.searchAttrValues( productGroupId, params.filters )
     }
   }
 
-  private async searchProducts( productGroupId: number, { filters, page, itemsPerPage }: ISearchProductsProp ): Promise<any> {
-    const query = pg.queryBuilder()
-      .select( 'p.id' )
+  private async searchProducts( productGroupId: number, {
+    filters,
+    page,
+    itemsPerPage
+  }: ISearchProductsProp ): Promise<Omit<tResponse, 'attributes'>> {
+    const query = pg( 'product_to_product_groups as p2pg' )//.queryBuilder()
       .from( 'product_to_product_groups as p2pg' )
       .innerJoin( 'products as p', 'p2pg.product_id', 'p.id' )
       .where( 'p2pg.product_group_id', productGroupId )
-      .orderBy( 'p.name' )
-      .limit( itemsPerPage )
-      .offset( itemsPerPage * (page - 1) )
 
     await Bluebird.each( filters, async ( filter ) => {
       return this.addSearchAttr( query, filter )
     } )
 
-    const results = await query
+    const [ { count: numberOfProducts } ] = await query.clone().select( pg.raw( 'count(*) AS count' ) )
 
-    return Bluebird.mapSeries( results, async ( { id } ) => {
+    const results = await query
+      .select( 'p.id' )
+      .orderBy( 'p.name' )
+      .limit( itemsPerPage )
+      .offset( itemsPerPage * (page - 1) )
+
+    const products = await Bluebird.mapSeries( results, async ( { id } ) => {
       return this.product.getById( id )
     } )
+
+    return {
+      numberOfProducts: parseInt( numberOfProducts ),
+      products,
+    }
   }
 
   private async searchAttrValues( productGroupId: number, filters: IProductSearchFilter[] ): Promise<any> {

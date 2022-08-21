@@ -4,7 +4,7 @@
       v-for="(group, groupId) of productAttrGroups"
       :key="groupId"
       bordered
-      class="col-6 q-mb-sm"
+      class="col-6"
       flat
     >
       <q-card-section>
@@ -56,12 +56,11 @@
         @click="search"
       />
     </div>
-<!--    <pre>{{ filters }}</pre>-->
   </div>
 </template>
 
 <script>
-import { mapGetters } from 'vuex'
+import { mapGetters, mapMutations } from 'vuex'
 
 import { EnumSearchStrategy } from '@/store/enums/search-strategy'
 import Between from './between'
@@ -74,6 +73,7 @@ export default {
       getAttrGroupsByProductGroupId: 'productAttributeGroupsOfProductGroups/getByProductGroupId',
       getAttributeById: 'productAttributes/getById',
       getProductGroupById: 'productGroups/getById',
+      filters: 'productSearch/getFilters',
     }),
     productAttrGroups() {
       const productGroup = this.getProductGroupById(this.productGroupId)
@@ -107,11 +107,10 @@ export default {
     },
   },
 
-  data: () => ({
-    filters: {},
-  }),
-
   methods: {
+    ...mapMutations({
+      SET_FILTER: 'productSearch/SET_FILTER',
+    }),
     init() {
       this.filters = {}
     },
@@ -130,12 +129,7 @@ export default {
       }
     },
     setFilter( attribute, data ) {
-      this.$set(this.filters, attribute.id, {
-        type: attribute.type,
-        searchStrategy: attribute.searchStrategy,
-        attrId: attribute.id,
-        ...data,
-      })
+      this.SET_FILTER({ attribute, data })
     },
     isNullOrUndefined( val ) {
       return val === undefined || val === null
@@ -179,7 +173,9 @@ export default {
         return response
       }).filter(i => !!i)
 
-      this.$emit('searchProducts', { productGroupId: this.productGroupId, filters })
+      this.filters(filters)
+
+      this.$emit('searchProducts')
     },
   },
 
@@ -187,12 +183,6 @@ export default {
     productGroupId: {
       type: Number,
       required: true,
-    },
-  },
-
-  watch: {
-    productGroupId() {
-      this.init()
     },
   },
 }

@@ -2,6 +2,9 @@
   <q-card class="q-ma-sm product" flat>
     <q-card-section class="q-pa-none">
       <div class="row">
+        <div class="col-1 flex flex-center">
+          <div class="position">{{ (position + 1) }}</div>
+        </div>
         <div class="col-2">
           <div class="row product-images">
             <div class="col-6">
@@ -21,7 +24,7 @@
           </div>
         </div>
 
-        <div v-if="productGroup" class="col-6 q-pa-md">
+        <div v-if="productGroup" class="col-5 q-pa-md">
           <div class="col text-body2 q-pb-md">{{ `${ product.manufacturer.name } ${ product.name }` }}</div>
 
           <div class="text-caption">
@@ -90,12 +93,26 @@ export default {
       type: Object,
       required: true,
     },
+    position: {
+      type: Number,
+      default: 0,
+    },
   },
 }
 </script>
 
 <style lang="sass">
 .product
+  .position
+    font-size: 30px
+    color: #888
+    border: 0
+    height: 80px
+    width: 80px
+    padding-top: 18px
+    text-align: center
+    vertical-align: center
+
   .offers
     font-size: 16px
     color: grey

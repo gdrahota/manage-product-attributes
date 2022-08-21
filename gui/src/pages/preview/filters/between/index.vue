@@ -34,17 +34,6 @@ import { mapGetters } from 'vuex'
 
 import { sortByValue } from '@/sorters'
 
-const uniqueByKey = ( arr, prop ) => {
-  const values = []
-  return arr.reduce(( a, d ) => {
-    if ( !values.includes(d[ prop ]) ) {
-      values.push(d[ prop ])
-      a.push(d)
-    }
-    return a
-  }, [])
-}
-
 export default {
   computed: {
     ...mapGetters({
@@ -52,6 +41,7 @@ export default {
     }),
     options() {
       const { representationUnitFactor, unit, id, fractionalDigits } = this.attributeDef
+
       const options = this.getAttrValuesByAttrId(id).map(v => ({
           ...v,
           value: v.value * representationUnitFactor,
@@ -60,7 +50,7 @@ export default {
         }),
       )
 
-      return uniqueByKey(options, 'value').sort(sortByValue)
+      return options.sort(sortByValue)
     },
     optionsFrom() {
       if ( !this.valueTill ) {

@@ -3,7 +3,7 @@
     <is-loading-overlay :is-search-in-progress="isSearchInProgress" />
 
     <q-scroll-area class="fit border-right">
-      <div class="preview-page bg-white" style="height: calc(100%); min-height: calc(100vh - 100px)">
+      <div class="preview-page bg-white" style="height: calc(100vh - 100px); min-height: calc(100vh - 100px); overflow-y: hidden">
         <q-tabs align="left">
           <q-route-tab
             v-for="(productGroup, pos) of productGroups"
@@ -15,34 +15,56 @@
 
         <q-separator />
 
-        <q-expansion-item
-          v-if="selectedProductGroupId"
-          :label="filterLabel"
-          caption-="Select products based on their properties"
-          class="q-mt-md border shadow-2 bg-teal-2 q-ma-md"
-          icon="mdi-filter-outline"
+        <div
+          class="preview-page bg-white border"
+          style="height: calc(100vh - 248px); min-height: calc(100vh - 210px); overflow-y: auto"
         >
-          <q-card class="bg-teal-1">
-            <q-card-section>
-              <filters
-                :product-group-id="selectedProductGroupId"
-                @searchProducts="searchProducts"
-              />
-            </q-card-section>
-          </q-card>
-        </q-expansion-item>
-
-        <div class="full-width q-pb-lg q-px-sm">
-          <div
-            v-for="(product, pos) of products"
-            :key="pos"
+          <q-expansion-item
+            v-if="selectedProductGroupId"
+            :label="filterLabel"
+            caption-="Select products based on their properties"
+            class="q-ma-sm shadow-2 bg-teal-2"
+            icon="mdi-filter-outline"
           >
-            <product
-              :product="product"
-              :product-group="selectedProductGroup"
-            />
-            <q-separator />
+            <q-card class="bg-teal-1">
+              <q-card-section>
+                <filters
+                  :product-group-id="selectedProductGroupId"
+                  @searchProducts="search"
+                />
+              </q-card-section>
+            </q-card>
+          </q-expansion-item>
+
+          <div class="full-width q-pb-lg q-px-sm">
+            <div
+              v-for="(product, pos) of products"
+              :key="pos"
+            >
+              <product
+                :position="pos"
+                :product="product"
+                :product-group="selectedProductGroup"
+              />
+              <q-separator />
+            </div>
           </div>
+        </div>
+
+        <div class="flex flex-center q-pt-md">
+          <q-pagination
+            v-if="!isSearchInProgress"
+            v-model="page"
+            :max="lastPage"
+            boundary-links
+            class="q-pb-md"
+            color="teal"
+            direction-links
+            icon-first="skip_previous"
+            icon-last="skip_next"
+            icon-next="fast_forward"
+            icon-prev="fast_rewind"
+          />
         </div>
       </div>
     </q-scroll-area>
@@ -69,6 +91,9 @@ export default {
       manufacturers: 'manufacturers/getAll',
       getAllProductGroups: 'productGroups/getAll',
       isSearchInProgress: 'productSearch/isSearchInProgress',
+      numberOfProducts: 'productSearch/getNumberOfProducts',
+      getPage: 'productSearch/getPage',
+      filters: 'productSearch/getFilters',
     }),
     selectedProductGroupId() {
       return parseInt(this.$route.params.id)
@@ -81,24 +106,40 @@ export default {
     },
     filterLabel() {
       return this.products
-        ? `Filter ${ this.products.length } products...`
+        ? `Filter ${ this.$root.$options.filters.number(this.numberOfProducts) } products...`
         : `Filter products...`
     },
+    page: {
+      get() {
+        return this.getPage
+      },
+      set( page ) {
+        if ( this.getPage !== page ) {
+          this.setPage(page)
+        }
+      },
+    },
+    lastPage() {
+      return Math.ceil(this.numberOfProducts / 10)
+    },
+
   },
 
   created() {
     if ( this.selectedProductGroupId ) {
-      this.search({ productGroupId: this.selectedProductGroupId, filters: [] })
+      this.setProductGroupId(this.selectedProductGroupId)
     }
   },
 
   methods: {
     ...mapActions({
       searchProducts: 'productSearch/search',
+      setProductGroupId: 'productSearch/setProductGroupId',
+      setPage: 'productSearch/setPage',
     }),
     isSelected( product ) {
       return this.$route.params.id && product
-        ? parseInt(product.id) === parseInt(this.$route.params.id)
+        ? parseInt(product.id) === this.selectedProductGroupId
         : false
     },
     routeTo( id ) {
@@ -107,17 +148,16 @@ export default {
         params: { id },
       })
     },
-    search( { productGroupId, filters } ) {
-      this.searchProducts({ productGroupId, filters, page: 1, itemsPerPage: 10 })
+    search() {
+      this.searchProducts()
     },
   },
 
   watch: {
-    selectedProductGroupId() {
-      this.search({
-        productGroupId: this.selectedProductGroupId,
-        filters: [],
-      })
+    selectedProductGroupId( newId, oldId ) {
+      if ( newId !== oldId ) {
+        this.setProductGroupId(this.selectedProductGroupId)
+      }
     },
   },
 }
