@@ -70,13 +70,16 @@ export class ProductSearch {
       return this.addSearchAttr( query, filter )
     } )
 
-    const [ { count: numberOfProducts } ] = await query.clone().select( pg.raw( 'count(*) AS count' ) )
+    const query2 = query.clone().select( pg.raw( 'count(*) AS count' ) )
+    const [ { count: numberOfProducts } ] = await query2
 
-    const results = await query
+    query
       .select( 'p.id' )
       .orderBy( 'p.name' )
       .limit( itemsPerPage )
       .offset( itemsPerPage * (page - 1) )
+
+    const results = await query
 
     const products = await Bluebird.mapSeries( results, async ( { id } ) => {
       return this.product.getById( id )

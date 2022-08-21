@@ -26,7 +26,7 @@
             class="q-ma-sm shadow-2 bg-blue-2 q-mt-md"
             icon="mdi-filter-outline"
           >
-            <q-card class="bg-teal-1">
+            <q-card class="bg-blue-2">
               <q-card-section>
                 <filters
                   :product-group-id="selectedProductGroupId"

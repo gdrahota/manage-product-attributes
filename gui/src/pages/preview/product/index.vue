@@ -3,7 +3,7 @@
     <q-card-section class="q-pa-none">
       <div class="row">
         <div class="col-1 flex flex-center">
-          <div class="position">{{ (position + 1) }}</div>
+          <div class="position">{{ (position + 1) + (page - 1) * itemsPerPage }}</div>
         </div>
         <div class="col-2">
           <div class="row product-images">
@@ -69,6 +69,8 @@ export default {
     ...mapGetters({
       getByProductGroupId: 'productAttributeGroupsOfProductGroups/getByProductGroupId',
       getProductAttributeById: 'productAttributes/getById',
+      itemsPerPage: 'productSearch/getItemsPerPage',
+      page: 'productSearch/getPage',
     }),
     productAttributeGroupsOfProductGroup() {
       return this.getByProductGroupId(this.productGroup.id)

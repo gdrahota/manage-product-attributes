@@ -27,8 +27,8 @@
                   dense
                 >
                   <template v-slot:control>
-                    <div style="text-align: right; width: 100%">
-                      <span class="text-body1">{{ attribute.name }}:</span>&nbsp;&nbsp;<span class="text-caption"></span>
+                    <div class="q-px-sm" style="text-align: right; width: 100%">
+                      <span class="text-body2">{{ attribute.name }}:</span>
                     </div>
                   </template>
                 </q-field>

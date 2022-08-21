@@ -1,5 +1,6 @@
 import Vue from 'vue'
 import { action } from '@/store/actions'
+import isEqual from 'lodash.isequal'
 
 const state = {
   searchInProgress: false,
@@ -7,6 +8,7 @@ const state = {
   page: 1,
   itemsPerPage: 10,
   filters: [],
+  previousFilters: [],
   foundProducts: [],
   foundAttributes: [],
   numberOfProducts: 0,
@@ -45,6 +47,12 @@ const search = async ( { commit, state } ) => {
 
       return response
     })
+
+    if ( !isEqual(state.previousFilters, filters) ) {
+      commit('SET_PAGE', 1)
+    }
+
+    commit('SET_PREVIOUS_FILTERS', filters)
 
     const payload = {
       filters,
@@ -116,6 +124,9 @@ const STORE_SEARCH_RESPONSE = ( state, response ) => {
 const SET_PAGE = ( state, page ) => {
   state.page = page
 }
+const SET_PREVIOUS_FILTERS = ( state, filters ) => {
+  state.previousFilters = filters
+}
 
 const SET_FILTER = ( state, data ) => {
   const idx = state.filters.findIndex(( { attrId } ) => attrId === data.attrId)
@@ -133,6 +144,7 @@ const mutations = {
   STORE_SEARCH_RESPONSE,
   SET_PAGE,
   SET_FILTER,
+  SET_PREVIOUS_FILTERS,
 }
 
 const getters = {
