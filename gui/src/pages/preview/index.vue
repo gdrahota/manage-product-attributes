@@ -32,44 +32,16 @@
           </q-card>
         </q-expansion-item>
 
-        <div class="row full-width q-pb-lg q-px-sm">
+        <div class="full-width q-pb-lg q-px-sm">
           <div
             v-for="(product, pos) of products"
             :key="pos"
-            class="col-6"
           >
-            <q-card class="q-ma-sm">
-              <q-card-section class="q-pa-none">
-                <div class="row">
-                  <div class="col-4">
-                    <div class="row product-images">
-                      <div class="col-6">
-                        <q-img
-                          class="q-ma-md"
-                          src="/product-example.jpeg"
-                          style="height: 80px; max-width: 80px"
-                        />
-                      </div>
-                      <div class="col-6">
-                        <q-img
-                          class="q-ma-md"
-                          src="/product-example-2.jpeg"
-                          style="height: 80px; max-width: 80px"
-                        />
-                      </div>
-                    </div>
-                  </div>
-
-                  <div class="col-8 q-pa-md">
-                    <div class="col text-body2 q-pb-md">{{ `${ product.manufacturer.name } ${ product.name }` }}</div>
-                    <div class="text-caption">
-                      Viel Text
-                      Lorem ipsum dolor sit amet, consectetur adipiscing elit.
-                    </div>
-                  </div>
-                </div>
-              </q-card-section>
-            </q-card>
+            <product
+              :product="product"
+              :product-group="selectedProductGroup"
+            />
+            <q-separator />
           </div>
         </div>
       </div>
@@ -82,11 +54,13 @@ import { mapActions, mapGetters } from 'vuex'
 
 import Filters from './filters'
 import IsLoadingOverlay from './is-loading'
+import Product from './product'
 
 export default {
   components: {
     Filters,
     IsLoadingOverlay,
+    Product,
   },
 
   computed: {
@@ -102,6 +76,9 @@ export default {
     productGroups() {
       return this.getAllProductGroups
     },
+    selectedProductGroup() {
+      return this.productGroups.find(( { id } ) => id === this.selectedProductGroupId)
+    },
     filterLabel() {
       return this.products
         ? `Filter ${ this.products.length } products...`
@@ -114,10 +91,6 @@ export default {
       this.search({ productGroupId: this.selectedProductGroupId, filters: [] })
     }
   },
-
-  data: () => ({
-    productGroup: null,
-  }),
 
   methods: {
     ...mapActions({

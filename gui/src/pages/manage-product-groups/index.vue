@@ -36,7 +36,7 @@
                 >
                   <q-item-section @click="routeTo(item.id)">
                     <q-item-label>
-                      <div :style="{ width: `${splitter-110}px` }" class="truncate">
+                      <div :style="{ width: `${splitter-60}px` }" class="truncate">
                         {{ item.name }}
                       </div>
                       <q-tooltip :delay="500" :offset="[20,0]" anchor="center end" self="center start">

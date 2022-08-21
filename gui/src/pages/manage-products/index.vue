@@ -15,7 +15,7 @@
               rounded
               size="14px"
               style="margin: 10px 5px"
-              @click="routeTo('new')"
+              @click="routeToProduct('new')"
             />
 
             <q-select
@@ -66,7 +66,7 @@
                 >
                   <q-item-section @click="routeToProduct(product.id)">
                     <q-item-label>
-                      <div :style="{ width: `${splitter-110}px` }" class="truncate">
+                      <div :style="{ width: `${splitter-70}px` }" class="truncate">
                         {{ product.manufacturer.name }}&nbsp;{{ product.name }}
                       </div>
                       <q-tooltip :delay="500" :offset="[20,0]" anchor="center end" self="center start">
