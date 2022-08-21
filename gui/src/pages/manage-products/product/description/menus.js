@@ -73,7 +73,7 @@ export default [
     {
       label: 'H5',
       onClickFnName: 'toggleHeading',
-      onClickParam: { level: 4 },
+      onClickParam: { level: 5 },
       isActive: 'heading',
       isActiveOption: { level: 5 },
     },

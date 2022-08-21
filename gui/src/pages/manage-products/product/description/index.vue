@@ -1,33 +1,32 @@
 <template>
   <div>
-    <div v-if="editor">
-      <template v-if="1 === 1">
-        <q-btn-group
-          v-for="(menu, key) of menus"
+    <template v-if="editor">
+      <q-btn-group
+        v-for="(menu, key) of menus"
+        :key="key"
+        class="q-mb-sm q-mr-md"
+        push
+      >
+        <q-btn
+          v-for="(menuItem, key) of menu"
           :key="key"
-          class="q-ma-sm"
-          push
+          :color="editor.isActive(menuItem.isActive, menuItem.isActiveOption) ? 'blue-2' : 'white'"
+          no-caps
+          text-color="primary"
+          @click="onMenuClick(menuItem)"
         >
-          <q-btn
-            v-for="(menuItem, key) of menu"
-            :key="key"
-            :color="editor.isActive(menuItem.isActive, menuItem.isActiveOption) ? 'blue-2' : 'white'"
-            no-caps
-            text-color="primary"
-            @click="onMenuClick(menuItem)"
-          >
           <span
             :class="menuItem.class"
             v-html="menuItem.label"
           />
-          </q-btn>
-        </q-btn-group>
-      </template>
-    </div>
+        </q-btn>
+      </q-btn-group>
+    </template>
 
-    <div class="q-pa-sm">
-      <editor-content :editor="editor" />
-    </div>
+    <editor-content
+      :editor="editor"
+      class="bg-blue-grey-1 shadow-1"
+    />
   </div>
 </template>
 
@@ -35,6 +34,7 @@
 import { Editor, EditorContent } from '@tiptap/vue-2'
 import StarterKit from '@tiptap/starter-kit'
 import menus from './menus'
+import Underline from '@tiptap/extension-underline'
 
 export default {
   beforeDestroy() {
@@ -63,6 +63,7 @@ export default {
       content: this.value,
       extensions: [
         StarterKit,
+        Underline,
       ],
       onUpdate: () => {
         //HTML
@@ -101,7 +102,7 @@ export default {
 
 <style lang="sass">
 .ProseMirror
-  border: 2px solid blue
+  border: 1px solid #607d8b
   border-radius: 4px
   padding: 5px
   min-height: 200px

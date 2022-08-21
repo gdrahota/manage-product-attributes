@@ -58,11 +58,14 @@
     <div class="row q-mt-lg">
       <div class="col-12">
         <q-btn
-          :color="hasChanged ? 'primary' : 'grey'"
-          :disable="!hasChanged"
+          :color="allowedBtn ? 'primary' : 'grey'"
+          :disable="!allowedBtn"
           @click="save"
         >
-          <q-icon left name="save" />
+          <q-icon
+            :name="isWaitingForResponse ? 'hourglass_bottom' :  'save'"
+            left
+          />
           Save
         </q-btn>
       </div>
@@ -100,6 +103,7 @@ export default {
       getByProductId: 'productToProductGroups/getByProductId',
       getProductGroupById: 'productGroups/getById',
       getProductAttributeById: 'productAttributes/getById',
+      isWaitingForResponse: 'products/isWaitingForResponse',
     }),
     productId() {
       return this.$route.params.id
@@ -120,6 +124,9 @@ export default {
     },
     hasChanged() {
       return !isEqual(this.product, this.workingCopy)
+    },
+    allowedBtn() {
+      return this.hasChanged && !this.isWaitingForResponse
     },
   },
 
