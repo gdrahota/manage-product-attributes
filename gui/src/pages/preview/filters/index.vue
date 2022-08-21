@@ -37,7 +37,7 @@
                 <component
                   :is="getComponent(attribute.searchStrategy)"
                   :attributeDef="attribute"
-                  :filter="filters[attribute.id] || {}"
+                  :filter="filters.find(filter => attribute.id === filter.attrId) || {}"
                   :values="attribute.values"
                   @set="data => setFilter(attribute, data)"
                 />
@@ -50,8 +50,8 @@
 
     <div class="q-pt-md">
       <q-btn
-        :color="Object.keys(filters).length === 0 ? 'grey' : 'primary'"
-        :disable="Object.keys(filters).length === 0"
+        :color="filters.length === 0 ? 'grey' : 'primary'"
+        :disable="filters.length === 0"
         label="Filter"
         @click="search"
       />
@@ -73,8 +73,11 @@ export default {
       getAttrGroupsByProductGroupId: 'productAttributeGroupsOfProductGroups/getByProductGroupId',
       getAttributeById: 'productAttributes/getById',
       getProductGroupById: 'productGroups/getById',
-      filters: 'productSearch/getFilters',
+      getFilters: 'productSearch/getFilters',
     }),
+    filters() {
+      return this.getFilters
+    },
     productAttrGroups() {
       const productGroup = this.getProductGroupById(this.productGroupId)
 
@@ -111,9 +114,6 @@ export default {
     ...mapMutations({
       SET_FILTER: 'productSearch/SET_FILTER',
     }),
-    init() {
-      this.filters = {}
-    },
     getComponent( searchStrategy ) {
       switch ( searchStrategy ) {
         case EnumSearchStrategy.BETWEEN:
@@ -128,53 +128,15 @@ export default {
           return null
       }
     },
-    setFilter( attribute, data ) {
-      this.SET_FILTER({ attribute, data })
-    },
-    isNullOrUndefined( val ) {
-      return val === undefined || val === null
+    setFilter( attr, data ) {
+      this.SET_FILTER({
+        attrId: attr.id,
+        searchStrategy: attr.searchStrategy,
+        productValueType: attr.type,
+        ...data,
+      })
     },
     search() {
-      const filters = Object.values(this.filters).map(obj => {
-        const response = {
-          attrId: obj.attrId,
-          productValueType: obj.type,
-          searchStrategy: obj.searchStrategy,
-        }
-
-        switch ( obj.searchStrategy ) {
-          case 'BETWEEN':
-            if ( this.isNullOrUndefined(obj.valueFrom) && this.isNullOrUndefined(obj.valueTill) ) {
-              return
-            }
-
-            if ( !this.isNullOrUndefined(obj.valueFrom) ) {
-              response.valueIdFrom = obj.valueFrom.id
-            }
-
-            if ( !this.isNullOrUndefined(obj.valueTill) ) {
-              response.valueIdTill = obj.valueTill.id
-            }
-            break
-
-          case 'EQ':
-          case 'LT':
-          case 'LTE':
-          case 'GT':
-          case 'GTE':
-            if ( this.isNullOrUndefined(obj.value) ) {
-              return
-            }
-
-            response.valueId = obj.value.id
-            break
-        }
-
-        return response
-      }).filter(i => !!i)
-
-      this.filters(filters)
-
       this.$emit('searchProducts')
     },
   },

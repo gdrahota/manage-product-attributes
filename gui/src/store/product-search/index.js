@@ -1,3 +1,4 @@
+import Vue from 'vue'
 import { action } from '@/store/actions'
 
 const state = {
@@ -18,8 +19,35 @@ const search = async ( { commit, state } ) => {
 
     const productGroupId = state.productGroupId
 
+    const isNullOrUndefined = ( val ) => {
+      return val === undefined || val === null
+    }
+
+    const filters = state.filters.map(f => {
+      const response = {
+        attrId: f.attrId,
+        productValueType: f.productValueType,
+        searchStrategy: f.searchStrategy,
+      }
+
+      const nameMaps = [
+        { from: 'valueFrom', to: 'valueIdFrom' },
+        { from: 'valueTill', to: 'valueIdTill' },
+        { from: 'value', to: 'valueId' },
+        { from: 'values', to: 'valueIds' },
+      ]
+
+      nameMaps.forEach(nameMap => {
+        if ( !isNullOrUndefined(f[ nameMap.from ]?.id) ) {
+          response[ nameMap.to ] = f[ nameMap.from ]?.id
+        }
+      })
+
+      return response
+    })
+
     const payload = {
-      filters: state.filters,
+      filters,
       page: state.page,
       itemsPerPage: state.itemsPerPage,
     }
@@ -28,7 +56,8 @@ const search = async ( { commit, state } ) => {
 
     commit('STORE_SEARCH_RESPONSE', result)
     commit('SET_SEARCH_IN_PROGRESS', false)
-  } catch ( err ) {
+  } catch
+    ( err ) {
     console.error('ERROR in store/products/load', err)
   }
 }
@@ -88,8 +117,14 @@ const SET_PAGE = ( state, page ) => {
   state.page = page
 }
 
-const SET_FILTER = ( state, filters ) => {
-  state.filters = filters
+const SET_FILTER = ( state, data ) => {
+  const idx = state.filters.findIndex(( { attrId } ) => attrId === data.attrId)
+
+  if ( idx === -1 ) {
+    state.filters.push(data)
+  } else {
+    Vue.set(state.filters, idx, data)
+  }
 }
 
 const mutations = {
@@ -109,6 +144,7 @@ const getters = {
   getNumberOfProducts: state => state.numberOfProducts,
   getFilters: state => state.filters,
   getPage: state => state.page,
+  getItemsPerPage: state => state.itemsPerPage,
 }
 
 export default {

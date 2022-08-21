@@ -23,7 +23,7 @@
             v-if="selectedProductGroupId"
             :label="filterLabel"
             caption-="Select products based on their properties"
-            class="q-ma-sm shadow-2 bg-teal-2"
+            class="q-ma-sm shadow-2 bg-blue-2 q-mt-md"
             icon="mdi-filter-outline"
           >
             <q-card class="bg-teal-1">
@@ -51,20 +51,30 @@
           </div>
         </div>
 
-        <div class="flex flex-center q-pt-md">
-          <q-pagination
-            v-if="!isSearchInProgress"
-            v-model="page"
-            :max="lastPage"
-            boundary-links
-            class="q-pb-md"
-            color="teal"
-            direction-links
-            icon-first="skip_previous"
-            icon-last="skip_next"
-            icon-next="fast_forward"
-            icon-prev="fast_rewind"
-          />
+        <div class="row">
+          <div class="col-4">
+            <div class="q-pa-md text-bold text-grey-6" style="margin-top: 6px">
+              {{ numberOfProducts }} Produkte
+            </div>
+          </div>
+          <div class="col-4">
+            <div class="flex flex-center q-pt-md">
+              <q-pagination
+                v-if="!isSearchInProgress"
+                v-model="page"
+                :max="lastPage"
+                boundary-links
+                class="q-pb-md"
+                color="teal"
+                direction-links
+                icon-first="skip_previous"
+                icon-last="skip_next"
+                icon-next="fast_forward"
+                icon-prev="fast_rewind"
+              />
+            </div>
+            <div class="col-4"></div>
+          </div>
         </div>
       </div>
     </q-scroll-area>
@@ -93,6 +103,7 @@ export default {
       isSearchInProgress: 'productSearch/isSearchInProgress',
       numberOfProducts: 'productSearch/getNumberOfProducts',
       getPage: 'productSearch/getPage',
+      getItemsPerPage: 'productSearch/getItemsPerPage',
       filters: 'productSearch/getFilters',
     }),
     selectedProductGroupId() {
@@ -122,7 +133,6 @@ export default {
     lastPage() {
       return Math.ceil(this.numberOfProducts / 10)
     },
-
   },
 
   created() {
