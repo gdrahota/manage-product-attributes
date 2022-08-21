@@ -2,9 +2,12 @@
   <table>
     <thead>
       <tr>
-        <th>Product Attribute</th>
-        <th>Value</th>
-        <th>Description</th>
+        <th colspan="3" scope="col">Maintain Product Attribute Values</th>
+      </tr>
+      <tr>
+        <th scope="col">Product Attribute</th>
+        <th scope="col">Value</th>
+        <th scope="col">Description</th>
       </tr>
     </thead>
     <tbody>
@@ -100,8 +103,8 @@ table
   border-spacing: 0
 
   th
-    color: teal
     background-color: #fff
+    color: teal
 
   td
     color: #444

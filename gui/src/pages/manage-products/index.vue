@@ -7,20 +7,21 @@
     >
       <template v-slot:before>
         <q-scroll-area class="fit border-right bg-teal-1">
-          <q-btn
-            color="secondary"
-            icon="add"
-            label="new"
-            size="14px"
-            style="margin: 10px 5px"
-            @click="routeTo('new')"
-          />
+          <div class="q-pl-md q-pr-md q-pb-md">
+            <q-btn
+              color="secondary"
+              icon="add"
+              label="new"
+              rounded
+              size="14px"
+              style="margin: 10px 5px"
+              @click="routeTo('new')"
+            />
 
-          <div class="q-pa-md">
             <q-select
               :options="productGroups"
               :value="productGroup"
-              class="bg-indigo-1"
+              class="bg-white"
               clearable
               filled
               label="Product Group"
@@ -49,11 +50,12 @@
             <q-list
               v-if="products.length > 0"
               bordered
-              class="q-mt-md- q-pa-none"
+              class="q-pa-none"
               dense
               padding
               separator
             >
+              <q-separator />
               <template v-for="(product, pos) in products">
                 <q-item
                   :key="pos"
@@ -64,10 +66,7 @@
                 >
                   <q-item-section @click="routeToProduct(product.id)">
                     <q-item-label>
-                      <div
-                        :style="{ width: `${splitter-70}px` }"
-                        class="truncate"
-                      >
+                      <div :style="{ width: `${splitter-110}px` }" class="truncate">
                         {{ product.manufacturer.name }}&nbsp;{{ product.name }}
                       </div>
                       <q-tooltip :delay="500" :offset="[20,0]" anchor="center end" self="center start">

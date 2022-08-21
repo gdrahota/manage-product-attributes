@@ -48,6 +48,11 @@
       </div>
     </template>
 
+    <description
+      :value="workingCopy.description"
+      @set="setDescription"
+    />
+
     <q-separator />
 
     <div class="row q-mt-lg">
@@ -62,7 +67,6 @@
         </q-btn>
       </div>
     </div>
-    <pre>{{ $route.params }}</pre>
   </div>
 </template>
 
@@ -71,6 +75,7 @@ import { mapActions, mapGetters } from 'vuex'
 import isEqual from 'lodash.isequal'
 
 import Attributes from './attributes'
+import Description from './description'
 import EanCode from './ean-code'
 import Manufacturer from './manufacturer'
 import ManufacturerProductId from './manucaturer-product-id'
@@ -80,6 +85,7 @@ import ProductToProductGroups from './product-to-product-groups'
 export default {
   components: {
     Attributes,
+    Description,
     EanCode,
     Manufacturer,
     ManufacturerProductId,
@@ -137,6 +143,9 @@ export default {
     },
     setName( value ) {
       this.$set(this.workingCopy, 'name', value)
+    },
+    setDescription( value ) {
+      this.$set(this.workingCopy, 'description', value)
     },
     setManufacturerProductId( value ) {
       this.$set(this.workingCopy, 'manufacturerProductId', value)

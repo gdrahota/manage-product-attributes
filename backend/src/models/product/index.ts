@@ -18,6 +18,7 @@ export interface IAttributeValue {
 export interface IProduct {
   id: number
   name: string
+  description: string
   manufacturer: IManufacturerTable
   productGroups: IProductGroup[]
   eanCode: string | null
@@ -94,6 +95,7 @@ export class Product {
     return {
       id: baseData.id,
       name: baseData.name,
+      description: baseData.description,
       manufacturer: manufacturerData,
       productGroups,
       eanCode: baseData.eanCode,
@@ -122,6 +124,11 @@ export class Product {
     // check product name
     if ( old.name !== product.name ) {
       changedProductTableAttrs.name = product.name
+    }
+
+    // check product description
+    if ( old.name !== product.description ) {
+      changedProductTableAttrs.description = product.description
     }
 
     // check manufacturer

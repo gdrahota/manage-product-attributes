@@ -5,6 +5,7 @@ import { configureAxios } from '@/store/http-client'
 import router from '@/router'
 import './quasar'
 import { registerFilters } from './filters'
+import '@/assets/index.css'
 
 Vue.config.productionTip = false
 

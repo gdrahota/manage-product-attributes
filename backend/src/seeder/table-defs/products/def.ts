@@ -22,6 +22,11 @@ export default {
       "name": "manufacturer_id",
       "type": DataType.INTEGER,
       "nullable": false
+    },
+    {
+      "name": "description",
+      "type": DataType.TEXT,
+      "nullable": true
     }
   ]
 }

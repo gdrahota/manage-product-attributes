@@ -3,11 +3,12 @@ import { GenericClass } from "../_base_class"
 import { camelToSnakeRecord } from "../../helper"
 
 export interface IProductTable {
-  id: number;
-  name: string;
-  manufacturerId: number;
-  eanCode: string | null;
-  manufacturerProductId: string | null;
+  id: number
+  name: string
+  description: string
+  manufacturerId: number
+  eanCode: string | null
+  manufacturerProductId: string | null
 }
 
 const TABLE_NAME = 'products'

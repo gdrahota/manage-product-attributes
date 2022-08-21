@@ -7,20 +7,21 @@
     >
       <template v-slot:before>
         <q-scroll-area class="fit bg-teal-1">
-          <q-btn
-            color="secondary"
-            icon="add"
-            label="new"
-            size="14px"
-            style="margin: 10px 5px"
-            @click="routeTo('new')"
-          />
+          <div class="q-pl-md q-pr-md q-pb-md">
+            <q-btn
+              color="secondary"
+              icon="add"
+              label="new"
+              rounded
+              size="14px"
+              style="margin: 10px 5px"
+              @click="routeTo('new')"
+            />
 
-          <div class="q-pa-md">
             <q-list
               v-if="attributes.length > 0"
               bordered
-              class="q-mt-md- q-pa-none"
+              class="q-pa-none"
               dense
               padding
               separator
@@ -36,12 +37,12 @@
                 >
                   <q-item-section @click="routeTo(attribute.id)">
                     <q-item-label>
-                      <div
-                        :style="{ width: `${splitter-110}px` }"
-                        class="truncate"
-                      >
+                      <div :style="{ width: `${splitter-110}px` }" class="truncate">
                         {{ attribute.name }}
                       </div>
+                      <q-tooltip :delay="500" :offset="[20,0]" anchor="center end" self="center start">
+                        <div class="text-body1 text-no-wrap">{{ attribute.name }}</div>
+                      </q-tooltip>
                     </q-item-label>
                   </q-item-section>
                   <q-item-section side>

@@ -29,7 +29,7 @@
         :name="pos"
       >
         <div class="row">
-          <div class="col">
+          <div class="col q-pr-xs">
             <attributes-of-product-group
               :product="product"
               :product-group="pg"
@@ -38,7 +38,7 @@
               @selectProductAttributeValue="selectProductAttributeValue"
             />
           </div>
-          <div class="col">
+          <div class="col q-pl-xs">
             <customers-preview
               :product="product"
               :product-group="pg"
