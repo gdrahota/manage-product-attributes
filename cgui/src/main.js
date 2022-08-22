@@ -4,10 +4,12 @@ import store from '@/store'
 import router from '@/router'
 import { configureAxios } from './store/http/http_client'
 import './quasar'
+import { registerFilters } from './filters'
 
 Vue.config.productionTip = false
 
 configureAxios()
+registerFilters()
 
 localStorage.debug = '*#'
 

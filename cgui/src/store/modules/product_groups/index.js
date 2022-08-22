@@ -33,7 +33,8 @@ const mutations = {
 
 //getters
 const getters = {
-    getAll: state => [ ...state.items ].sort(sortByName)
+    getAll: state => [ ...state.items ].sort(sortByName),
+    getById: state => id => state.items.find(i => i.id.toString() === id.toString()),
 }
 
 

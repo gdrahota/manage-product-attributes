@@ -14,19 +14,25 @@ export default {
   },
 
   data: () => ({
-    left: false,
+    
   }),
 
   methods: {
     ...mapActions({
       loadProducts: 'products/loadAll',
-      loadProductGroups: 'productGroups/loadAll'
+      loadProductGroups: 'productGroups/loadAll',
+      loadProductToProductGroups: 'productToProductGroups/loadAll',
+      loadProductAttributes: 'productAttributes/loadAll',
+      loadProductAttributeGroupsOfProductGroups: 'productAttributeGroupsOfProductGroups/loadAll',
     }),
   },
 
   mounted() {
     this.loadProducts(),
-    this.loadProductGroups()
+    this.loadProductGroups(),
+    this.loadProductToProductGroups(),
+    this.loadProductAttributes(),
+    this.loadProductAttributeGroupsOfProductGroups()
   }
 }
 </script>

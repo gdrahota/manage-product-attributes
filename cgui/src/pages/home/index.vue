@@ -1,15 +1,6 @@
 <template>
   <q-layout view="hHh lpR fFf">
-    <q-header elevated class="q-m-lg text-white">
-      <q-toolbar reveal class="q-px-xl q-py-sm  text-white">
-        <q-toolbar-title>
-          Solar Farms
-        </q-toolbar-title>
-        <q-space />
-        <q-btn unelevated rounded color="deep-orange-7" label="Sign In" class="q-mr-lg" />
-      </q-toolbar>
-    </q-header>
-
+    <app-header></app-header>
     <q-page-container>
         <q-page class="">
             <div style="height:280px" class="column bg-primary justify-center items-center">
@@ -61,14 +52,15 @@
 </template>
 
 <script>
+import AppHeader from '@/components/AppHeader.vue'
 import ProductCard from '@/components/products/ProductCard.vue'
 import CategoriesCard from '@/components/products/CategoriesCard'
 import AutoSearch from '../../components/search/AutoSearch.vue'
 import { mapGetters } from 'vuex'
-import { watch } from 'fs'
 export default {
     name: 'Home',
     components:{
+        AppHeader,
         ProductCard,
         CategoriesCard,
         AutoSearch
@@ -91,10 +83,6 @@ export default {
 
         }
     },
-
-    watch: {
-        
-    }
 
 
 
