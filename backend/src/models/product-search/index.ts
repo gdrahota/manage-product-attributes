@@ -64,6 +64,7 @@ export class ProductSearch {
     const query = pg( 'product_to_product_groups as p2pg' )//.queryBuilder()
       .from( 'product_to_product_groups as p2pg' )
       .innerJoin( 'products as p', 'p2pg.product_id', 'p.id' )
+      .where( 'p.show', true )
       .where( 'p2pg.product_group_id', productGroupId )
 
     await Bluebird.each( filters, async ( filter ) => {

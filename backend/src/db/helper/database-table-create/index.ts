@@ -56,6 +56,10 @@ export const createTableFromModel = async ( model: ITableDef ): Promise<void> =>
             return
         }
 
+        if ( field.default !== undefined ) {
+          tblCol.default( field.default )
+        }
+
         if ( field.nullable ) {
           tblCol.nullable()
         } else {
