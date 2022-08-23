@@ -8,11 +8,13 @@ import productAttributeGroupsOfProductGroups from './product-attribute-groups-of
 import productGroups from './product-groups'
 import productSearch from './product-search'
 import productToProductGroups from './product-to-product-groups'
+import dealers from './dealers'
 
 Vue.use(Vuex)
 
 const store = new Vuex.Store({
   modules: {
+    dealers,
     manufacturers,
     products,
     productAttributes,

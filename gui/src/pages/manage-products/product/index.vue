@@ -7,11 +7,22 @@
           @set="setManufacturer"
         />
       </div>
-      <div class="col-10">
+      <div class="col-9">
         <product-name
           :name="workingCopy.name"
           @set="setName"
         />
+      </div>
+      <div class="col-1">
+        <q-chip
+          :color="workingCopy.show ? 'green' : 'grey'"
+          :text-color="workingCopy.show ? 'white' : 'black'"
+          class="q-mx-lg"
+          round
+        >
+          <span v-if="workingCopy.show">Online</span>
+          <span v-else>Offline</span>
+        </q-chip>
       </div>
     </div>
 
@@ -70,6 +81,7 @@
         </q-btn>
       </div>
     </div>
+    <pre>{{ workingCopy }}</pre>
   </div>
 </template>
 

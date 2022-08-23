@@ -6,6 +6,7 @@ export interface IProductTable {
   id: number
   name: string
   description: string
+  show: boolean
   manufacturerId: number
   eanCode: string | null
   manufacturerProductId: string | null

@@ -6,6 +6,7 @@ import { manageProductRoutes } from '@/router/manage-products'
 import { manageAttributeRoutes } from '@/router/manage-attributes'
 import { manageProductGroupRoutes } from '@/router/manage-product-group'
 import { managePreviewRoutes } from '@/router/preview'
+import { manageDealerRoutes } from '@/router/manage-dealers'
 
 // import store from '@/store'
 
@@ -17,6 +18,7 @@ export const routes = [
   ...manageProductRoutes,
   ...manageProductGroupRoutes,
   ...managePreviewRoutes,
+  ...manageDealerRoutes,
 ]
 
 const router = new VueRouter({

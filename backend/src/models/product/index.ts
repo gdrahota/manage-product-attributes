@@ -19,6 +19,7 @@ export interface IProduct {
   id: number
   name: string
   description: string
+  show: boolean
   manufacturer: IManufacturerTable
   productGroups: IProductGroup[]
   eanCode: string | null
@@ -96,6 +97,7 @@ export class Product {
       id: baseData.id,
       name: baseData.name,
       description: baseData.description,
+      show: baseData.show,
       manufacturer: manufacturerData,
       productGroups,
       eanCode: baseData.eanCode,

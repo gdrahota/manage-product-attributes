@@ -6,6 +6,7 @@ const dirNames: string[] = [
   'attributes_of_product_group',
   'attribute_groups_of_product_groups',
   'attrs',
+  'dealers',
   'manufacturers',
   'product_groups',
   'product_to_attr_values',

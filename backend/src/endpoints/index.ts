@@ -9,12 +9,14 @@ import { registerProductToAttributeValueRoutes } from "./product-to-attribute-va
 import { registerProductToProductGroupRoutes } from "./product-to-product-group"
 import { registerProductAttributeGroupOfProductGroupRoutes } from "./product-attribute-groups-of-product-groups"
 import { registerProductSearchRoutes } from "./product-seach"
+import { registerDealerRoutes } from "./dealer"
 
 export const registerRoutes = ( app: Router ) => {
   const routes = Router()
+    .use( '/dealers', registerDealerRoutes() )
+    .use( '/manufacturers', registerManufacturerRoutes() )
     .use( '/products', registerProductRoutes() )
     .use( '/product-groups', registerProductGroupRoutes() )
-    .use( '/manufacturers', registerManufacturerRoutes() )
     .use( '/product-attributes', registerProductAttributeRoutes() )
     .use( '/product-attributes-of-product-groups', registerProductAttributesOfProductGroupRoutes() )
     .use( '/product-attribute-groups-of-product-groups', registerProductAttributeGroupOfProductGroupRoutes() )
