@@ -4,7 +4,7 @@
     <q-page-container>
         <q-page class="">
             <div class="row justify-center q-pa-sm">
-                <div class="col-9">
+                <div class="col-10">
                     <div class="row">
                         <div class="col-3">
                             <div class="row">
