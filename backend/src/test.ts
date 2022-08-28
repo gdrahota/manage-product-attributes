@@ -27,16 +27,9 @@ const params = {
 
 export const uploadObject = async () => {
   try {
-    const data = await s3Client.send( new PutObjectCommand( params ) )
-    console.log(
-      "Successfully uploaded object: " +
-      params.Bucket +
-      "/" +
-      params.Key
-    )
-    return data
+    return s3Client.send( new PutObjectCommand( params ) )
   } catch ( err ) {
-    console.log( "Error", err )
+    console.error( "Error", err )
   }
 }
 

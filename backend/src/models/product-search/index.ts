@@ -106,8 +106,6 @@ export class ProductSearch {
       return this.product.getById( id )
     } )
 
-    console.log( products[0] )
-
     return {
       numberOfProducts: parseInt( numberOfProducts ),
       products: products,

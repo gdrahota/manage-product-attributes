@@ -58,14 +58,7 @@ export class File {
     }
 
     try {
-      const data = await s3Client.send( new PutObjectCommand( params ) )
-      console.log(
-        "Successfully uploaded object: " +
-        params.Bucket +
-        "/" +
-        params.Key,
-        data
-      )
+      return s3Client.send( new PutObjectCommand( params ) )
     } catch ( err ) {
       console.error( "Error", err )
     }
