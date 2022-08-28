@@ -8,17 +8,14 @@
 
         <div class="col-2">
           <div class="row product-images">
-            <div class="col-6">
+            <div
+              v-for="file of files"
+              :key="file.id"
+              class="col-6"
+            >
               <q-img
+                :src="file.link"
                 class="q-ma-md"
-                src="/product-example.jpeg"
-                style="height: 80px; max-width: 80px"
-              />
-            </div>
-            <div class="col-6">
-              <q-img
-                class="q-ma-md"
-                src="/product-example-2.jpeg"
                 style="height: 80px; max-width: 80px"
               />
             </div>
@@ -93,6 +90,19 @@ export default {
     },
     firstProductGroup() {
       return this.productAttributeGroupsOfProductGroup.find(( { position } ) => position === 0)
+    },
+    files() {
+      const pictures = this.product.files.filter(( file ) => [ 'image/jpeg', 'image/png', 'image/webp' ].includes(file.mimeType))
+
+      if ( pictures.length > 1 ) {
+        return [ pictures[ 0 ], pictures[ 1 ] ]
+      }
+
+      if ( pictures.length > 0 ) {
+        return [ pictures[ 0 ] ]
+      }
+
+      return []
     },
   },
 
