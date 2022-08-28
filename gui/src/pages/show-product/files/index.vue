@@ -8,7 +8,7 @@
       <q-card class="border" flat>
         <q-card-section class="q-pa-none">
           <q-img
-            v-if="file.mimeType === 'image/jpeg'"
+            v-if="['image/jpeg', 'image/png', 'image/webp'].includes(file.mimeType)"
             :src="file.link"
           />
 

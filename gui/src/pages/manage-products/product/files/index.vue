@@ -33,7 +33,7 @@
             <pdf-viewer v-if="file.mimeType === 'application/pdf'" :file="file" />
 
             <q-img
-              v-else-if="file.mimeType === 'image/jpeg'"
+              v-else-if="['image/jpeg', 'image/png', 'image/webp'].includes(file.mimeType)"
               :src="file.link"
             />
 
@@ -72,16 +72,9 @@ export default {
     PdfViewer,
   },
 
-  computed: {
-    url() {
-      return `/api/files/product/${ this.$route.params.id }`
-    },
-  },
-
   methods: {
     async upload( files ) {
       if ( files ) {
-
         const formData = new FormData()
         formData.append('file', files[ 0 ])
 
@@ -122,6 +115,12 @@ export default {
     files: {
       type: Array,
       default: () => ([]),
+    },
+  },
+
+  watch: {
+    '$route.params.id'() {
+      this.$refs[ 'uploader' ].reset()
     },
   },
 }
