@@ -175,6 +175,11 @@ export const action = async ( actionName, payload, params ) => {
       config.payload = payload
       break
     }
+    case 'show-products.loadById': {
+      config.url = `${ getUrls('productSearch') }/${ params.id }`
+      config.method = 'GET'
+      break
+    }
   }
 
   const { restClient } = await import('@/store/http-service')

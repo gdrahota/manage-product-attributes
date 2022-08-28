@@ -182,7 +182,7 @@ export default {
   border-right: 1px solid #ddd
 
 .preview-page
-  max-width: 1600px
+  max-width: 1200px
   margin: 0 auto
   border-left: 1px solid #ddd
   border-right: 1px solid #ddd

@@ -152,9 +152,6 @@ export default {
 </script>
 
 <style lang="sass" scoped>
-.border-right
-  border-right: 1px solid #ddd
-
 .truncate
   white-space: nowrap
   overflow-x: hidden

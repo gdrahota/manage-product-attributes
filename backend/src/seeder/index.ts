@@ -2,17 +2,20 @@ import { Promise as BlueBird } from 'bluebird'
 import { createTableFromModel } from "../db/helper/database-table-create"
 
 const dirNames: string[] = [
-  'attr_values',
-  'attributes_of_product_group',
-  'attribute_groups_of_product_groups',
+  'attr-values',
+  'attributes-of-product-group',
+  'attribute-groups-of-product-groups',
   'attrs',
   'dealers',
+  'dealer-price-import-runs',
   'manufacturers',
-  'product_groups',
-  'product_to_attr_values',
-  'product_to_product_groups',
+  'files',
+  'product-groups',
+  'product-offers',
+  'product-to-attr-values',
+  'product-to-product-groups',
   'products',
-  'attributes_of_attribute_groups_of_product_groups',
+  'attributes-of-attribute-groups-of-product-groups',
 ]
 
 export const ensureDefaultTables = async () => {

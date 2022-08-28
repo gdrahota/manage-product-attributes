@@ -7,6 +7,7 @@ import { ProductAttributeValueTable, tProductAttributeValueTable } from "../../d
 import Bluebird from "bluebird"
 import { IProductAttributeTable, ProductAttributeTable } from "../../db/tables/product-attributes"
 import { snakeToCamelRecord } from "../../db/helper"
+import { ILatestProductOffer, ProductOfferTable } from "../../db/tables/product-offers"
 
 export interface IProductSearchFilter {
   attrId: number
@@ -43,16 +44,35 @@ type tResponse = {
   attributes: IResponseAttributesWithValues[]
 }
 
+interface IProductWithOffers extends IProduct {
+  offers: ILatestProductOffer[]
+}
+
 export class ProductSearch {
   private product = new Product()
   private productGroup = new ProductGroup()
   private productAttributeValueTable = new ProductAttributeValueTable()
-  private productAttributeTable = new ProductAttributeTable<IProductAttributeTable>()
+  private productAttributeTable = new ProductAttributeTable()
+  private productOfferTable = new ProductOfferTable()
+
+  async getById( id: number ): Promise<IProduct> {
+    return this.product.getById( id )
+  }
 
   async searchProductsAndAttributeValues( productGroupId: number, params: ISearchProductsProp ): Promise<tResponse> {
     return {
       ...await this.searchProducts( productGroupId, params ),
       attributes: await this.searchAttrValues( productGroupId, params.filters )
+    }
+  }
+
+  async getByIdWithOffers( id: number ): Promise<IProductWithOffers> {
+    const product = await this.product.getById( id )
+    const offers = await this.productOfferTable.getLatestByProductId( id )
+
+    return {
+      ...product,
+      offers,
     }
   }
 
@@ -76,7 +96,7 @@ export class ProductSearch {
 
     query
       .select( 'p.id' )
-      .orderBy( 'p.name' )
+      .orderBy( 'p.best_price' )
       .limit( itemsPerPage )
       .offset( itemsPerPage * (page - 1) )
 
@@ -86,9 +106,11 @@ export class ProductSearch {
       return this.product.getById( id )
     } )
 
+    console.log( products[0] )
+
     return {
       numberOfProducts: parseInt( numberOfProducts ),
-      products,
+      products: products,
     }
   }
 

@@ -1,73 +1,7 @@
 <template>
   <div v-if="productGroupId && productId && workingCopy" class="q-pa-md">
     <div class="row">
-      <div class="col-2 q-pr-sm">
-        <manufacturer
-          :manufacturer="workingCopy.manufacturer"
-          @set="setManufacturer"
-        />
-      </div>
-      <div class="col-9">
-        <product-name
-          :name="workingCopy.name"
-          @set="setName"
-        />
-      </div>
       <div class="col-1">
-        <q-chip
-          :color="workingCopy.show ? 'green' : 'grey'"
-          :text-color="workingCopy.show ? 'white' : 'black'"
-          class="q-mx-lg"
-          round
-        >
-          <span v-if="workingCopy.show">Online</span>
-          <span v-else>Offline</span>
-        </q-chip>
-      </div>
-    </div>
-
-    <div class="row q-mb-lg">
-      <div class="col-2 q-pr-sm">
-        <manufacturer-product-id
-          :manufacturer-product-id="workingCopy.manufacturerProductId"
-          @set="setManufacturerProductId"
-        />
-      </div>
-      <div class="col-2 q-pr-sm">
-        <ean-code
-          :ean-code="workingCopy.eanCode"
-          @set="setEanCode"
-        />
-      </div>
-    </div>
-
-    <template v-if="workingCopy.productGroups">
-      <product-to-product-groups
-        :product-group-ids="productGroupIds"
-        @add="addProductGroup"
-        @remove="removeProductGroup"
-      />
-
-      <div class="col-12 q-py-lg">
-        <attributes
-          :product="workingCopy"
-          :product-groups="productGroups"
-          @createAndAddValue="createAndAddValue"
-          @removeProductAttributeValue="removeProductAttributeValue"
-          @selectProductAttributeValue="selectProductAttributeValue"
-        />
-      </div>
-    </template>
-
-    <description
-      :value="workingCopy.description"
-      @set="setDescription"
-    />
-
-    <q-separator />
-
-    <div class="row q-mt-lg">
-      <div class="col-12">
         <q-btn
           :color="allowedBtn ? 'primary' : 'grey'"
           :disable="!allowedBtn"
@@ -80,7 +14,73 @@
           Save
         </q-btn>
       </div>
+      <div class="col-11">
+        <main-data
+          :working-copy="workingCopy"
+          @setManufacturer="setManufacturer"
+          @setName="setName"
+        />
+      </div>
     </div>
+
+    <q-card square>
+      <q-tabs
+        v-model="tab"
+        align="left"
+        class="text-black q-pa-none"
+        content-class="bg-teal-2"
+        indicator-color="yellow"
+      >
+        <q-tab icon="mdi-card-bulleted-outline" label="Groups and Attributes" name="productAttributes" />
+        <q-tab icon="mdi-file" label="Files" name="files" />
+        <q-tab icon="mdi-card-text-outline" label="Description" name="description" />
+        <q-tab icon="mdi-numeric" label="Product Ids" name="productIds" />
+      </q-tabs>
+      <q-card-section>
+
+        <q-tab-panels
+          v-model="tab"
+          animated
+          class="q-mt-md"
+        >
+          <q-tab-panel name="productAttributes">
+            <template v-if="workingCopy.productGroups">
+              <product-to-product-groups
+                :product-group-ids="productGroupIds"
+                @add="addProductGroup"
+                @remove="removeProductGroup"
+              />
+
+              <div class="col-12 q-py-lg">
+                <attributes
+                  :product="workingCopy"
+                  :product-groups="productGroups"
+                  @createAndAddValue="createAndAddValue"
+                  @removeProductAttributeValue="removeProductAttributeValue"
+                  @selectProductAttributeValue="selectProductAttributeValue"
+                />
+              </div>
+            </template>
+          </q-tab-panel>
+
+          <q-tab-panel name="description">
+            <description
+              :value="workingCopy.description"
+              @set="setDescription"
+            />
+          </q-tab-panel>
+
+          <q-tab-panel name="productIds">
+            <product-ids :working-copy="workingCopy" />
+          </q-tab-panel>
+
+          <q-tab-panel class="q-pa-none" name="files">
+            <files :files="workingCopy.files" />
+          </q-tab-panel>
+        </q-tab-panels>
+      </q-card-section>
+    </q-card>
+
     <pre>{{ workingCopy }}</pre>
   </div>
 </template>
@@ -91,20 +91,19 @@ import isEqual from 'lodash.isequal'
 
 import Attributes from './attributes'
 import Description from './description'
-import EanCode from './ean-code'
-import Manufacturer from './manufacturer'
-import ManufacturerProductId from './manucaturer-product-id'
-import ProductName from './name'
+import Files from './files'
+import MainData from './main-data'
+import ProductIds from './product-ids'
+
 import ProductToProductGroups from './product-to-product-groups'
 
 export default {
   components: {
     Attributes,
     Description,
-    EanCode,
-    Manufacturer,
-    ManufacturerProductId,
-    ProductName,
+    Files,
+    MainData,
+    ProductIds,
     ProductToProductGroups,
   },
 
@@ -148,6 +147,7 @@ export default {
 
   data: () => ({
     workingCopy: null,
+    tab: 'productAttributes',
   }),
 
   methods: {

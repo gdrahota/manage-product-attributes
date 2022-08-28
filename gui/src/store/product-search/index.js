@@ -149,6 +149,7 @@ const mutations = {
 
 const getters = {
   getProducts: state => state.foundProducts,
+  getProductById: state => productId => state.foundProducts.find(( { id } ) => id === productId),
   getAttrValuesByAttrId: state => attrId => state.foundAttributes && state.foundAttributes[ attrId ]
     ? state.foundAttributes[ attrId ]
     : [],

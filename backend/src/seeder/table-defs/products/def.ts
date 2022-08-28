@@ -34,5 +34,15 @@ export default {
       nullable: false,
       default: false,
     },
+    {
+      name: "best_price",
+      type: DataType.DECIMAL,
+      nullable: true,
+    },
+    {
+      name: "best_price_dealer_id",
+      type: DataType.INTEGER,
+      nullable: true,
+    },
   ]
 }

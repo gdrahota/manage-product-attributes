@@ -1,6 +1,6 @@
 import { pg } from "../../connect"
 import { GenericClass } from "../_base_class"
-import { camelToSnakeRecord } from "../../helper"
+import { snakeToCamelRecord } from "../../helper"
 
 export interface IProductTable {
   id: number
@@ -10,6 +10,8 @@ export interface IProductTable {
   manufacturerId: number
   eanCode: string | null
   manufacturerProductId: string | null
+  bestPrice: number | null
+  bestPriceDealerId: number | null
 }
 
 const TABLE_NAME = 'products'
@@ -25,10 +27,11 @@ export class ProductTable extends GenericClass<IProductTable> {
       .select()
   }
 
-  async patch( productId: number, obj: Record<any, any> ): Promise<any> {
-    return pg( TABLE_NAME )
-      .where( 'id', productId )
-      .update( camelToSnakeRecord( obj ) )
-  }
+  async getAllValid(): Promise<IProductTable[]> {
+    const rawData = await pg<IProductTable>( TABLE_NAME )
+      .where( 'show', true )
+      .select()
 
+    return rawData.map( snakeToCamelRecord ) as IProductTable[]
+  }
 }

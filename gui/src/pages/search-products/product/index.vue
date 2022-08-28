@@ -1,10 +1,11 @@
 <template>
   <q-card class="q-ma-sm product" flat>
     <q-card-section class="q-pa-none">
-      <div class="row">
+      <div v-if="product" class="row">
         <div class="col-1 flex flex-center">
           <div class="position">{{ (position + 1) + (page - 1) * itemsPerPage }}</div>
         </div>
+
         <div class="col-2">
           <div class="row product-images">
             <div class="col-6">
@@ -24,30 +25,43 @@
           </div>
         </div>
 
-        <div v-if="productGroup" class="col-5 q-pa-md">
-          <div class="col text-body2 q-pb-md">{{ `${ product.manufacturer.name } ${ product.name }` }}</div>
-
-          <div class="text-caption">
-            <table>
-              <tr>
-                <td class="text-bold" colspan="2">{{ firstProductGroup.name }}:</td>
-              </tr>
-              <product-attribute
-                v-for="(attr, key) of firstProductGroup.attributes"
-                :key="key"
-                :product-attribute="getProductAttributeById(attr.attrId)"
-                :product-group-attribute="productGroup.attributes.find(({attrId}) => attrId === attr.attrId)"
-                :value-obj="product.attributeValues.find(({ attrId }) => attrId === attr.attrId)"
-              />
-            </table>
+        <div class="col-9 q-pa-md">
+          <div class="col text-body2 q-pb-md text-underline">
+            <router-link :to="getRouteToProduct(product)" class="title">
+              {{ `${ product.manufacturer.name } ${ product.name }` }}
+            </router-link>
           </div>
-        </div>
 
-        <div v-if="productGroup" class="col-2 q-pa-md text-right offers">
-          {{ Math.round(Math.random() * 20) + 1 }} Angebote
-        </div>
-        <div v-if="productGroup" class="col-2 q-pa-md text-right price">
-          <span class="low">{{ lowestPrice | number(2) }} €</span> - {{ highestPrice | number(2) }} €
+
+          <div class="row">
+            <div class="col-6">
+              <div class="text-caption">
+                <table>
+                  <tr>
+                    <td class="text-bold text-body1" colspan="2">{{ firstProductGroup.name }}:</td>
+                  </tr>
+                  <product-attribute
+                    v-for="(attr, key) of firstProductGroup.attributes"
+                    :key="key"
+                    :product-attribute="getProductAttributeById(attr.attrId)"
+                    :product-group-attribute="productGroup.attributes.find(({attrId}) => attrId === attr.attrId)"
+                    :value-obj="product.attributeValues.find(({ attrId }) => attrId === attr.attrId)"
+                  />
+                </table>
+              </div>
+            </div>
+
+            <div class="col-3">
+              <div class="number-of-offers">
+                {{ product.offers.length }} Angebote
+              </div>
+            </div>
+
+            <div class="col-3">
+              <best-price :dealer="product.bestPriceDealer" :price="product.bestPrice" />
+            </div>
+          </div>
+
         </div>
       </div>
 
@@ -58,10 +72,12 @@
 <script>
 import { mapGetters } from 'vuex'
 
+import BestPrice from './best-price'
 import ProductAttribute from './product-attribute'
 
 export default {
   components: {
+    BestPrice,
     ProductAttribute,
   },
 
@@ -78,11 +94,16 @@ export default {
     firstProductGroup() {
       return this.productAttributeGroupsOfProductGroup.find(( { position } ) => position === 0)
     },
-    lowestPrice() {
-      return Math.random() * 36 + 170
-    },
-    highestPrice() {
-      return Math.random() * 74 + this.lowestPrice
+  },
+
+  methods: {
+    getRouteToProduct( product ) {
+      return {
+        name: 'show-product',
+        params: {
+          id: product.id,
+        },
+      }
     },
   },
 
@@ -105,6 +126,13 @@ export default {
 
 <style lang="sass">
 .product
+  .title
+    font-size: 16px
+
+  .number-of-offers
+    font-size: 14px
+    margin-top: 7px
+
   .position
     font-size: 30px
     color: #888
@@ -122,8 +150,5 @@ export default {
   .price
     font-size: 20px
     color: teal
-
-    .low
-      font-weight: bold
-
+    font-weight: bold
 </style>

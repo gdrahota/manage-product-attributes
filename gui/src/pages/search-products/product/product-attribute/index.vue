@@ -1,6 +1,6 @@
 <template>
   <tr>
-    <td class="q-pr-xs q-pl-sm">
+    <td class="q-pr-xs q-pl-sm text-body2">
       {{ productAttribute.name }}:
     </td>
     <td>

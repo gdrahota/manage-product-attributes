@@ -55,7 +55,7 @@ export default {
       return this.getById(this.$route.params.id)
     },
     hasChanged() {
-      return !isEqual(this.attribute, this.workingCopy)
+      return !isEqual(this.item, this.workingCopy)
     },
   },
 
@@ -73,8 +73,8 @@ export default {
       add: 'dealers/add',
     }),
     init() {
-      if ( this.attribute ) {
-        this.workingCopy = JSON.parse(JSON.stringify(this.attribute))
+      if ( this.item ) {
+        this.workingCopy = JSON.parse(JSON.stringify(this.item))
       } else if ( this.$route.params.id === 'new' ) {
         this.workingCopy = {
           id: null,

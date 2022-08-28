@@ -1,3 +1,19 @@
 .text-underline {
 	text-decoration: underline;
 }
+
+.clickable {
+	cursor: pointer;
+}
+
+.border-right {
+	border-right: 1px solid #ddd;
+}
+
+.border-left {
+	border-left: 1px solid #ddd;
+}
+
+.border {
+	border: 1px solid #ddd;
+}
