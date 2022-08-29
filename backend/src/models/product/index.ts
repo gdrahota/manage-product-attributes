@@ -9,8 +9,9 @@ import { IProductAttributeTable, ProductAttributeTable } from "../../db/tables/p
 import { ProductAttributeValueTable, tProductAttributeValueTable } from "../../db/tables/product-attribute-values"
 import { camelToSnakeRecord } from "../../db/helper"
 import { DealerTable, tDealerTable } from "../../db/tables/dealers"
-import { ILatestProductOffer, ProductOfferTable } from "../../db/tables/product-offers"
+import { ProductOfferCurrentTable } from "../../db/tables/product-offers-current"
 import { EnumEntityName, FileTable, tFileTable } from "../../db/tables/files"
+import { IProductOffer } from "../../db/tables/product-offers-history"
 
 export interface IAttributeValue {
   id: number
@@ -30,7 +31,7 @@ export interface IProduct {
   attributeValues: IAttributeValue[]
   bestPrice: number | null
   bestPriceDealer: tDealerTable | null
-  offers: ILatestProductOffer[]
+  offers: IProductOffer[]
   files: tFileTable[]
 }
 
@@ -44,7 +45,7 @@ export class Product {
   private productAttributeTable = new ProductAttributeTable()
   private productAttributeValueTable = new ProductAttributeValueTable()
   private dealerTable = new DealerTable()
-  private productOfferTable = new ProductOfferTable()
+  private productOfferCurrentTable = new ProductOfferCurrentTable()
   private fileTable = new FileTable()
 
   async getById( id: number ): Promise<IProduct> {
@@ -61,9 +62,11 @@ export class Product {
     }
 
     const productToProductGroups = await this.productToProductGroupTable.getByProductId( id )
+
     const productGroups = await BluebirdPromise.mapSeries( productToProductGroups, productToProductGroup => {
       return this.productGroupTable.getById( productToProductGroup.productGroupId )
     } ) as unknown as IProductGroup[]
+
 
     const productToAttributeRawValues = await this.productToAttributeValueTable.getByProductId( id ) as IProductToAttributeValueTable[]
 
@@ -105,6 +108,10 @@ export class Product {
 
     const bestPriceDealer = await this.dealerTable.getById( baseData.bestPriceDealerId as number )
 
+    const offers = await this.productOfferCurrentTable.getByProductId( id )
+
+    const files = await this.fileTable.getByEntityNameAndInstanceId( EnumEntityName.PRODUCT, id )
+
     return {
       id,
       name: baseData.name,
@@ -117,8 +124,8 @@ export class Product {
       eanCode: baseData.eanCode,
       manufacturerProductId: baseData.manufacturerProductId,
       attributeValues,
-      offers: await this.productOfferTable.getLatestByProductId( id ),
-      files: await this.fileTable.getByEntityNameAndInstanceId( EnumEntityName.PRODUCT, id ),
+      offers,
+      files,
     }
   }
 

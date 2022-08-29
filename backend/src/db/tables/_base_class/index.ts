@@ -33,7 +33,7 @@ export class GenericClass<T> {
   }
 
   async update( item: any ): Promise<T> {
-    await pg( this.name ).where( 'id', item.id ).update( item, [ '*' ] )
+    await pg( this.name ).where( 'id', item.id ).update( camelToSnakeRecord( item ), [ '*' ] )
     const response = await this.getById( item.id )
 
     if ( ! response ) {

@@ -1,7 +1,8 @@
 import { DataType } from "../../../db/enums/data-type"
+import { tTableDef } from "../../index"
 
-export default {
-  "name": "product_offers",
+const tableDef: tTableDef = {
+  "name": "product_offers_current",
   "fields": [
     {
       "name": "import_id",
@@ -28,5 +29,30 @@ export default {
       "type": DataType.DECIMAL,
       "nullable": false
     },
+    {
+      "name": "total_price",
+      "type": DataType.DECIMAL,
+      "nullable": false
+    },
+  ],
+  indexes: [
+    {
+      unique: false,
+      fieldNames: [ 'product_id' ]
+    },
+    {
+      unique: false,
+      fieldNames: [ 'dealer_id' ]
+    },
+    {
+      unique: true,
+      fieldNames: [ 'dealer_id', 'product_id' ]
+    },
+    {
+      unique: false,
+      fieldNames: [ 'product_id', 'total_price' ]
+    },
   ]
 }
+
+export default tableDef

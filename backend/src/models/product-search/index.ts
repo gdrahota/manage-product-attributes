@@ -7,7 +7,8 @@ import { ProductAttributeValueTable, tProductAttributeValueTable } from "../../d
 import Bluebird from "bluebird"
 import { IProductAttributeTable, ProductAttributeTable } from "../../db/tables/product-attributes"
 import { snakeToCamelRecord } from "../../db/helper"
-import { ILatestProductOffer, ProductOfferTable } from "../../db/tables/product-offers"
+import { IProductOffer } from "../../db/tables/product-offers-history"
+import { ProductOfferCurrentTable } from "../../db/tables/product-offers-current"
 
 export interface IProductSearchFilter {
   attrId: number
@@ -45,7 +46,7 @@ type tResponse = {
 }
 
 interface IProductWithOffers extends IProduct {
-  offers: ILatestProductOffer[]
+  offers: IProductOffer[]
 }
 
 export class ProductSearch {
@@ -53,22 +54,29 @@ export class ProductSearch {
   private productGroup = new ProductGroup()
   private productAttributeValueTable = new ProductAttributeValueTable()
   private productAttributeTable = new ProductAttributeTable()
-  private productOfferTable = new ProductOfferTable()
+  private productOfferCurrentTable = new ProductOfferCurrentTable()
 
   async getById( id: number ): Promise<IProduct> {
     return this.product.getById( id )
   }
 
   async searchProductsAndAttributeValues( productGroupId: number, params: ISearchProductsProp ): Promise<tResponse> {
+    const start = new Date()
+    const products = await this.searchProducts( productGroupId, params )
+    const attributes = await this.searchAttrValues( productGroupId, params.filters )
+
+    // @ts-ignore
+    console.log( 'searchProductsAndAttributeValues()', (new Date() - start) / 1000, 's' )
+
     return {
-      ...await this.searchProducts( productGroupId, params ),
-      attributes: await this.searchAttrValues( productGroupId, params.filters )
+      ...products,
+      attributes
     }
   }
 
   async getByIdWithOffers( id: number ): Promise<IProductWithOffers> {
     const product = await this.product.getById( id )
-    const offers = await this.productOfferTable.getLatestByProductId( id )
+    const offers = await this.productOfferCurrentTable.getByProductId( id )
 
     return {
       ...product,
@@ -102,9 +110,7 @@ export class ProductSearch {
 
     const results = await query
 
-    const products = await Bluebird.mapSeries( results, async ( { id } ) => {
-      return this.product.getById( id )
-    } )
+    const products = await Bluebird.mapSeries( results, ( { id } ) => this.product.getById( id ) )
 
     return {
       numberOfProducts: parseInt( numberOfProducts ),
@@ -113,6 +119,8 @@ export class ProductSearch {
   }
 
   private async searchAttrValues( productGroupId: number, filters: IProductSearchFilter[] ): Promise<any> {
+    const start = new Date()
+
     const productGroup = await this.productGroup.getById( productGroupId )
 
     const response: any = {}
@@ -168,6 +176,9 @@ export class ProductSearch {
         }
       } ).filter( i => !! i )
     } )
+
+    // @ts-ignore
+    console.log( 'searchAttrValues()', (new Date() - start) / 1000, 's' )
 
     return response
   }

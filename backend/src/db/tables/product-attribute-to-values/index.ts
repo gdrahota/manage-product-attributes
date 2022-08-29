@@ -1,7 +1,6 @@
 import { GenericClass } from "../_base_class"
 import { pg } from "../../connect"
-import { Promise as BluebirdPromise } from 'bluebird'
-import { camelToSnakeRecord } from "../../helper"
+import { camelToSnakeRecord, snakeToCamelRecord } from "../../helper"
 
 export interface IProductToAttributeValueTable {
   id: number
@@ -17,13 +16,11 @@ export class ProductToAttributeValueTable<IProductToAttributeValueTable> extends
   }
 
   async getByProductId( id: number ) {
-    const records = pg( TABLE_NAME )
+    const records = await pg( TABLE_NAME )
       .where( 'product_id', id )
       .select()
 
-    return BluebirdPromise.map( records, ( { id } ) => {
-      return this.getById( id )
-    } )
+    return records.map( snakeToCamelRecord )
   }
 
   async deleteByProductIdAndAttributeValueId( productId: number, productAttributeValueId: number ) {

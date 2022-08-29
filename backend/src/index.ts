@@ -3,15 +3,11 @@ import dotenv from 'dotenv'
 import { connectToDatabases } from "./db/connect"
 import { registerRoutes } from "./endpoints"
 import { ensureDefaultTables } from "./seeder"
-import { createTasks } from "./tasks"
-import { uploadObject } from "./test"
 import { fileUploadMiddleware } from "./middle-ware/file-upload"
 
 (async () => {
   Error.stackTraceLimit = Infinity
   dotenv.config()
-
-  await uploadObject()
 
   connectToDatabases()
   console.log( 'connected' )
@@ -39,6 +35,6 @@ import { fileUploadMiddleware } from "./middle-ware/file-upload"
 
   await ensureDefaultTables()
 
-  await createTasks()
+  // await createTasks()
   // await createDealerOffers()
 })()

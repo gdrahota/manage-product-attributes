@@ -1,5 +1,23 @@
 import { Promise as BlueBird } from 'bluebird'
 import { createTableFromModel } from "../db/helper/database-table-create"
+import { DataType } from "../db/enums/data-type"
+
+type tField = {
+  name: string,
+  type: DataType,
+  nullable: boolean,
+}
+
+type tIndex = {
+  unique: boolean,
+  fieldNames: string[]
+}
+
+export type tTableDef = {
+  name: string,
+  fields: tField[],
+  indexes?: tIndex[]
+}
 
 const dirNames: string[] = [
   'attr-values',
@@ -11,7 +29,8 @@ const dirNames: string[] = [
   'manufacturers',
   'files',
   'product-groups',
-  'product-offers',
+  'product-offers-current',
+  'product-offers-history',
   'product-to-attr-values',
   'product-to-product-groups',
   'products',
