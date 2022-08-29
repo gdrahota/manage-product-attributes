@@ -29,8 +29,8 @@
                   :key="key"
                   class="row offer text-blue-8"
                 >
-                  <div class="col-4">{{ offer.dealer.name }}</div>
-                  <div class="col-2">1 bis 2 Wochen</div>
+                  <div class="col-4 text-grey-8">{{ offer.dealer.name }}</div>
+                  <div class="col-2 right">1 bis 2 Wochen</div>
                   <div class="col-2 right">{{ offer.itemPrice | number(2) }} €</div>
                   <div class="col-2 right">{{ offer.shippingPrice| number(2) }} €</div>
                   <div class="col-2 right">{{ offer.totalPrice | number(2) }} €</div>
@@ -50,6 +50,14 @@
             <q-card flat>
               <q-card-section>
                 <files :files="product.files" />
+
+                <attributes
+                  v-for="productGroup of productGroups"
+                  :key="productGroup.id"
+                  :product="product"
+                  :product-group="productGroup"
+                  class="q-mb-md"
+                />
 
                 <q-field
                   label="Description"
@@ -72,16 +80,19 @@
 <script>
 import { mapActions, mapGetters } from 'vuex'
 
+import Attributes from './attributes'
 import Files from './files'
 
 export default {
   components: {
+    Attributes,
     Files,
   },
 
   computed: {
     ...mapGetters({
       getById: 'showProducts/getById',
+      getProductGroupById: 'productGroups/getById',
     }),
     productId() {
       return parseInt(this.$route.params.id)
@@ -90,6 +101,11 @@ export default {
       return this.productId
         ? this.getById(this.productId)
         : null
+    },
+    productGroups() {
+      return this.product
+        ? this.product.productGroups.map(( { id } ) => this.getProductGroupById(id))
+        : []
     },
   },
 
@@ -118,15 +134,11 @@ export default {
   font-weight: bold
 
 .offers
-  .row
-    border-left: 1px solid #ddd
+  .row > div
+    border-bottom: 1px dotted #ddd
 
   .row:first-child
-    border-top: 1px solid #ddd
-
-  .row > div
-    border-right: 1px solid #ddd
-    border-bottom: 1px solid #ddd
+    border-bottom: 2px solid #ccc
 
   .header > div
     font-size: 18px
@@ -141,9 +153,6 @@ export default {
 
   .offer > .right
     text-align: right
-
-  .offer > div:first-child
-    font-weight: bold
 
   .offer > div:last-child
     font-weight: bold

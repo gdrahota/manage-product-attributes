@@ -1,5 +1,5 @@
 <template>
-  <q-card class="q-ma-sm product" flat>
+  <q-card class="q-ma-sm product" flat @click="routeTo(getRouteToProduct(product))">
     <q-card-section class="q-pa-none">
       <div v-if="product" class="row">
         <div class="col-1 flex flex-center">
@@ -16,17 +16,15 @@
               <q-img
                 :src="file.link"
                 class="q-ma-md"
-                style="height: 80px; max-width: 80px"
+                style="height: 60px; max-width: 60px"
               />
             </div>
           </div>
         </div>
 
-        <div class="col-9 q-pa-md">
-          <div class="col text-body2 q-pb-md text-underline">
-            <router-link :to="getRouteToProduct(product)" class="title">
-              {{ `${ product.manufacturer.name } ${ product.name }` }}
-            </router-link>
+        <div class="col-9 q-pa-xs">
+          <div class="col text-body1 text-bold text-grey-7">
+            <div class="title">{{ `${ product.manufacturer.name } ${ product.name }` }}</div>
           </div>
 
 
@@ -35,7 +33,7 @@
               <div class="text-caption">
                 <table>
                   <tr>
-                    <td class="text-bold text-body1" colspan="2">{{ firstProductGroup.name }}:</td>
+                    <td class="text-subtitle2" colspan="2">{{ firstProductGroup.name }}:</td>
                   </tr>
                   <product-attribute
                     v-for="(attr, key) of firstProductGroup.attributes"
@@ -115,6 +113,9 @@ export default {
         },
       }
     },
+    routeTo( route ) {
+      this.$router.push(route)
+    },
   },
 
   props: {
@@ -136,6 +137,8 @@ export default {
 
 <style lang="sass">
 .product
+  cursor: pointer
+
   .title
     font-size: 16px
 
