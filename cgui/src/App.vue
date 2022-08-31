@@ -1,20 +1,23 @@
 <template>
-  <div>
-    <router-view></router-view>
+  <div class="bg-secondary">
+    <q-layout view="hHh lpR fFf">
+      <app-header></app-header>
+      <router-view></router-view>
+    </q-layout>
   </div>
 </template>
 
 <script>
 import { mapActions } from 'vuex';
-
+import AppHeader from "@/components/app-header";
 
 export default {
   components: {
-    
+    AppHeader
   },
 
   data: () => ({
-    
+
   }),
 
   methods: {
