@@ -5,7 +5,7 @@ import { camelToSnakeRecord, snakeToCamelRecord } from "../../helper"
 export type tProductAttributeValueTable = {
   id: number
   attrId: number
-  decimalValue: string | null
+  decimalValue: number | null
   textValue: string | null
   boolValue: boolean | null
 }

@@ -14,7 +14,7 @@ export const createDealerOffers = async () => {
   const dealerPriceImportRunTable = new DealerPriceImportRunTable()
 
   const dealers = await dealerTable.getByStatus( EnumDealerStatus.VALID )
-  const products = await productTable.getAllValid()
+  const products = await productTable.getAll()
 
   await Bluebird.each( dealers, async ( dealer ) => {
     const importRun = await dealerPriceImportRunTable.add( { dealerId: dealer.id } )

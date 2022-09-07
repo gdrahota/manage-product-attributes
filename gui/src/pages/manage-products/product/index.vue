@@ -71,7 +71,9 @@
           </q-tab-panel>
 
           <q-tab-panel name="productIds">
-            <product-ids :working-copy="workingCopy" />
+            <product-ids
+              :working-copy="workingCopy"
+            />
           </q-tab-panel>
 
           <q-tab-panel class="q-pa-none" name="files">

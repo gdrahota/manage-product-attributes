@@ -14,7 +14,7 @@ export interface IProductGroup {
   attributes: IProductAttributesOfProductGroupTable[]
 }
 
-export class ProductGroup {
+export class ProductGroupService {
   private productGroupTable = new ProductGroupTable()
   private productAttributesOfProductGroupTable = new ProductAttributesOfProductGroupTable<IProductAttributesOfProductGroupTable>()
 

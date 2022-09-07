@@ -44,7 +44,7 @@ export const ensureDefaultTables = async () => {
       await createTableFromModel( tableDefDDL )
     } catch ( err: any ) {
       if ( err.code !== '42P07' ) {
-        console.error( `ERROR on ensuring default table "${ dirNames }":`, err )
+        console.error( `ERROR on ensuring default table "${ dirName }":`, err )
       }
     }
   } )

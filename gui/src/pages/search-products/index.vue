@@ -63,6 +63,7 @@
                 v-if="!isSearchInProgress"
                 v-model="page"
                 :max="lastPage"
+                :max-pages="7"
                 boundary-links
                 class="q-pb-md"
                 color="teal"

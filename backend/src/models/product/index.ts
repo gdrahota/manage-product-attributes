@@ -2,7 +2,7 @@ import { IManufacturerTable, ManufacturerTable } from "../../db/tables/manufactu
 import { ProductGroupTable } from "../../db/tables/product-groups"
 import { ProductTable } from "../../db/tables/products"
 import { ProductToProductGroupTable } from "../../db/tables/product-to-product-groups"
-import { IProductGroup, ProductGroup } from "../product-group"
+import { IProductGroup, ProductGroupService } from "../product-group"
 import { Promise as BluebirdPromise } from 'bluebird'
 import { IProductToAttributeValueTable, ProductToAttributeValueTable } from "../../db/tables/product-attribute-to-values"
 import { IProductAttributeTable, ProductAttributeTable } from "../../db/tables/product-attributes"
@@ -22,23 +22,23 @@ export interface IAttributeValue {
 export interface IProduct {
   id: number
   name: string
-  description: string
+  description: string | null
   show: boolean
   manufacturer: IManufacturerTable
   productGroups: IProductGroup[]
   eanCode: string | null
   manufacturerProductId: string | null
   attributeValues: IAttributeValue[]
-  bestPrice: number | null
-  bestPriceDealer: tDealerTable | null
-  offers: IProductOffer[]
+  bestPrice?: number | null
+  bestPriceDealer?: tDealerTable | null
+  offers?: IProductOffer[]
   files: tFileTable[]
 }
 
-export class Product {
+export class ProductService {
   private productTable = new ProductTable()
   private productToProductGroupTable = new ProductToProductGroupTable()
-  private productGroup = new ProductGroup()
+  private productGroup = new ProductGroupService()
   private productGroupTable = new ProductGroupTable()
   private manufacturerTable = new ManufacturerTable()
   private productToAttributeValueTable = new ProductToAttributeValueTable()

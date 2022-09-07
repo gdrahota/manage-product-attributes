@@ -3,13 +3,13 @@
     <div class="col-2 q-pr-sm">
       <manufacturer-product-id
         :manufacturer-product-id="workingCopy.manufacturerProductId"
-        @set="data => $emit('set', data)"
+        @set="setManufacturerProductId"
       />
     </div>
     <div class="col-2 q-pr-sm">
       <ean-code
         :ean-code="workingCopy.eanCode"
-        @set="data => $emit('set', data)"
+        @set="setEanCode"
       />
     </div>
   </div>
@@ -25,7 +25,14 @@ export default {
     ManufacturerProductId,
   },
 
-  methods: {},
+  methods: {
+    setManufacturerProductId( data ) {
+      this.workingCopy.manufacturerProductId = data
+    },
+    setEanCode( data ) {
+      this.workingCopy.eanCode = data
+    },
+  },
 
   props: {
     workingCopy: {

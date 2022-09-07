@@ -7,7 +7,7 @@
     square
   >
     <template v-slot:control>
-      <div class="full-width text-right">{{ formattedValue }} {{ attribute.representationUnit }}</div>
+      <div class="full-width text-right">{{ formattedValue }}</div>
     </template>
   </q-field>
 </template>
@@ -24,8 +24,13 @@ export default {
       return this.getById(this.attribute.attrId)
     },
     formattedValue() {
-      const { fractionalDigits, representationUnitFactor } = this.attribute
-      return this.$root.$options.filters.number(this.attributeValue.value * representationUnitFactor, fractionalDigits || 0)
+      if ( this.attributeValue.value === undefined ) {
+        return ''
+      }
+
+      const { fractionalDigits, representationUnitFactor, representationUnit } = this.attribute
+      const formattedValue = this.$root.$options.filters.number(this.attributeValue.value * representationUnitFactor, fractionalDigits || 0)
+      return `${ formattedValue } ${ representationUnit }`
     },
   },
 

@@ -1,6 +1,6 @@
-import { IProduct, Product } from "../product"
+import { IProduct, ProductService } from "../product"
 import { EnumSearchStrategy } from "../../db/enums/search-strategy"
-import { ProductGroup } from "../product-group"
+import { ProductGroupService } from "../product-group"
 import { EnumProductValueType } from "../../db/enums/product-value-type"
 import { pg } from "../../db/connect"
 import { ProductAttributeValueTable, tProductAttributeValueTable } from "../../db/tables/product-attribute-values"
@@ -50,8 +50,8 @@ interface IProductWithOffers extends IProduct {
 }
 
 export class ProductSearch {
-  private product = new Product()
-  private productGroup = new ProductGroup()
+  private product = new ProductService()
+  private productGroup = new ProductGroupService()
   private productAttributeValueTable = new ProductAttributeValueTable()
   private productAttributeTable = new ProductAttributeTable()
   private productOfferCurrentTable = new ProductOfferCurrentTable()
