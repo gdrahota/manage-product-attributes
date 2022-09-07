@@ -9,7 +9,7 @@ export class GenericClass<T> {
   }
 
   async getAll(): Promise<T[]> {
-    const records = await pg( this.name ).select()
+    const records = await pg( this.name ).select().orderBy( 'id' )
     return records.map( snakeToCamelRecord ) as T[]
   }
 

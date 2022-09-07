@@ -1,61 +1,50 @@
 <template>
-  <div>
+  <div id="product-filter">
     <q-card
-      v-for="(group, groupId) of productAttrGroups"
-      :key="groupId"
-      bordered
+      v-for="(group, key) of productAttrGroups"
+      :key="key"
+      :class="{ 'border-top': key > 0, 'q-pt-md': key > 0 }"
       class="col-6"
       flat
     >
-      <q-card-section>
+      <q-card-section class="q-py-none">
         <div class="text-h6">{{ group.name }}</div>
       </q-card-section>
 
-      <q-separator />
-
-      <q-card-section class="q-pt-none">
-        <div class="row">
-          <div
-            v-for="(attribute, attrId) of group.attributes"
-            :key="attrId"
-            class="col-4"
-          >
-            <div class="row q-pt-md">
-              <div class="col-4">
-                <q-field
-                  borderless
-                  dense
-                >
-                  <template v-slot:control>
-                    <div class="q-px-sm" style="text-align: right; width: 100%">
-                      <span class="text-body2">{{ attribute.name }}:</span>
-                    </div>
-                  </template>
-                </q-field>
-              </div>
-              <div class="col-8">
-                <component
-                  :is="getComponent(attribute.searchStrategy)"
-                  :attributeDef="attribute"
-                  :filter="filters.find(filter => attribute.id === filter.attrId) || {}"
-                  :values="attribute.values"
-                  @set="data => setFilter(attribute, data)"
-                />
-              </div>
+      <q-card-section
+        class="q-pt-none"
+      >
+        <div
+          v-for="(attribute, attrId) of group.attributes"
+          :key="attrId"
+        >
+          <div class="row q-py-md">
+            <div class="col-4">
+              <q-field
+                borderless
+                dense
+              >
+                <template v-slot:control>
+                  <div class="q-px-sm" style="text-align: right; width: 100%">
+                    <span class="text-body2">{{ attribute.name }}:</span>
+                  </div>
+                </template>
+              </q-field>
+            </div>
+            <div class="col-8">
+              <component
+                :is="getComponent(attribute.searchStrategy)"
+                :attributeDef="attribute"
+                :filter="filters.find(filter => attribute.id === filter.attrId) || {}"
+                :values="attribute.values"
+                @set="data => setFilter(attribute, data)"
+              />
             </div>
           </div>
         </div>
+
       </q-card-section>
     </q-card>
-
-    <div class="q-pt-md">
-      <q-btn
-        :color="filters.length === 0 ? 'grey' : 'primary'"
-        :disable="filters.length === 0"
-        label="Filter"
-        @click="search"
-      />
-    </div>
   </div>
 </template>
 
@@ -136,9 +125,6 @@ export default {
         ...data,
       })
     },
-    search() {
-      this.$emit('searchProducts')
-    },
   },
 
   props: {
@@ -149,3 +135,9 @@ export default {
   },
 }
 </script>
+
+<style lang="sass">
+#product-filter
+  .border-top
+    border-top: 1px dotted #ddd
+</style>
