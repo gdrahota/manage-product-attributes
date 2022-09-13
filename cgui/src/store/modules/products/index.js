@@ -53,6 +53,7 @@ const mutations = {
 //getters
 const getters = {
   getAll: state => state.items,
+  getById: state => id => state.items.find(p => p.id === id),
   getSearchResult: state => state.searchResults
 }
 

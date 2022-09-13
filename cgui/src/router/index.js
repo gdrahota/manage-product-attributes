@@ -1,8 +1,9 @@
 import Vue from 'vue'
 import VueRouter from 'vue-router'
 import Home from '@/pages/home'
-import FilterCategories from '@/pages/filter_categories'
+import FilterCategories from '@/pages/filter-categories'
 import ProductsPage from '@/pages/products'
+import ProductDetail from "@/pages/product-detail";
 
 
 Vue.use(VueRouter)
@@ -25,6 +26,11 @@ export const routes = [
     name: 'main_filter',
     path: '/filter-categories/:id',
     component: FilterCategories
+  },
+  {
+    name: 'product-details',
+    path: '/products/:id',
+    component: ProductDetail
   }
 ]
 

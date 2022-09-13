@@ -1,5 +1,8 @@
 <template>
-  <div class="p_card bg-white outline">
+  <div
+    class="p_card bg-white outline"
+    @click="moveToDetailPage(product.id)"
+  >
     <div class="">
       <img
         class="q-pa-sm"
@@ -20,6 +23,16 @@ export default {
   props: {
     product: Object
   },
+  methods: {
+    moveToDetailPage(productId){
+      this.$router.push({
+        name: 'product-details',
+        params: {
+          id: productId
+        }
+      })
+    }
+  }
 }
 </script>
 

@@ -6,8 +6,6 @@
     class="q-pl-sm q-ma-none"
     style="border-radius: 5px; background-color: #f2f9fd"
     dense
-    :popup-content-style="{backgroundColor: '#ffffff'}"
-    onmouseover="this.style.color='#f2f9fd'"
     hide-bottom-space
     option-label="formatted"
     options-dense
