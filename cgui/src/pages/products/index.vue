@@ -59,7 +59,7 @@
               color="accent"
               direction-links
             />
-            <div>[ A Total Of {{Math.ceil((filteredProducts.length / 9))}} Pages ]</div>
+            <div>[ A Total Of {{ Math.ceil((filteredProducts.length / 9)) }} Pages ]</div>
           </div>
         </div>
       </div>
@@ -87,12 +87,11 @@ export default {
       searchResult: "products/getSearchResult"
     }),
 
-    filteredProducts(){
+    filteredProducts() {
       const searchString = this.searchText ? this.searchText : this.$route.query.query ? this.$route.query.query : ''
-      if ( searchString  === '') {
+      if (searchString === '') {
         return this.products
-      }
-      else {
+      } else {
         const inputed = searchString.toLowerCase()
         this.doSearch(inputed)
         return this.searchResult
@@ -102,19 +101,25 @@ export default {
 
   watch: {
     '$route.query.query': {
-      handler(newVal){
+      handler(newVal) {
         this.searchText = newVal
       },
       immediate: true
     },
+
+    'currentPage': {
+      handler(newVal) {
+
+      }
+    }
   },
 
-  methods:{
+  methods: {
     ...mapActions({
       doSearch: 'products/search'
     }),
 
-    updateSearchQuery(){
+    updateSearchQuery() {
       this.$router.push({path: '/search', query: {query: this.searchText}})
     }
   }

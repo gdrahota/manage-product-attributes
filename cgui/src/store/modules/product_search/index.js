@@ -29,6 +29,8 @@ const mutations = {
 
 const getters = {
   getProducts: state => state.result?.products || [],
+  getNoOfProducts: state => state.result?.numberOfProducts || 0,
+  getWhole: state => state.result,
   getAttrValuesByAttrId: state => attrId => state.result?.attributes[ attrId ] || [],
 }
 

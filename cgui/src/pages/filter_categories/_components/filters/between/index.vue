@@ -7,12 +7,13 @@
         :options="optionsFrom"
         clearable
         dense
+        style="border-radius: 5px; background-color: #f2f9fd"
+        class="q-pl-sm"
         hide-bottom-space
         label="from"
         option-label="formatted"
         options-dense
-        outlined
-        hide-dropdown-icon
+        borderless
       />
     </div>
     <q-space />
@@ -22,11 +23,13 @@
         :options="optionsTill"
         clearable
         dense
+        style="border-radius: 5px; background-color: #f2f9fd"
         hide-bottom-space
+        class="q-pl-sm"
         label="to"
         option-label="formatted"
         options-dense
-        outlined
+        borderless
       />
     </div>
   </div>

@@ -3,12 +3,10 @@
     <q-card
       v-for="(group, groupId) of productAttrGroups"
       :key="groupId"
-      bordered
-      class="col-6 q-mb-md q-pa-sm"
-      flat
+      class="f_card col-6 q-mb-lg q-pa-sm"
     >
       <div>
-        <div class="text-subtitle-1 text-bold">{{ group.name }}</div>
+        <div style="font-size: 18px; font-weight: bolder">{{ group.name }}</div>
       </div>
 
       <div class="q-pt-none">
@@ -20,7 +18,7 @@
           >
             <div class="row q-pt-md">
               <div class="col-12">
-                <div class="text-weight-medium">{{attribute.name}}</div>
+                <div style="font-size: 15px; font-weight: bold">{{attribute.name}}</div>
               </div>
               <div class="col-12">
                 <component
@@ -39,13 +37,14 @@
 
     <div class="q-pt-md">
       <q-btn
-        :color="Object.keys(filters).length === 0 ? 'grey' : 'primary'"
+        :color="Object.keys(filters).length === 0 ? 'grey-4' : 'accent'"
         :disable="Object.keys(filters).length === 0"
+        :text-color="Object.keys(filters).length === 0 ? 'accent' : 'white'"
         label="Filter"
         @click="search"
+        class="full-width q-pa-sm"
       />
     </div>
-    <!--    <pre>{{ filters }}</pre>-->
   </div>
 </template>
 
@@ -174,3 +173,9 @@ export default {
   },
 }
 </script>
+<style scoped lang="sass">
+  .f_card
+    border-radius: 6px
+    box-shadow: 1px 1px 30px 4px #cae9f6
+    color: #697888
+</style>

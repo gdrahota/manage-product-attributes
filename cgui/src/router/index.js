@@ -23,7 +23,7 @@ export const routes = [
   },
   {
     name: 'main_filter',
-    path: '/filter-categories',
+    path: '/filter-categories/:id',
     component: FilterCategories
   }
 ]
