@@ -6,6 +6,7 @@ export interface IProductAttributeTable {
   name: string
   unit: string | null
   description: string | null
+  fractionalDigits?: number | null
 }
 
 const TABLE_NAME = 'attrs'

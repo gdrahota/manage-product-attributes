@@ -6,16 +6,6 @@
 
     <router-view />
 
-    <q-footer class="bg-grey-8 text-white" elevated>
-      <q-toolbar>
-        <q-toolbar-title>
-          <q-avatar>
-          </q-avatar>
-          Footer
-        </q-toolbar-title>
-      </q-toolbar>
-    </q-footer>
-
   </q-layout>
 </template>
 

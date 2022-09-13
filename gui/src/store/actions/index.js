@@ -170,6 +170,11 @@ export const action = async ( actionName, payload, params ) => {
 
     // productSearch
     case 'productSearch.search': {
+      config.url = `${ getUrls('productSearch') }/search/${ params.searchStr }/${ params.page }/${ params.itemsPerPage }`
+      config.method = 'GET'
+      break
+    }
+    case 'productSearch.filter': {
       config.url = `${ getUrls('productSearch') }/${ params.productGroupId }`
       config.method = 'POST'
       config.payload = payload

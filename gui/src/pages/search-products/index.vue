@@ -1,10 +1,16 @@
 <template>
-  <q-page-container class="full-height window-height bg-grey-3">
+  <q-page-container id="product-filter-page" class="full-height window-height bg-grey-3">
     <is-loading-overlay :is-search-in-progress="isSearchInProgress" />
 
     <q-scroll-area class="fit border-right">
-      <div class="preview-page bg-white" style="height: calc(100vh - 100px); min-height: calc(100vh - 100px); overflow-y: hidden">
-        <q-tabs align="left">
+      <div class="preview-page bg-white" style="min-height: calc(100vh - 100px); overflow-y: hidden">
+
+        <search />
+        <q-tabs
+          align="left"
+          class="bg-brown-2 shadow-4"
+          indicator-color="orange"
+        >
           <q-route-tab
             v-for="(productGroup, pos) of productGroups"
             :key="pos"
@@ -15,66 +21,66 @@
 
         <q-separator />
 
-        <div
-          class="preview-page bg-white border"
-          style="height: calc(100vh - 248px); min-height: calc(100vh - 210px); overflow-y: auto"
-        >
-          <q-expansion-item
-            v-if="selectedProductGroupId"
-            :label="filterLabel"
-            caption-="Select products based on their properties"
-            class="q-ma-sm shadow-2 bg-blue-2 q-mt-md"
-            icon="mdi-filter-outline"
-          >
-            <q-card class="bg-blue-2">
-              <q-card-section>
-                <filters
-                  :product-group-id="selectedProductGroupId"
-                  @searchProducts="search"
-                />
-              </q-card-section>
-            </q-card>
-          </q-expansion-item>
-
-          <div class="full-width q-pb-lg q-px-sm">
-            <div
-              v-for="(product, pos) of products"
-              :key="pos"
-            >
-              <product
-                :position="pos"
-                :product="product"
-                :product-group="selectedProductGroup"
-              />
-              <q-separator />
-            </div>
-          </div>
-        </div>
-
         <div class="row">
-          <div class="col-4">
-            <div class="q-pa-md text-bold text-grey-6" style="margin-top: 6px">
-              {{ numberOfProducts }} Produkte
-            </div>
-          </div>
-          <div class="col-4">
-            <div class="flex flex-center q-pt-md">
-              <q-pagination
-                v-if="!isSearchInProgress"
-                v-model="page"
-                :max="lastPage"
-                :max-pages="7"
-                boundary-links
-                class="q-pb-md"
-                color="teal"
-                direction-links
-                icon-first="skip_previous"
-                icon-last="skip_next"
-                icon-next="fast_forward"
-                icon-prev="fast_rewind"
+          <div class="col-5">
+            <filters
+              :product-group-id="selectedProductGroupId"
+              class="q-my-md q-px-sm"
+              style="height: calc(100vh - 281px); overflow-y: auto"
+            />
+
+            <div class="text-center bg-brown-2 border-top" style="height: 64px">
+              <q-btn
+                :color="filters.length === 0 ? 'grey' : 'brown'"
+                :disable="filters.length === 0"
+                label="Apply Filter"
+                style="margin-top: 13px"
+                @click="filter"
               />
             </div>
-            <div class="col-4"></div>
+          </div>
+
+          <div class="col-7 border-left">
+            <div class="q-my-md q-pl-sm" style="height: calc(100vh - 281px); overflow-y: auto">
+              <div
+                v-for="(product, pos) of products"
+                :key="pos"
+              >
+                <product
+                  :position="pos"
+                  :product="product"
+                  :product-group="selectedProductGroup"
+                />
+                <q-separator />
+              </div>
+            </div>
+
+            <div class="row bg-brown-2 border-top">
+              <div class="col-3">
+                <div class="q-pa-md text-bold text-brown" style="margin-top: 6px">
+                  {{ numberOfProducts }} Produkte
+                </div>
+              </div>
+
+              <div class="col-9">
+                <div class="flex flex-center q-pt-md">
+                  <q-pagination
+                    v-if="!isSearchInProgress"
+                    v-model="page"
+                    :max="lastPage"
+                    :max-pages="7"
+                    boundary-links
+                    class="q-pb-md"
+                    color="brown"
+                    direction-links
+                    icon-first="skip_previous"
+                    icon-last="skip_next"
+                    icon-next="fast_forward"
+                    icon-prev="fast_rewind"
+                  />
+                </div>
+              </div>
+            </div>
           </div>
         </div>
       </div>
@@ -88,12 +94,14 @@ import { mapActions, mapGetters } from 'vuex'
 import Filters from './filters'
 import IsLoadingOverlay from './is-loading'
 import Product from './product'
+import Search from './search'
 
 export default {
   components: {
     Filters,
     IsLoadingOverlay,
     Product,
+    Search,
   },
 
   computed: {
@@ -115,11 +123,6 @@ export default {
     },
     selectedProductGroup() {
       return this.productGroups.find(( { id } ) => id === this.selectedProductGroupId)
-    },
-    filterLabel() {
-      return this.products
-        ? `Filter ${ this.$root.$options.filters.number(this.numberOfProducts) } products...`
-        : `Filter products...`
     },
     page: {
       get() {
@@ -144,7 +147,7 @@ export default {
 
   methods: {
     ...mapActions({
-      searchProducts: 'productSearch/search',
+      filterProducts: 'productSearch/filter',
       setProductGroupId: 'productSearch/setProductGroupId',
       setPage: 'productSearch/setPage',
     }),
@@ -159,8 +162,8 @@ export default {
         params: { id },
       })
     },
-    search() {
-      this.searchProducts()
+    filter() {
+      this.filterProducts()
     },
   },
 
@@ -174,22 +177,32 @@ export default {
 }
 </script>
 
-<style lang="sass" scoped>
-.border
-  border: 1px solid #ddd
-  border-radius: 4px
+<style lang="sass">
+#product-filter-page
+  .border
+    border: 1px solid #ddd
+    border-radius: 4px
 
-.border-right
-  border-right: 1px solid #ddd
+  .border-top
+    border-top: 1px solid #ddd
 
-.preview-page
-  max-width: 1200px
-  margin: 0 auto
-  border-left: 1px solid #ddd
-  border-right: 1px solid #ddd
-  padding: 0 8px
+  .border-right
+    border-right: 1px solid #ddd
 
-.product-images
-  border-right: 1px solid #ddd
-  overflow: hidden
+  .border-left
+    border-left: 1px solid #ddd
+
+  .preview-page
+    max-width: 1200px
+    margin: 0 auto
+    border-left: 1px solid #ddd
+    border-right: 1px solid #ddd
+    padding: 0
+
+  .product-images
+    border-right: 1px solid #ddd
+    overflow: hidden
+
+  .q-tab__indicator
+    height: 5px
 </style>

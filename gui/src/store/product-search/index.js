@@ -14,7 +14,24 @@ const state = {
   numberOfProducts: 0,
 }
 
-const search = async ( { commit, state } ) => {
+const search = async ( { commit, state }, searchStr ) => {
+  commit('SET_SEARCH_IN_PROGRESS', true)
+  commit('SET_PAGE', 1)
+
+  const params = {
+    searchStr,
+    page: state.page,
+    itemsPerPage: state.itemsPerPage,
+  }
+
+  const result = await action('productSearch.search', null, params)
+
+  commit('STORE_SEARCH_RESPONSE', result)
+  commit('SET_SEARCH_IN_PROGRESS', false)
+
+}
+
+const filter = async ( { commit, state } ) => {
   try {
     commit('SET_SEARCH_IN_PROGRESS', true)
     commit('STORE_SEARCH_RESPONSE', null)
@@ -60,7 +77,7 @@ const search = async ( { commit, state } ) => {
       itemsPerPage: state.itemsPerPage,
     }
 
-    const result = await action('productSearch.search', payload, { productGroupId })
+    const result = await action('productSearch.filter', payload, { productGroupId })
 
     commit('STORE_SEARCH_RESPONSE', result)
     commit('SET_SEARCH_IN_PROGRESS', false)
@@ -74,7 +91,7 @@ const setProductGroupId = ( { commit, dispatch }, productGroupId ) => {
   commit('SET_PRODUCT_GROUP_ID', productGroupId)
 
   if ( productGroupId ) {
-    dispatch('search')
+    dispatch('filter')
   }
 }
 
@@ -82,12 +99,13 @@ const setPage = ( { commit, dispatch }, page ) => {
   commit('SET_PAGE', page)
 
   if ( state.productGroupId ) {
-    dispatch('search')
+    dispatch('filter')
   }
 }
 
 const actions = {
   search,
+  filter,
   setProductGroupId,
   setPage,
 }
