@@ -4,10 +4,9 @@ import { snakeToCamelRecord } from "../../helper"
 
 export interface IAttributeOfAttributeGroupOfProductGroupTable {
   id: number
-  attributeGroupOfProductGroupId: number
+  attributeGroupOfProductGroupId: number,
   position: number
   attrId: number
-  description: string | null
 }
 
 const TABLE_NAME = 'attributes_of_attribute_groups_of_product_groups'

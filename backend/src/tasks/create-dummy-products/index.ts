@@ -3,9 +3,24 @@ import { ProductGroupService } from "../../models/product-group"
 import { ManufacturerTable } from "../../db/tables/manufacturers"
 import { tProductAttributeValueTable } from "../../db/tables/product-attribute-values"
 import { ProductAttributeValue } from "../../models/product-attribute-value"
+import { createManufacturers } from "./manufacturers"
 import Bluebird from "bluebird"
+import { createProductAttributes } from "./product-attributes"
+import { createProductGroups } from "./product-groups"
+import { createProductAttributesOfProductGroups } from "./product-attribute-of-product-groups"
+import { createAttributesOfProductAttributeGroups } from "./attributes-of-product-attribute-groups"
+import { createAttributeOfAttributeGroupOfProductGroup } from "./attribute-of-attribute-group-of-product-group"
+import { createAttributeGroupOfProductGroups } from "./attribute-groups-of-product-groups"
 
 export default async () => {
+  await createManufacturers()
+  await createProductAttributes()
+  await createProductGroups()
+  await createProductAttributesOfProductGroups()
+  await createAttributesOfProductAttributeGroups()
+  await createAttributeOfAttributeGroupOfProductGroup()
+  await createAttributeGroupOfProductGroups()
+
   const productModel = new ProductService()
 
   const productGroupService = new ProductGroupService()
@@ -20,7 +35,7 @@ export default async () => {
     const availableValues = [ 25, 30, 35 ]
 
     const value: Omit<tProductAttributeValueTable, 'id'> = {
-      attrId: 2,
+      attrId: 1,
       decimalValue: availableValues[Math.floor( Math.random() * 3 )],
       textValue: null,
       boolValue: null
@@ -33,7 +48,7 @@ export default async () => {
     const availableValues = [ 1134, 1022, 880 ]
 
     const value: Omit<tProductAttributeValueTable, 'id'> = {
-      attrId: 3,
+      attrId: 2,
       decimalValue: availableValues[Math.floor( Math.random() * 3 )],
       textValue: null,
       boolValue: null
@@ -46,7 +61,7 @@ export default async () => {
     const availableValues = [ 1722, 1560, 992, 880 ]
 
     const value: Omit<tProductAttributeValueTable, 'id'> = {
-      attrId: 4,
+      attrId: 3,
       decimalValue: availableValues[Math.floor( Math.random() * 4 )],
       textValue: null,
       boolValue: null
@@ -59,7 +74,7 @@ export default async () => {
     const availableValues = [ 12000, 17500, 21500, 23000 ]
 
     const value: Omit<tProductAttributeValueTable, 'id'> = {
-      attrId: 14,
+      attrId: 4,
       decimalValue: availableValues[Math.floor( Math.random() * 4 )],
       textValue: null,
       boolValue: null
@@ -70,7 +85,7 @@ export default async () => {
 
   const generatePeakPower = async (): Promise<IAttributeValue> => {
     const value: Omit<tProductAttributeValueTable, 'id'> = {
-      attrId: 1,
+      attrId: 5,
       decimalValue: Math.round( Math.random() * 100 ) + 240,
       textValue: null,
       boolValue: null
@@ -79,8 +94,7 @@ export default async () => {
     return await productAttributeValue.add( value ) as unknown as IAttributeValue
   }
 
-
-  const array = Array.from( Array( 1000 ).keys() )
+  const array = Array.from( Array( 333 ).keys() )
 
   await Bluebird.each( array, async ( i, pos ) => {
     const product: Omit<IProduct, 'id'> = {
@@ -108,5 +122,4 @@ export default async () => {
       ...product
     } )
   } )
-
 }

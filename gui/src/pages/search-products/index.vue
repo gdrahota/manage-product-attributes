@@ -4,6 +4,8 @@
 
     <q-scroll-area class="fit border-right">
       <div class="preview-page bg-white" style="min-height: calc(100vh - 100px); overflow-y: hidden">
+
+        <search />
         <q-tabs
           align="left"
           class="bg-brown-2 shadow-4"
@@ -24,7 +26,7 @@
             <filters
               :product-group-id="selectedProductGroupId"
               class="q-my-md q-px-sm"
-              style="height: calc(100vh - 192px); overflow-y: auto"
+              style="height: calc(100vh - 281px); overflow-y: auto"
             />
 
             <div class="text-center bg-brown-2 border-top" style="height: 64px">
@@ -33,13 +35,13 @@
                 :disable="filters.length === 0"
                 label="Apply Filter"
                 style="margin-top: 13px"
-                @click="search"
+                @click="filter"
               />
             </div>
           </div>
 
           <div class="col-7 border-left">
-            <div class="q-my-md q-pl-sm" style="height: calc(100vh - 192px); overflow-y: auto">
+            <div class="q-my-md q-pl-sm" style="height: calc(100vh - 281px); overflow-y: auto">
               <div
                 v-for="(product, pos) of products"
                 :key="pos"
@@ -92,12 +94,14 @@ import { mapActions, mapGetters } from 'vuex'
 import Filters from './filters'
 import IsLoadingOverlay from './is-loading'
 import Product from './product'
+import Search from './search'
 
 export default {
   components: {
     Filters,
     IsLoadingOverlay,
     Product,
+    Search,
   },
 
   computed: {
@@ -119,11 +123,6 @@ export default {
     },
     selectedProductGroup() {
       return this.productGroups.find(( { id } ) => id === this.selectedProductGroupId)
-    },
-    filterLabel() {
-      return this.products
-        ? `Filter ${ this.$root.$options.filters.number(this.numberOfProducts) } products...`
-        : `Filter products...`
     },
     page: {
       get() {
@@ -148,7 +147,7 @@ export default {
 
   methods: {
     ...mapActions({
-      searchProducts: 'productSearch/search',
+      filterProducts: 'productSearch/filter',
       setProductGroupId: 'productSearch/setProductGroupId',
       setPage: 'productSearch/setPage',
     }),
@@ -163,8 +162,8 @@ export default {
         params: { id },
       })
     },
-    search() {
-      this.searchProducts()
+    filter() {
+      this.filterProducts()
     },
   },
 

@@ -20,8 +20,13 @@ export interface IProductSearchFilter {
   valueIdTill?: number | null
 }
 
-interface ISearchProductsProp {
+interface IFilterProductsProp {
   filters: IProductSearchFilter[]
+  page: number
+  itemsPerPage: number
+}
+
+interface ISearchProductsProp {
   page: number
   itemsPerPage: number
 }
@@ -42,6 +47,9 @@ interface IResponseAttributesWithValues {
 type tResponse = {
   numberOfProducts: number
   products: IProduct[]
+}
+
+type tFilterResponse = tResponse & {
   attributes: IResponseAttributesWithValues[]
 }
 
@@ -60,9 +68,9 @@ export class ProductSearch {
     return this.product.getById( id )
   }
 
-  async searchProductsAndAttributeValues( productGroupId: number, params: ISearchProductsProp ): Promise<tResponse> {
+  async filterProductsAndAttributeValues( productGroupId: number, params: IFilterProductsProp ): Promise<tFilterResponse> {
     const start = new Date()
-    const products = await this.searchProducts( productGroupId, params )
+    const products = await this.filterProducts( productGroupId, params )
     const attributes = await this.searchAttrValues( productGroupId, params.filters )
 
     // @ts-ignore
@@ -84,11 +92,37 @@ export class ProductSearch {
     }
   }
 
-  private async searchProducts( productGroupId: number, {
+  async searchProducts( searchStr: string, params: ISearchProductsProp ): Promise<tResponse> {
+    const { page, itemsPerPage } = params
+
+    const query = pg( 'products as p' )
+      .where( 'p.show', true )
+      .whereILike( 'name', `%${ searchStr }%` )
+
+    const query2 = query.clone().select( pg.raw( 'count(*) AS count' ) )
+    const [ { count: numberOfProducts } ] = await query2
+
+    query
+      .select( 'p.id' )
+      .orderBy( 'p.best_price' )
+      .limit( itemsPerPage )
+      .offset( itemsPerPage * (page - 1) )
+
+    const results = await query
+
+    const products = await Bluebird.mapSeries( results, ( { id } ) => this.product.getById( id ) )
+
+    return {
+      numberOfProducts: parseInt( numberOfProducts ),
+      products,
+    }
+  }
+
+  private async filterProducts( productGroupId: number, {
     filters,
     page,
     itemsPerPage
-  }: ISearchProductsProp ): Promise<Omit<tResponse, 'attributes'>> {
+  }: IFilterProductsProp ): Promise<Omit<tFilterResponse, 'attributes'>> {
     const query = pg( 'product_to_product_groups as p2pg' )//.queryBuilder()
       .from( 'product_to_product_groups as p2pg' )
       .innerJoin( 'products as p', 'p2pg.product_id', 'p.id' )
@@ -114,7 +148,7 @@ export class ProductSearch {
 
     return {
       numberOfProducts: parseInt( numberOfProducts ),
-      products: products,
+      products,
     }
   }
 
@@ -156,7 +190,7 @@ export class ProductSearch {
             if ( r.decimalValue ) {
               return {
                 ...commonAttrs,
-                value: parseFloat( r.decimalValue )
+                value: r.decimalValue
               }
             }
             break
@@ -195,7 +229,7 @@ export class ProductSearch {
           const fromObj = await this.productAttributeValueTable.getById( filter.valueIdFrom )
           if ( fromObj ) {
             fromValue = fromObj.decimalValue
-              ? parseFloat( fromObj.decimalValue )
+              ? fromObj.decimalValue
               : null
           }
         }
@@ -204,7 +238,7 @@ export class ProductSearch {
           const tillObj = await this.productAttributeValueTable.getById( filter.valueIdTill )
           if ( tillObj ) {
             tillValue = tillObj.decimalValue
-              ? parseFloat( tillObj.decimalValue )
+              ? tillObj.decimalValue
               : null
           }
         }
@@ -263,7 +297,7 @@ export class ProductSearch {
 
           if ( tillObj ) {
             const valueTill = tillObj.decimalValue
-              ? parseFloat( tillObj.decimalValue )
+              ? tillObj.decimalValue
               : null
 
             if ( valueTill !== null ) {

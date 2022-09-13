@@ -48,4 +48,6 @@ export const createDealerOffers = async () => {
       }
     } )
   } )
+
+  console.log( '==> demo data created' )
 }

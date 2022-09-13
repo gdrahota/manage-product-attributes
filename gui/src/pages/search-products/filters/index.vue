@@ -77,7 +77,8 @@ export default {
       return this.getAttrGroupsByProductGroupId(this.productGroupId).map(attrGroup => {
         const attributes = attrGroup.attributes.map(( { position, attrId } ) => {
           const baseAttr = this.getAttributeById(attrId)
-          const { fractionalDigits, productGroupId, representationUnit, representationUnitFactor, searchStrategy, unit } =
+
+          const { fractionalDigits, productGroupId, representationUnit, representationUnitFactor, searchStrategy } =
             productGroup.attributes.find(a => a.attrId === attrId)
 
           return {
