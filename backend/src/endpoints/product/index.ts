@@ -2,7 +2,7 @@ import { DefaultRestEndpoint } from "../_base_class"
 import { Request, Response, Router } from "express"
 import { errorHandler } from "../error-handler"
 import { IProductTable } from "../../db/tables/products"
-import { Product } from "../../models/product"
+import { ProductService } from "../../models/product"
 
 class ProductRoutes extends DefaultRestEndpoint<IProductTable> {
   static async getByManufacturerId( req: Request, res: Response, model: any ): Promise<void> {
@@ -15,7 +15,7 @@ class ProductRoutes extends DefaultRestEndpoint<IProductTable> {
   }
 
   static async saveChanges( req: Request, res: Response ): Promise<void> {
-    const model = new Product()
+    const model = new ProductService()
     await model.saveChanges( parseInt( req.params.productId ), req.body )
 
     const item = await model.getById( parseInt( req.params.productId ) )
@@ -28,7 +28,7 @@ class ProductRoutes extends DefaultRestEndpoint<IProductTable> {
   }
 
   static registerRoutes() {
-    const model = new Product()
+    const model = new ProductService()
 
     const router = Router()
       .get( '/product-group/:id', ( req: Request, res: Response ) => ProductRoutes.getByManufacturerId( req, res, model ) )

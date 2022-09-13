@@ -5,6 +5,7 @@ interface IField {
   type: DataType
   nullable?: boolean
   primary?: boolean
+  default?: boolean | string | number
 }
 
 interface ITableDef {

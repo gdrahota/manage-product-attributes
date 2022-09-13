@@ -8,6 +8,7 @@ const getUrls = ( entityName ) => {
     productAttributeValues: 'product-attribute-values',
     productAttributeGroupOfProductGroup: 'product-attribute-groups-of-product-groups',
     productSearch: 'product-search',
+    dealers: 'dealers',
   }
 
   return `/api/${ urls[ entityName ] }`
@@ -87,6 +88,25 @@ export const action = async ( actionName, payload, params ) => {
       break
     }
 
+    // dealers
+    case 'dealers.loadAll': {
+      config.url = `${ getUrls('dealers') }`
+      config.method = 'GET'
+      break
+    }
+    case 'dealers.add': {
+      config.url = `${ getUrls('dealers') }`
+      config.method = 'POST'
+      config.payload = payload
+      break
+    }
+    case 'dealers.save': {
+      config.url = `${ getUrls('dealers') }`
+      config.method = 'PUT'
+      config.payload = payload
+      break
+    }
+
     // productAttributeValues
     case 'productAttributeValues.loadAll': {
       config.url = `${ getUrls('productAttributeValues') }`
@@ -153,6 +173,11 @@ export const action = async ( actionName, payload, params ) => {
       config.url = `${ getUrls('productSearch') }/${ params.productGroupId }`
       config.method = 'POST'
       config.payload = payload
+      break
+    }
+    case 'show-products.loadById': {
+      config.url = `${ getUrls('productSearch') }/${ params.id }`
+      config.method = 'GET'
       break
     }
   }

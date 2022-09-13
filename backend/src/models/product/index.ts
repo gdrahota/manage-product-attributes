@@ -1,13 +1,17 @@
 import { IManufacturerTable, ManufacturerTable } from "../../db/tables/manufacturers"
 import { ProductGroupTable } from "../../db/tables/product-groups"
 import { ProductTable } from "../../db/tables/products"
-import { ProductToProductGroupTable } from "../../db/tables/product-to_product-groups"
-import { IProductGroup, ProductGroup } from "../product-group"
+import { ProductToProductGroupTable } from "../../db/tables/product-to-product-groups"
+import { IProductGroup, ProductGroupService } from "../product-group"
 import { Promise as BluebirdPromise } from 'bluebird'
 import { IProductToAttributeValueTable, ProductToAttributeValueTable } from "../../db/tables/product-attribute-to-values"
 import { IProductAttributeTable, ProductAttributeTable } from "../../db/tables/product-attributes"
 import { ProductAttributeValueTable, tProductAttributeValueTable } from "../../db/tables/product-attribute-values"
 import { camelToSnakeRecord } from "../../db/helper"
+import { DealerTable, tDealerTable } from "../../db/tables/dealers"
+import { ProductOfferCurrentTable } from "../../db/tables/product-offers-current"
+import { EnumEntityName, FileTable, tFileTable } from "../../db/tables/files"
+import { IProductOffer } from "../../db/tables/product-offers-history"
 
 export interface IAttributeValue {
   id: number
@@ -18,22 +22,31 @@ export interface IAttributeValue {
 export interface IProduct {
   id: number
   name: string
+  description: string | null
+  show: boolean
   manufacturer: IManufacturerTable
   productGroups: IProductGroup[]
   eanCode: string | null
   manufacturerProductId: string | null
   attributeValues: IAttributeValue[]
+  bestPrice?: number | null
+  bestPriceDealer?: tDealerTable | null
+  offers?: IProductOffer[]
+  files: tFileTable[]
 }
 
-export class Product {
+export class ProductService {
   private productTable = new ProductTable()
   private productToProductGroupTable = new ProductToProductGroupTable()
-  private productGroup = new ProductGroup()
+  private productGroup = new ProductGroupService()
   private productGroupTable = new ProductGroupTable()
   private manufacturerTable = new ManufacturerTable()
   private productToAttributeValueTable = new ProductToAttributeValueTable()
   private productAttributeTable = new ProductAttributeTable()
   private productAttributeValueTable = new ProductAttributeValueTable()
+  private dealerTable = new DealerTable()
+  private productOfferCurrentTable = new ProductOfferCurrentTable()
+  private fileTable = new FileTable()
 
   async getById( id: number ): Promise<IProduct> {
     const baseData = await this.productTable.getById( id )
@@ -49,9 +62,11 @@ export class Product {
     }
 
     const productToProductGroups = await this.productToProductGroupTable.getByProductId( id )
+
     const productGroups = await BluebirdPromise.mapSeries( productToProductGroups, productToProductGroup => {
       return this.productGroupTable.getById( productToProductGroup.productGroupId )
     } ) as unknown as IProductGroup[]
+
 
     const productToAttributeRawValues = await this.productToAttributeValueTable.getByProductId( id ) as IProductToAttributeValueTable[]
 
@@ -91,14 +106,26 @@ export class Product {
 
     } ).filter( i => !! i ) as unknown as IAttributeValue[]
 
+    const bestPriceDealer = await this.dealerTable.getById( baseData.bestPriceDealerId as number )
+
+    const offers = await this.productOfferCurrentTable.getByProductId( id )
+
+    const files = await this.fileTable.getByEntityNameAndInstanceId( EnumEntityName.PRODUCT, id )
+
     return {
-      id: baseData.id,
+      id,
       name: baseData.name,
+      description: baseData.description,
+      bestPrice: parseFloat( baseData.bestPrice?.toString() || '0' ),
+      bestPriceDealer,
+      show: baseData.show,
       manufacturer: manufacturerData,
       productGroups,
       eanCode: baseData.eanCode,
       manufacturerProductId: baseData.manufacturerProductId,
-      attributeValues
+      attributeValues,
+      offers,
+      files,
     }
   }
 
@@ -122,6 +149,11 @@ export class Product {
     // check product name
     if ( old.name !== product.name ) {
       changedProductTableAttrs.name = product.name
+    }
+
+    // check product description
+    if ( old.name !== product.description ) {
+      changedProductTableAttrs.description = product.description
     }
 
     // check manufacturer
@@ -173,6 +205,16 @@ export class Product {
 
     await BluebirdPromise.each( attrValuesToBeAdded, productAttributeValueId => {
       return this.productToAttributeValueTable.add( camelToSnakeRecord( { productId, productAttributeValueId } ) )
+    } )
+
+    // files
+    const oldFileIds = old.files.map( mapId )
+    const newFileIds = product.files.map( mapId )
+
+    const filesToBeDeleted = oldFileIds.filter( oId => ! newFileIds.includes( oId ) )
+
+    await BluebirdPromise.each( filesToBeDeleted, fileId => {
+      return this.fileTable.delete( fileId )
     } )
 
     return this.getById( productId )

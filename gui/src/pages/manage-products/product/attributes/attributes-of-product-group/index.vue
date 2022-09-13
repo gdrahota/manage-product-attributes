@@ -2,9 +2,12 @@
   <table>
     <thead>
       <tr>
-        <th>Product Attribute</th>
-        <th>Value</th>
-        <th>Description</th>
+        <th colspan="3" scope="col">Maintain Product Attribute Values</th>
+      </tr>
+      <tr>
+        <th scope="col">Product Attribute</th>
+        <th scope="col">Value</th>
+        <th scope="col">Description</th>
       </tr>
     </thead>
     <tbody>
@@ -13,7 +16,10 @@
         :key="pos"
       >
         <td>
-          {{ getById(attr.attrId).name }} ({{ getById(attr.attrId).unit }})
+          {{ getById(attr.attrId).name }}
+          <template v-if="getById(attr.attrId).unit">
+            ({{ getById(attr.attrId).unit }})
+          </template>
         </td>
         <td style="padding: 0">
           <component
@@ -97,8 +103,8 @@ table
   border-spacing: 0
 
   th
-    color: teal
     background-color: #fff
+    color: teal
 
   td
     color: #444

@@ -23,7 +23,6 @@
         </q-btn>
       </div>
     </div>
-    <pre>{{ workingCopy }}</pre>
   </div>
 </template>
 

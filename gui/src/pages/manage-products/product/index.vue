@@ -1,68 +1,89 @@
 <template>
-  <div v-if="workingCopy" class="q-pa-md">
+  <div v-if="productGroupId && productId && workingCopy" class="q-pa-md">
     <div class="row">
-      <div class="col-2 q-pr-sm">
-        <manufacturer
-          :manufacturer="workingCopy.manufacturer"
-          @set="setManufacturer"
-        />
-      </div>
-      <div class="col-10">
-        <product-name
-          :name="workingCopy.name"
-          @set="setName"
-        />
-      </div>
-    </div>
-
-    <div class="row q-mb-lg">
-      <div class="col-2 q-pr-sm">
-        <manufacturer-product-id
-          :manufacturer-product-id="workingCopy.manufacturerProductId"
-          @set="setManufacturerProductId"
-        />
-      </div>
-      <div class="col-2 q-pr-sm">
-        <ean-code
-          :ean-code="workingCopy.eanCode"
-          @set="setEanCode"
-        />
-      </div>
-    </div>
-
-    <template v-if="workingCopy.productGroups">
-      <product-to-product-groups
-        :product-group-ids="productGroupIds"
-        @add="addProductGroup"
-        @remove="removeProductGroup"
-      />
-
-      <div class="col-12 q-py-lg">
-        <attributes
-          :product="workingCopy"
-          :product-groups="productGroups"
-          @createAndAddValue="createAndAddValue"
-          @removeProductAttributeValue="removeProductAttributeValue"
-          @selectProductAttributeValue="selectProductAttributeValue"
-        />
-      </div>
-    </template>
-
-    <q-separator />
-
-    <div class="row q-mt-lg">
-      <div class="col-12">
+      <div class="col-1">
         <q-btn
-          :color="hasChanged ? 'primary' : 'grey'"
-          :disable="!hasChanged"
+          :color="allowedBtn ? 'primary' : 'grey'"
+          :disable="!allowedBtn"
           @click="save"
         >
-          <q-icon left name="save" />
+          <q-icon
+            :name="isWaitingForResponse ? 'hourglass_bottom' :  'save'"
+            left
+          />
           Save
         </q-btn>
       </div>
+      <div class="col-11">
+        <main-data
+          :working-copy="workingCopy"
+          @setManufacturer="setManufacturer"
+          @setName="setName"
+        />
+      </div>
     </div>
-    <!--    <pre>{{ workingCopy }}</pre>-->
+
+    <q-card square>
+      <q-tabs
+        v-model="tab"
+        align="left"
+        class="text-black q-pa-none"
+        content-class="bg-teal-2"
+        indicator-color="yellow"
+      >
+        <q-tab icon="mdi-card-bulleted-outline" label="Groups and Attributes" name="productAttributes" />
+        <q-tab icon="mdi-file" label="Files" name="files" />
+        <q-tab icon="mdi-card-text-outline" label="Description" name="description" />
+        <q-tab icon="mdi-numeric" label="Product Ids" name="productIds" />
+      </q-tabs>
+      <q-card-section>
+
+        <q-tab-panels
+          v-model="tab"
+          animated
+          class="q-mt-md"
+        >
+          <q-tab-panel name="productAttributes">
+            <template v-if="workingCopy.productGroups">
+              <product-to-product-groups
+                :product-group-ids="productGroupIds"
+                @add="addProductGroup"
+                @remove="removeProductGroup"
+              />
+
+              <div class="col-12 q-py-lg">
+                <attributes
+                  :product="workingCopy"
+                  :product-groups="productGroups"
+                  @createAndAddValue="createAndAddValue"
+                  @removeProductAttributeValue="removeProductAttributeValue"
+                  @selectProductAttributeValue="selectProductAttributeValue"
+                />
+              </div>
+            </template>
+          </q-tab-panel>
+
+          <q-tab-panel name="description">
+            <description
+              :value="workingCopy.description"
+              @set="setDescription"
+            />
+          </q-tab-panel>
+
+          <q-tab-panel name="productIds">
+            <product-ids
+              :working-copy="workingCopy"
+            />
+          </q-tab-panel>
+
+          <q-tab-panel class="q-pa-none" name="files">
+            <files :files="workingCopy.files" />
+          </q-tab-panel>
+        </q-tab-panels>
+      </q-card-section>
+    </q-card>
+
+    <pre>{{ workingCopy }}</pre>
   </div>
 </template>
 
@@ -71,19 +92,20 @@ import { mapActions, mapGetters } from 'vuex'
 import isEqual from 'lodash.isequal'
 
 import Attributes from './attributes'
-import EanCode from './ean-code'
-import Manufacturer from './manufacturer'
-import ManufacturerProductId from './manucaturer-product-id'
-import ProductName from './name'
+import Description from './description'
+import Files from './files'
+import MainData from './main-data'
+import ProductIds from './product-ids'
+
 import ProductToProductGroups from './product-to-product-groups'
 
 export default {
   components: {
     Attributes,
-    EanCode,
-    Manufacturer,
-    ManufacturerProductId,
-    ProductName,
+    Description,
+    Files,
+    MainData,
+    ProductIds,
     ProductToProductGroups,
   },
 
@@ -94,18 +116,30 @@ export default {
       getByProductId: 'productToProductGroups/getByProductId',
       getProductGroupById: 'productGroups/getById',
       getProductAttributeById: 'productAttributes/getById',
+      isWaitingForResponse: 'products/isWaitingForResponse',
     }),
+    productId() {
+      return this.$route.params.id
+    },
     product() {
-      return this.getById(this.$route.params.id)
+      return this.productId
+        ? this.getById(this.productId)
+        : null
     },
     productGroups() {
       return this.workingCopy.productGroups.map(productGroup => this.getProductGroupById(productGroup.id))
+    },
+    productGroupId() {
+      return this.$route.params.productGroupId
     },
     productGroupIds() {
       return this.workingCopy.productGroups.map(( { id } ) => id) || null
     },
     hasChanged() {
       return !isEqual(this.product, this.workingCopy)
+    },
+    allowedBtn() {
+      return this.hasChanged && !this.isWaitingForResponse
     },
   },
 
@@ -115,6 +149,7 @@ export default {
 
   data: () => ({
     workingCopy: null,
+    tab: 'productAttributes',
   }),
 
   methods: {
@@ -129,6 +164,9 @@ export default {
     },
     setName( value ) {
       this.$set(this.workingCopy, 'name', value)
+    },
+    setDescription( value ) {
+      this.$set(this.workingCopy, 'description', value)
     },
     setManufacturerProductId( value ) {
       this.$set(this.workingCopy, 'manufacturerProductId', value)
@@ -151,19 +189,19 @@ export default {
         return
       }
 
-      const idx = this.workingCopy.attributeValue.findIndex(( { attrId } ) => attrId === value.attrId)
+      const idx = this.workingCopy.attributeValues.findIndex(( { attrId } ) => attrId === value.attrId)
 
       if ( idx !== -1 ) {
-        this.$set(this.workingCopy.attributeValue, idx, value)
+        this.$set(this.workingCopy.attributeValues, idx, value)
       } else {
-        this.workingCopy.attributeValue.push(value)
+        this.workingCopy.attributeValues.push(value)
       }
     },
     removeProductAttributeValue( attrId ) {
-      const idx = this.workingCopy.attributeValue.findIndex(attributeValue => attributeValue.attrId === attrId)
-      this.$delete(this.workingCopy.attributeValue, idx)
+      const idx = this.workingCopy.attributeValues.findIndex(attributeValue => attributeValue.attrId === attrId)
+      this.$delete(this.workingCopy.attributeValues, idx)
     },
-    async createAndAddValue( { productGroupId, attrValue } ) {
+    async createAndAddValue( { attrValue } ) {
       const newProductAttributeValue = await this.addProductAttributeValue(attrValue)
       this.pullProductAttributeById(attrValue.attrId)
       this.selectProductAttributeValue(newProductAttributeValue)
@@ -175,7 +213,7 @@ export default {
         } else {
           const newProductId = await this.add({
             product: this.workingCopy,
-            productGroupId: this.$route.params.productGroupId,
+            productGroupId: this.productGroupId,
           })
           await this.$router.push({ params: { id: newProductId } })
         }

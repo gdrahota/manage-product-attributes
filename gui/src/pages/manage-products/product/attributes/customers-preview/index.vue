@@ -2,6 +2,9 @@
   <table>
     <thead>
       <tr>
+        <th colspan="2" scope="col">Customer's View</th>
+      </tr>
+      <tr>
         <th>Product Attribute</th>
         <th>Value</th>
       </tr>

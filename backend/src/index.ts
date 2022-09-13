@@ -3,6 +3,9 @@ import dotenv from 'dotenv'
 import { connectToDatabases } from "./db/connect"
 import { registerRoutes } from "./endpoints"
 import { ensureDefaultTables } from "./seeder"
+import { fileUploadMiddleware } from "./middle-ware/file-upload"
+import { createDealerOffers } from "./tasks/create-dealer-offers-mock"
+import { createTasks } from "./tasks"
 
 (async () => {
   Error.stackTraceLimit = Infinity
@@ -23,7 +26,8 @@ import { ensureDefaultTables } from "./seeder"
   }
 
   app.use( log )
-
+  app.use( express.json() )
+  app.use( fileUploadMiddleware )
   registerRoutes( app )
 
   app.listen( port, () => {
@@ -31,4 +35,7 @@ import { ensureDefaultTables } from "./seeder"
   } )
 
   await ensureDefaultTables()
+
+  await createTasks()
+  await createDealerOffers()
 })()

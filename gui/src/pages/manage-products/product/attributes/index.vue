@@ -3,14 +3,22 @@
     <q-tabs
       v-model="tab"
       align="left"
-      class="bg-teal text-white"
+      class="text-teal bg-white"
       indicator-color="orange"
     >
+      <q-tab
+        v-if="productGroups.length > 1"
+        class="bg-grey-3 text-black"
+        disable
+        label="Select a product group:"
+        no-caps
+      />
       <q-tab
         v-for="(pg, pos) of productGroups"
         :key="pg.id"
         :label="pg.name"
         :name="pos"
+        class="bg-teal-1"
       />
     </q-tabs>
 
@@ -29,7 +37,7 @@
         :name="pos"
       >
         <div class="row">
-          <div class="col">
+          <div class="col q-pr-xs">
             <attributes-of-product-group
               :product="product"
               :product-group="pg"
@@ -38,7 +46,7 @@
               @selectProductAttributeValue="selectProductAttributeValue"
             />
           </div>
-          <div class="col">
+          <div class="col q-pl-xs">
             <customers-preview
               :product="product"
               :product-group="pg"

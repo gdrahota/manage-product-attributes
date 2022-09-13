@@ -10,6 +10,7 @@ export const configureAxios = () => {
     if ( xAuthToken && xAuthToken !== 'undefined' ) {
       request.headers[ 'X-Auth-Token' ] = xAuthToken
     }
+    request.headers[ 'Access-Control-Allow-Origin' ] = 'no-cors'
     return request
   })
 

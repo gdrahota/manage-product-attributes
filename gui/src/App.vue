@@ -40,6 +40,7 @@ export default {
       loadProductToProductGroups: 'productToProductGroups/loadAll',
       loadProductAttributes: 'productAttributes/loadAll',
       loadProductAttributeGroupsOfProductGroups: 'productAttributeGroupsOfProductGroups/loadAll',
+      loadDealers: 'dealers/loadAll',
     }),
   },
 
@@ -50,6 +51,7 @@ export default {
     this.loadProductToProductGroups()
     this.loadProductAttributes()
     this.loadProductAttributeGroupsOfProductGroups()
+    this.loadDealers()
   },
 }
 </script>

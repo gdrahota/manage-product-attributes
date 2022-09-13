@@ -1,12 +1,14 @@
-import { IProduct, Product } from "../product"
+import { IProduct, ProductService } from "../product"
 import { EnumSearchStrategy } from "../../db/enums/search-strategy"
-import { ProductGroup } from "../product-group"
+import { ProductGroupService } from "../product-group"
 import { EnumProductValueType } from "../../db/enums/product-value-type"
 import { pg } from "../../db/connect"
 import { ProductAttributeValueTable, tProductAttributeValueTable } from "../../db/tables/product-attribute-values"
 import Bluebird from "bluebird"
 import { IProductAttributeTable, ProductAttributeTable } from "../../db/tables/product-attributes"
 import { snakeToCamelRecord } from "../../db/helper"
+import { IProductOffer } from "../../db/tables/product-offers-history"
+import { ProductOfferCurrentTable } from "../../db/tables/product-offers-current"
 
 export interface IProductSearchFilter {
   attrId: number
@@ -37,46 +39,88 @@ interface IResponseAttributesWithValues {
   values: IResponseValue[]
 }
 
-interface IResponse {
+type tResponse = {
+  numberOfProducts: number
   products: IProduct[]
   attributes: IResponseAttributesWithValues[]
 }
 
-export class ProductSearch {
-  private product = new Product()
-  private productGroup = new ProductGroup()
-  private productAttributeValueTable = new ProductAttributeValueTable()
-  private productAttributeTable = new ProductAttributeTable<IProductAttributeTable>()
+interface IProductWithOffers extends IProduct {
+  offers: IProductOffer[]
+}
 
-  async searchProductsAndAttributeValues( productGroupId: number, params: ISearchProductsProp ): Promise<IResponse> {
+export class ProductSearch {
+  private product = new ProductService()
+  private productGroup = new ProductGroupService()
+  private productAttributeValueTable = new ProductAttributeValueTable()
+  private productAttributeTable = new ProductAttributeTable()
+  private productOfferCurrentTable = new ProductOfferCurrentTable()
+
+  async getById( id: number ): Promise<IProduct> {
+    return this.product.getById( id )
+  }
+
+  async searchProductsAndAttributeValues( productGroupId: number, params: ISearchProductsProp ): Promise<tResponse> {
+    const start = new Date()
+    const products = await this.searchProducts( productGroupId, params )
+    const attributes = await this.searchAttrValues( productGroupId, params.filters )
+
+    // @ts-ignore
+    console.log( 'searchProductsAndAttributeValues()', (new Date() - start) / 1000, 's' )
+
     return {
-      products: await this.searchProducts( productGroupId, params ),
-      attributes: await this.searchAttrValues( productGroupId, params.filters )
+      ...products,
+      attributes
     }
   }
 
-  private async searchProducts( productGroupId: number, { filters, page, itemsPerPage }: ISearchProductsProp ): Promise<any> {
-    const query = pg.queryBuilder()
-      .select( 'p.id' )
+  async getByIdWithOffers( id: number ): Promise<IProductWithOffers> {
+    const product = await this.product.getById( id )
+    const offers = await this.productOfferCurrentTable.getByProductId( id )
+
+    return {
+      ...product,
+      offers,
+    }
+  }
+
+  private async searchProducts( productGroupId: number, {
+    filters,
+    page,
+    itemsPerPage
+  }: ISearchProductsProp ): Promise<Omit<tResponse, 'attributes'>> {
+    const query = pg( 'product_to_product_groups as p2pg' )//.queryBuilder()
       .from( 'product_to_product_groups as p2pg' )
       .innerJoin( 'products as p', 'p2pg.product_id', 'p.id' )
+      .where( 'p.show', true )
       .where( 'p2pg.product_group_id', productGroupId )
-      .orderBy( 'p.name' )
-      .limit( itemsPerPage )
-      .offset( itemsPerPage * (page - 1) )
 
     await Bluebird.each( filters, async ( filter ) => {
       return this.addSearchAttr( query, filter )
     } )
 
+    const query2 = query.clone().select( pg.raw( 'count(*) AS count' ) )
+    const [ { count: numberOfProducts } ] = await query2
+
+    query
+      .select( 'p.id' )
+      .orderBy( 'p.best_price' )
+      .limit( itemsPerPage )
+      .offset( itemsPerPage * (page - 1) )
+
     const results = await query
 
-    return Bluebird.mapSeries( results, async ( { id } ) => {
-      return this.product.getById( id )
-    } )
+    const products = await Bluebird.mapSeries( results, ( { id } ) => this.product.getById( id ) )
+
+    return {
+      numberOfProducts: parseInt( numberOfProducts ),
+      products: products,
+    }
   }
 
   private async searchAttrValues( productGroupId: number, filters: IProductSearchFilter[] ): Promise<any> {
+    const start = new Date()
+
     const productGroup = await this.productGroup.getById( productGroupId )
 
     const response: any = {}
@@ -132,6 +176,9 @@ export class ProductSearch {
         }
       } ).filter( i => !! i )
     } )
+
+    // @ts-ignore
+    console.log( 'searchAttrValues()', (new Date() - start) / 1000, 's' )
 
     return response
   }
@@ -204,12 +251,52 @@ export class ProductSearch {
         }
       }
         break
+
+      case EnumSearchStrategy.LT:
+      case EnumSearchStrategy.LTE:
+      case EnumSearchStrategy.GT:
+      case EnumSearchStrategy.GTE: {
+        query.innerJoin( `product_to_attr_values as p2at${ idx }`, `p2pg.product_id`, `p2at${ idx }.product_id` )
+
+        if ( filter.valueId ) {
+          const tillObj = await this.productAttributeValueTable.getById( filter.valueId )
+
+          if ( tillObj ) {
+            const valueTill = tillObj.decimalValue
+              ? parseFloat( tillObj.decimalValue )
+              : null
+
+            if ( valueTill !== null ) {
+              let operator
+              switch ( filter.searchStrategy ) {
+                case EnumSearchStrategy.LT:
+                  operator = '<'
+                  break
+                case EnumSearchStrategy.LTE:
+                  operator = '<='
+                  break
+                case EnumSearchStrategy.GT:
+                  operator = '>'
+                  break
+                case EnumSearchStrategy.GTE:
+                  operator = '>='
+                  break
+              }
+
+              const records = await pg.queryBuilder()
+                .select( 'id' )
+                .from( 'attr_values' )
+                .where( 'attr_id', filter.attrId )
+                .where( 'decimal_value', operator, valueTill )
+
+              const valuesIds = records.map( ( { id } ) => id )
+
+              query.whereIn( `p2at${ idx }.product_attribute_value_id`, valuesIds )
+            }
+          }
+        }
+      }
+        break
     }
-  }
-
-  private async searchEqual( productGroupId: number, filter: IProductSearchFilter ): Promise<any> {
-  }
-
-  private async searchBetween( productGroupId: number, filter: IProductSearchFilter ): Promise<any> {
   }
 }

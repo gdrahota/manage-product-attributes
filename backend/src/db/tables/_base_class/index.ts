@@ -26,8 +26,14 @@ export class GenericClass<T> {
     return null
   }
 
+  async patch( id: number, obj: Record<any, any> ): Promise<any> {
+    return pg( this.name )
+      .where( 'id', id )
+      .update( camelToSnakeRecord( obj ) )
+  }
+
   async update( item: any ): Promise<T> {
-    await pg( this.name ).where( 'id', item.id ).update( item, [ '*' ] )
+    await pg( this.name ).where( 'id', item.id ).update( camelToSnakeRecord( item ), [ '*' ] )
     const response = await this.getById( item.id )
 
     if ( ! response ) {

@@ -1,22 +1,26 @@
 import Vue from 'vue'
 import VueRouter from 'vue-router'
-// import { EventBus } from '@/plugins/event-bus'
+
 import { manageManufacturerRoutes } from '@/router/manage-manufacturers'
 import { manageProductRoutes } from '@/router/manage-products'
 import { manageAttributeRoutes } from '@/router/manage-attributes'
 import { manageProductGroupRoutes } from '@/router/manage-product-group'
-import { managePreviewRoutes } from '@/router/preview'
+import { manageDealerRoutes } from '@/router/manage-dealers'
+import { showProductRoutes } from '@/router/show-product'
+import { manageSearchProductsRoutes } from '@/router/search-products'
 
 // import store from '@/store'
 
 Vue.use(VueRouter)
 
 export const routes = [
-  ...manageManufacturerRoutes,
   ...manageAttributeRoutes,
-  ...manageProductRoutes,
+  ...manageDealerRoutes,
+  ...manageManufacturerRoutes,
   ...manageProductGroupRoutes,
-  ...managePreviewRoutes,
+  ...manageProductRoutes,
+  ...manageSearchProductsRoutes,
+  ...showProductRoutes,
 ]
 
 const router = new VueRouter({

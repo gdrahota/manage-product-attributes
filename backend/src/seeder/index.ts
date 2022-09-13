@@ -1,17 +1,40 @@
 import { Promise as BlueBird } from 'bluebird'
 import { createTableFromModel } from "../db/helper/database-table-create"
+import { DataType } from "../db/enums/data-type"
+
+type tField = {
+  name: string,
+  type: DataType,
+  nullable: boolean,
+}
+
+type tIndex = {
+  unique: boolean,
+  fieldNames: string[]
+}
+
+export type tTableDef = {
+  name: string,
+  fields: tField[],
+  indexes?: tIndex[]
+}
 
 const dirNames: string[] = [
-  'attr_values',
-  'attributes_of_product_group',
-  'attribute_groups_of_product_groups',
+  'attr-values',
+  'attributes-of-product-group',
+  'attribute-groups-of-product-groups',
   'attrs',
+  'dealers',
+  'dealer-price-import-runs',
   'manufacturers',
-  'product_groups',
-  'product_to_attr_values',
-  'product_to_product_groups',
+  'files',
+  'product-groups',
+  'product-offers-current',
+  'product-offers-history',
+  'product-to-attr-values',
+  'product-to-product-groups',
   'products',
-  'attributes_of_attribute_groups_of_product_groups',
+  'attributes-of-attribute-groups-of-product-groups',
 ]
 
 export const ensureDefaultTables = async () => {
@@ -21,7 +44,7 @@ export const ensureDefaultTables = async () => {
       await createTableFromModel( tableDefDDL )
     } catch ( err: any ) {
       if ( err.code !== '42P07' ) {
-        console.error( `ERROR on ensuring default table "${ dirNames }":`, err )
+        console.error( `ERROR on ensuring default table "${ dirName }":`, err )
       }
     }
   } )

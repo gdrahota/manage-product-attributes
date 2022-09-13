@@ -13,10 +13,6 @@ const postgresConnectionConfig = {
   searchPath: [ SCHEMA_NAME ],
 }
 
-console.debug( '===========================' )
-console.debug( postgresConnectionConfig )
-console.debug( '===========================' )
-
 export let pg: Knex
 
 export const connectToDatabases = (): void => {

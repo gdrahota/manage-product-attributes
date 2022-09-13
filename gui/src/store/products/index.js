@@ -4,6 +4,7 @@ import { sortByName } from '@/sorters'
 
 const state = {
   items: [],
+  isWaitingForResponse: false,
 }
 
 const loadAll = async ( { commit } ) => {
@@ -17,13 +18,17 @@ const loadAll = async ( { commit } ) => {
 
 const save = async ( { commit }, changedItem ) => {
   const { id } = changedItem
+  commit('IS_WAITING_FOR_RESPONSE')
   const item = await action('products.saveChanges', changedItem, { id })
   commit('UPDATE_ITEM', item)
+  commit('STOP_WAITING_FOR_RESPONSE')
 }
 
 const add = async ( { commit }, { product, productGroupId } ) => {
+  commit('IS_WAITING_FOR_RESPONSE')
   const item = await action('products.add', { product, productGroupId })
   commit('UPDATE_ITEM', item)
+  commit('STOP_WAITING_FOR_RESPONSE')
   return item.id
 }
 
@@ -50,9 +55,19 @@ const UPDATE_ITEM = ( state, item ) => {
   }
 }
 
+const IS_WAITING_FOR_RESPONSE = state => {
+  state.isWaitingForResponse = true
+}
+
+const STOP_WAITING_FOR_RESPONSE = state => {
+  state.isWaitingForResponse = false
+}
+
 const mutations = {
   STORE_ALL_ITEMS,
   UPDATE_ITEM,
+  IS_WAITING_FOR_RESPONSE,
+  STOP_WAITING_FOR_RESPONSE,
 }
 
 const getters = {
@@ -61,6 +76,7 @@ const getters = {
   getByProductGroupId: state =>
     productGroupId =>
       [ ...state.items.filter(i => i.productGroups.some(( { id } ) => id === productGroupId)) ].sort(sortByName),
+  isWaitingForResponse: state => state.isWaitingForResponse,
 }
 
 export default {

@@ -1,10 +1,10 @@
 import { IProductGroupTable } from "../../db/tables/product-groups"
 import { DefaultRestEndpoint } from "../_base_class"
-import { ProductGroup } from "../../models/product-group"
+import { ProductGroupService } from "../../models/product-group"
 
 class ProductGroupRestEndpoints extends DefaultRestEndpoint<IProductGroupTable> {
   static registerRoutes() {
-    const model = new ProductGroup()
+    const model = new ProductGroupService()
     return ProductGroupRestEndpoints.registerDefaultRoutes( model )
   }
 }
