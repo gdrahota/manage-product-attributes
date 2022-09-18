@@ -1,14 +1,14 @@
-import { IProduct, ProductService } from "../product"
-import { EnumSearchStrategy } from "../../db/enums/search-strategy"
-import { ProductGroupService } from "../product-group"
-import { EnumProductValueType } from "../../db/enums/product-value-type"
-import { pg } from "../../db/connect"
-import { ProductAttributeValueTable, tProductAttributeValueTable } from "../../db/tables/product-attribute-values"
-import Bluebird from "bluebird"
-import { IProductAttributeTable, ProductAttributeTable } from "../../db/tables/product-attributes"
-import { snakeToCamelRecord } from "../../db/helper"
-import { IProductOffer } from "../../db/tables/product-offers-history"
-import { ProductOfferCurrentTable } from "../../db/tables/product-offers-current"
+import { IProduct, ProductService } from '../product'
+import { EnumSearchStrategy } from '../../db/enums/search-strategy'
+import { ProductGroupService } from '../product-group'
+import { EnumProductValueType } from '../../db/enums/product-value-type'
+import { pg } from '../../db/connect'
+import { ProductAttributeValueTable, tProductAttributeValueTable } from '../../db/tables/product-attribute-values'
+import Bluebird from 'bluebird'
+import { IProductAttributeTable, ProductAttributeTable } from '../../db/tables/product-attributes'
+import { snakeToCamelRecord } from '../../db/helper'
+import { IProductOffer } from '../../db/tables/product-offers-history'
+import { ProductOfferCurrentTable } from '../../db/tables/product-offers-current'
 
 export interface IProductSearchFilter {
   attrId: number
@@ -97,7 +97,10 @@ export class ProductSearch {
 
     const query = pg( 'products as p' )
       .where( 'p.show', true )
-      .whereILike( 'name', `%${ searchStr }%` )
+
+    if ( searchStr ) {
+      query.whereILike( 'name', `%${ searchStr }%` )
+    }
 
     const query2 = query.clone().select( pg.raw( 'count(*) AS count' ) )
     const [ { count: numberOfProducts } ] = await query2

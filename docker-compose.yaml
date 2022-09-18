@@ -1,7 +1,7 @@
 version: '2'
 services:
-  db:
-    container_name: pg
+  manage-product-attributes-postgres:
+    container_name: manage-product-attributes-postgres
     image: postgres
     restart: always
     ports:
@@ -18,7 +18,7 @@ services:
     build: .
     restart: always
     depends_on:
-      - db
+      - manage-product-attributes-postgres
     networks:
       - default
     environment:

@@ -17,6 +17,7 @@
       :to=route.to
       flat
     />
+    <a class="text-white" href="/" target="_blank">Live</a>
   </q-tabs>
 </template>
 
@@ -31,7 +32,6 @@ export default {
         { to: { name: 'manage-product-groups' }, label: 'Product Groups' },
         { to: { name: 'manage-products' }, label: 'Products' },
         { to: { name: 'manage-dealers' }, label: 'Dealers' },
-        { to: { name: 'search-products' }, label: 'Search Products', classes: 'text-bold text-yellow' },
       ])
     },
   },
