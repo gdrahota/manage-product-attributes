@@ -3,6 +3,8 @@
     <q-page-container id="product-filter-page" class="full-height window-height">
       <is-loading-overlay :is-search-in-progress="isLoading" />
 
+      <app-header />
+
       <q-scroll-area class="fit border-right">
         <q-splitter
           v-model="splitterWidth"
@@ -23,21 +25,19 @@
         </q-splitter>
       </q-scroll-area>
     </q-page-container>
-
-    <app-footer />
   </q-layout>
 </template>
 
 <script>
 import { mapGetters } from 'vuex'
 
-import AppFooter from './footer'
+import AppHeader from './app-header'
 import IsLoadingOverlay from './is-loading'
 import ProductGroups from './product-groups'
 
 export default {
   components: {
-    AppFooter,
+    AppHeader,
     IsLoadingOverlay,
     ProductGroups,
   },

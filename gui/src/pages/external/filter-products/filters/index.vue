@@ -3,9 +3,9 @@
     v-model="dropDownState"
     :label="dropDownLabel"
     align="left"
-    class="full-width text-teal q-py-sm text-body1"
-    color="grey-4"
+    class="full-width text-black q-py-sm text-body1 bg-deep-orange-1"
     content-class="bg-white"
+    outline
     icon="mdi-filter"
     no-caps
   >
@@ -99,7 +99,7 @@ export default {
     dropDownLabel() {
       return this.filters.length > 0
         ? `${ this.filters.length } product filters set`
-        : 'No product filters set yet'
+        : 'Select ...'
     },
     productAttrGroups() {
       const productGroup = this.getProductGroupById(this.productGroupId)

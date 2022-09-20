@@ -1,19 +1,32 @@
 <template>
-  <q-list class="bg-grey-7 text-white" style="height: calc(100vh -  50px)">
+  <q-list
+    class="bg-grey-3 text-black"
+    style="height: calc(100vh -  50px)"
+  >
+    <q-item>
+      <q-item-section>
+        <div class="text-grey-7 text-body2">Product Groups:</div>
+      </q-item-section>
+    </q-item>
     <q-item
       v-for="(productGroup, pos) of productGroups"
       :key="pos"
-      :class="{ active: isSelected( productGroup ) }"
+      :class="{ 'bg-grey-5': isSelected(productGroup) }"
       :to="getRoute( productGroup )"
     >
-      <q-item-section class="text-body1 text-white">
+      <q-item-section class="text-body1 text-black">
         <div :style="{ 'width': (widthInPx - 70)+'px' }" class="ellipsis">
           {{ productGroup.name }}
         </div>
       </q-item-section>
 
-      <q-item-section class="text-white" side top>
-        <q-icon v-if="isSelected( productGroup )" class="q-mt-xs" name="mdi-arrow-right" />
+      <q-item-section
+        v-if="isSelected( productGroup )"
+        class="text-white"
+        side
+        top
+      >
+        <q-icon class="q-mt-xs" name="mdi-arrow-right" />
       </q-item-section>
     </q-item>
   </q-list>
@@ -69,7 +82,4 @@ export default {
 
 .q-tab__label
   text-align: left
-
-.q-tab.active
-  color: white
 </style>
