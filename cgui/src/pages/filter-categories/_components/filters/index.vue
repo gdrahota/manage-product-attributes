@@ -40,7 +40,7 @@
         :color="Object.keys(filters).length === 0 ? 'grey-4' : 'accent'"
         :disable="Object.keys(filters).length === 0"
         :text-color="Object.keys(filters).length === 0 ? 'accent' : 'white'"
-        label="Filter"
+        label="Apply Filter"
         @click="search"
         class="full-width q-pa-sm"
       />
@@ -52,6 +52,7 @@
 import { mapGetters } from 'vuex'
 import Between from './between'
 import Equal from './equal'
+import {mapActions} from "vuex/dist/vuex.esm.browser";
 
 export default {
   computed: {
@@ -59,6 +60,7 @@ export default {
       getAttrGroupsByProductGroupId: 'productAttributeGroupsOfProductGroups/getByProductGroupId',
       getAttributeById: 'productAttributes/getById',
       getProductGroupById: 'productGroups/getById',
+      filters: 'productSearch/getFilters'
     }),
     productAttrGroups() {
       const productGroup = this.getProductGroupById(this.productGroupId)
@@ -93,13 +95,8 @@ export default {
   },
 
   data: () => ({
-    filters: {},
+    // filters: {},
   }),
-
-  mounted(){
-    console.log('The product group ID is not working ===>')
-    console.log(this.productGroupId)
-  },
 
   methods: {
     init() {
@@ -124,6 +121,14 @@ export default {
         attrId: attribute.id,
         ...data,
       })
+    },
+    ...mapActions({
+      filterProducts: "productSearch/filter",
+      setProductGroupId: "productSearch/setProductGroupId",
+      setPage: "productSearch/setPage"
+    }),
+    filter(){
+      this.filterProducts()
     },
     search() {
       const filters = Object.values(this.filters).map(obj => {
@@ -164,12 +169,20 @@ export default {
       type: Number,
       required: true,
     },
+    page: {
+      type: Number,
+      required: true
+    }
   },
 
   watch: {
     productGroupId() {
       this.init()
     },
+    page(newVal, oldVal){
+      console.log('new: '+newVal)
+      this.search()
+    }
   },
 }
 </script>

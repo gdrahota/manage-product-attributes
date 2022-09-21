@@ -26,30 +26,19 @@ export default {
   name: "index",
   data(){
     return{
-      product:{}
+      productId: null
     }
   },
   computed: {
     ...mapGetters({
       getProduct: 'products/getById'
     }),
-    // product(){
-    //   return this.getProduct(this.$route.params.id)
-    // }
-  },
-  methods: {
-
-  },
-  watch: {
-    '$route.params.id': {
-      handler(newVal){
-        this.product = this.getProduct(newVal)
-      },
-      immediate: true
+    product(){
+      return this.getProduct(this.productId)
     }
   },
   mounted() {
-
+    this.productId = parseInt(this.$route.params.id)
   }
 }
 </script>

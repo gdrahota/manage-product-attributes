@@ -13,8 +13,8 @@ module.exports = {
     proxy: {
       '^/api': {
         changeOrigin: true,
-        // target: 'http://127.0.0.1:3000',
-        target: 'https://jellyfish-app-ksy6w.ondigitalocean.app/',
+        target: 'http://127.0.0.1:3000/',
+        // target: 'https://jellyfish-app-ksy6w.ondigitalocean.app/',
         headers: {
           Connection: 'keep-alive',
         },

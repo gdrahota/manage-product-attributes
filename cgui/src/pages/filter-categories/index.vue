@@ -13,7 +13,8 @@
                 </q-card>
                 <filters
                   :product-group-id="selectedProductGroupId"
-                  @searchProducts="searchProducts"
+                  @searchProducts="search"
+                  :page="page"
                 />
               </div>
             </div>
@@ -30,7 +31,7 @@
                 >
                   <q-pagination
                     :max="noOfPages"
-                    :max-pages="2"
+                    :max-pages="6"
                     unelevated
                     :min="min"
                     icon-next="mdi-arrow-right-bold-outline"
@@ -65,7 +66,8 @@ export default {
   data() {
     return {
       min: 1,
-      currentPage: 1
+      currentPage: 1,
+      page: 1
     }
   },
 
@@ -88,8 +90,8 @@ export default {
     ...mapActions({
       searchProducts: 'productSearch/search',
     }),
-    search({productGroupId, filters}, page) {
-      this.searchProducts({productGroupId, filters, page: page, itemsPerPage: 9})
+    search({productGroupId, filters}) {
+      this.searchProducts({productGroupId, filters, page: this.currentPage, itemsPerPage: 9})
     }
   },
 
@@ -98,7 +100,7 @@ export default {
   },
 
   created() {
-    this.search({productGroupId: this.selectedProductGroupId, filters: []}, this.currentPage)
+    this.search({productGroupId: this.selectedProductGroupId, filters: []})
   },
 
   watch: {
@@ -108,10 +110,8 @@ export default {
         filters: [],
       })
     },
-    'currentPage': {
-      handler(newVal) {
-        this.search({productGroupId: this.selectedProductGroupId, filters: []}, newVal)
-      }
+    currentPage(newVal){
+      this.page = newVal
     }
 
   },
