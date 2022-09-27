@@ -2,6 +2,8 @@
   <div
     class="p_card bg-white outline"
     @click="moveToDetailPage(product.id)"
+    @mouseover="showCol = true"
+    @mouseleave="showCol = false"
   >
     <div class="">
       <img
@@ -10,9 +12,25 @@
       />
     </div>
 
-    <div class="row q-pa-sm flex-center">
+    <div class="column q-pa-sm justify-center">
       <div class="card_title text-center">{{ product.name }}</div>
-      <div class="card_sub_title q-pt-sm text-center">{{ product.description }}</div>
+      <div class="card_sub_title q-pt-sm text-center">{{ product.description ? product.description : 'Description Here ...' }}</div>
+    </div>
+    <div 
+      style="padding-bottom: 0"
+      class="row justify-center h-100"
+    >
+      <q-btn
+        dense
+        padding="0 10px"
+        unelevated
+        class="s_btn"
+        :color="showCol ? 'light-blue-10' : 'grey-3'"
+        :text-color="showCol ? 'white' : 'grey-8'"
+        style="text-transform: none; font-weight: 600; border-radius: 3px;"
+      >
+        More details
+      </q-btn>
     </div>
   </div>
 </template>
@@ -20,6 +38,11 @@
 <script>
 export default {
   name: 'ProductCard',
+  data(){
+    return{
+      showCol: false
+    }
+  },
   props: {
     product: Object
   },
@@ -37,6 +60,9 @@ export default {
 </script>
 
 <style lang="sass">
+.s_btn
+  transition: background-color 1.0s ease-in-out
+
 .p_card
   height: 350px
   border-radius: 6px
@@ -44,14 +70,14 @@ export default {
 
 
   img
-    height: 200px
+    height: 220px
     width: 100%
     object-fit: cover
     border-radius: 6px
 
   &:hover
     cursor: pointer
-    animation: zoom-in-zoom-out 0.3s
+    animation: zoom-in-zoom-out 1.0s
 
     @keyframes zoom-in-zoom-out
       0%

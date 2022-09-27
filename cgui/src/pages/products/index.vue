@@ -3,7 +3,7 @@
     class="row justify-center"
     style="padding-top: 100px; padding-bottom: 50px"
   >
-    <div class="col-10">
+    <div class="col-9">
       <div class="row justify-between">
         <div class="col-lg-3 col-md-3 col-12">
           <div class="search-column q-mx-sm bg-white">
@@ -11,7 +11,8 @@
               placeholder="Search here ..."
               borderless
               dense
-              @keydown.enter="updateSearchQuery"
+              @input="updateSearchQuery"
+              @keydown.enter="filterProducts"
               :input-style="{padding: '10px', color: `#104a61`, fontWeight: 'bold'}"
               v-model="searchText"
               :value="searchText"
@@ -25,10 +26,10 @@
         </div>
         <div class="col-12 col-lg-8 col-md-8">
           <div
-            v-if="filteredProducts.length !== 0"
+            v-if="searchResult.length !== 0"
             class="q-ml-sm text-h5 text-weight-bold text-accent"
           >
-            Found {{ filteredProducts.length }} Products
+            Found {{ getNoOfProducts }} Products
           </div>
           <div
             class="q-ml-sm text-h5 text-weight-bold text-accent"
@@ -38,7 +39,7 @@
           </div>
           <div class="row wrap justify-center">
             <div
-              v-for="(product, index) in filteredProducts" :key="index"
+              v-for="(product, index) in searchResult" :key="index"
               class="col-4 q-pa-sm"
             >
               <product-card :product="product"></product-card>
@@ -49,17 +50,18 @@
             style=" width: available"
           >
             <q-pagination
-              :max="Math.ceil((filteredProducts.length / 9))"
+              v-if="getNoOfProducts !== 0"
+              :max="Math.ceil((getNoOfProducts / 9))"
               :max-pages="2"
               unelevated
               icon-next="mdi-arrow-right-bold-outline"
               icon-prev="mdi-arrow-left-bold-outline"
-              v-model="currentPage"
+              v-model="page"
               active-color="accent"
               color="accent"
               direction-links
             />
-            <div>[ A Total Of {{ Math.ceil((filteredProducts.length / 9)) }} Pages ]</div>
+            <div>[ A Total Of {{ Math.ceil((getNoOfProducts / 9)) }} Pages ]</div>
           </div>
         </div>
       </div>
@@ -68,7 +70,7 @@
 </template>
 
 <script>
-import {mapActions, mapGetters, mapState} from "vuex/dist/vuex.esm.browser";
+import {mapActions, mapGetters} from "vuex";
 import ProductCard from "@/components/products/product-card";
 
 export default {
@@ -83,18 +85,18 @@ export default {
 
   computed: {
     ...mapGetters({
-      products: "products/getAll",
-      searchResult: "products/getSearchResult"
+      getNoOfProducts: "productSearch/getNoOfProducts",
+      searchResult: "productSearch/getProducts",
+      getPage: "productSearch/getPage"
     }),
-
-    filteredProducts() {
-      const searchString = this.searchText ? this.searchText : this.$route.query.query ? this.$route.query.query : ''
-      if (searchString === '') {
-        return this.products
-      } else {
-        const inputed = searchString.toLowerCase()
-        this.doSearch(inputed)
-        return this.searchResult
+    page:{
+      get() {
+        return this.getPage
+      },
+      set( page ) {
+        if(this.getPage !== page){
+          this.setPage(page)
+        }
       }
     }
   },
@@ -105,23 +107,29 @@ export default {
         this.searchText = newVal
       },
       immediate: true
-    },
-
-    'currentPage': {
-      handler(newVal) {
-
-      }
     }
   },
 
   methods: {
     ...mapActions({
-      doSearch: 'products/search'
+      doSearch: 'productSearch/search',
+      setPage: 'productSearch/setSearchPage'
     }),
 
+    filterProducts() {
+      const searchString = this.searchText ? this.searchText : this.$route.query.query ? this.$route.query.query : ''
+        const inputed = searchString.toLowerCase()
+        this.doSearch(inputed)
+        return this.searchResult
+    },
+
     updateSearchQuery() {
-      this.$router.push({path: '/search', query: {query: this.searchText}})
+      this.$router.push({path: '/search', query: {query: this.searchText}}).catch(() => {})
     }
+  },
+
+  mounted(){
+    this.filterProducts()
   }
 
 }

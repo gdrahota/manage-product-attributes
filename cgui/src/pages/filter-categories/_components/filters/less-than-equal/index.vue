@@ -28,7 +28,7 @@ export default {
         let formatted
 
         if ( type === 'decimal' ) {
-          formatted = `= ${ this.$root.$options.filters.number(v.value * representationUnitFactor, fractionalDigits) } ${ unit }`
+          formatted = `up to ${ this.$root.$options.filters.number(v.value * representationUnitFactor, fractionalDigits) } ${ unit }`
         } else {
           formatted = `${ v.value }`
         }

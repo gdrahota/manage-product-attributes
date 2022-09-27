@@ -11,21 +11,54 @@ const state = {
   previousFilters: [],
   foundProducts: [],
   foundAttributes: [],
-  numberOfProducts: 0
+  numberOfProducts: 0,
+  searchInProgress: false
 }
 
-const search = async ( { commit }, { productGroupId, filters, page, itemsPerPage } ) => {
-  try {
-    const result = await action('productSearch.search', { filters, page, itemsPerPage }, { productGroupId })
-    commit('STORE_SEARCH_RESPONSE', result)
-  } catch ( err ) {
-    console.error('ERROR in store/products/load', err)
+const search = async ( { commit, state }, searchStr ) => {
+  commit('SET_SEARCH_IN_PROGRESS', true)
+  commit('SET_PAGE', 1)
+
+  const params = {
+    searchStr,
+    page: state.page,
+    itemsPerPage: state.itemsPerPage,
+  }
+
+  const result = await action('productSearch.search', null, params)
+
+  commit('STORE_SEARCH_RESPONSE', result)
+  commit('SET_SEARCH_IN_PROGRESS', false)
+
+}
+
+const setProductGroupId = ( { commit, dispatch }, productGroupId ) => {
+  commit('SET_PRODUCT_GROUP_ID', productGroupId)
+
+  if ( productGroupId ) {
+    dispatch('filter')
   }
 }
 
-const filter = async ({ commit, state }) => {
+const setPage = ( { state, commit, dispatch }, page ) => {
+  commit('SET_PAGE', page)
+
+  if ( state.productGroupId ) {
+    dispatch('filter')
+  }
+}
+
+
+const setSearchPage = ( {commit, dispatch}, page ) => {
+  commit('SET_PAGE', page)
+
+  dispatch('search')
+}
+
+const filter = async ( { commit, state } ) => {
   try {
-    commit('SET_FILTER_RESPONSE', null)
+    commit('SET_SEARCH_IN_PROGRESS', true)
+    commit('STORE_FILTER_RESPONSE', null)
 
     const productGroupId = state.productGroupId
 
@@ -33,22 +66,22 @@ const filter = async ({ commit, state }) => {
       return val === undefined || val === null
     }
 
-    const filters = state.filter(f => {
+    const filters = state.filters.map(f => {
       const response = {
         attrId: f.attrId,
-        productType: f.productType,
-        searchStrategy: f.searchStrategy
+        productValueType: f.productValueType,
+        searchStrategy: f.searchStrategy,
       }
 
       const nameMaps = [
         { from: 'valueFrom', to: 'valueIdFrom' },
-        { from: 'valueTill', to: 'valueIdTill'},
+        { from: 'valueTill', to: 'valueIdTill' },
         { from: 'value', to: 'valueId' },
-        { from: 'values', to: 'valueIds'}
+        { from: 'values', to: 'valueIds' },
       ]
 
       nameMaps.forEach(nameMap => {
-        if( !isNullOrUndefined( f[ nameMap.id ]?.id) ){
+        if ( !isNullOrUndefined(f[ nameMap.from ]?.id) ) {
           response[ nameMap.to ] = f[ nameMap.from ]?.id
         }
       })
@@ -56,7 +89,7 @@ const filter = async ({ commit, state }) => {
       return response
     })
 
-    if( !isEqual(state.previousFilters, filters) ){
+    if ( !isEqual(state.previousFilters, filters) ) {
       commit('SET_PAGE', 1)
     }
 
@@ -65,20 +98,25 @@ const filter = async ({ commit, state }) => {
     const payload = {
       filters,
       page: state.page,
-      itemsPerPage: state.itemsPerPage
+      itemsPerPage: state.itemsPerPage,
     }
 
-    const result = await action('productSearch.filter', payload, productGroupId)
+    const result = await action('productSearch.filter', payload, { productGroupId })
 
-    commit('SET_FILTER_RESPONSE', result)
-  } catch ( err ) {
-    console.error('ERROR in store/products/filter', err)
+    commit('STORE_FILTER_RESPONSE', result)
+    commit('SET_SEARCH_IN_PROGRESS', false)
+  } catch
+    ( err ) {
+    console.error('ERROR in store/products/load', err)
   }
 }
 
 const actions = {
   search,
-  filter
+  filter,
+  setProductGroupId,
+  setPage,
+  setSearchPage
 }
 
 // mutations
@@ -87,14 +125,27 @@ const SET_PRODUCT_GROUP_ID = ( state, id ) => {
   state.page = 1
   state.filters = []
   state.itemsPerPage = 9
+  state.searchInProgress = false
   state.foundProducts = []
   state.foundAttributes = []
   state.numberOfProducts = 0
 }
 
+const SET_SEARCH_IN_PROGRESS = ( state, val ) => {
+  state.searchInProgress = val
+}
+
 
 const STORE_SEARCH_RESPONSE = ( state, result ) => {
-  state.result = result
+  if( !result ){
+    state.foundProducts = []
+    state.foundAttributes = []
+  } else {
+    const { numberOfProducts, products, attributes } = result
+    state.foundProducts = products
+    state.foundAttributes = attributes
+    state.numberOfProducts = numberOfProducts
+  }
 }
 
 const STORE_FILTER_RESPONSE = (state, response) => {
@@ -118,18 +169,19 @@ const SET_PREVIOUS_FILTERS = ( state, filters ) => {
 }
 
 const SET_FILTER = ( state, data ) => {
-  const aId = state.filters.findIndex(( { attrId } ) => attrId === data.attrId )
+  const idx = state.filters.findIndex(( { attrId } ) => attrId === data.attrId )
 
-  if( aId === -1 ) {
+  if( idx === -1 ) {
     state.filters.push(data)
   } else {
-    Vue.set(state.filters, aId, data)
+    Vue.set(state.filters, idx, data)
   }
 }
 
 const mutations = {
   SET_PRODUCT_GROUP_ID,
   STORE_SEARCH_RESPONSE,
+  SET_SEARCH_IN_PROGRESS,
   STORE_FILTER_RESPONSE,
   SET_FILTER,
   SET_PREVIOUS_FILTERS,
@@ -137,14 +189,14 @@ const mutations = {
 }
 
 const getters = {
-  getProducts: state => state.result?.products || [],
-  getNoOfProducts: state => state.result?.numberOfProducts || 0,
+  getProducts: state => state.foundProducts,
+  getNoOfProducts: state => state.numberOfProducts,
   getWhole: state => state.result,
   getAttrValuesByAttrId: state => attrId => state.foundAttributes && state.foundAttributes[ attrId ] ? state.foundAttributes[ attrId ] : [],
   getPage: state => state.page,
   getFilters: state => state.filters,
-  getItemsPerPage: state => state.itemsPerPage
-
+  getItemsPerPage: state => state.itemsPerPage,
+  isSearchInProgress: state => state.searchInProgress
 }
 
 export default {

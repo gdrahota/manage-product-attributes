@@ -2,24 +2,30 @@
   <q-page-container>
     <q-page class="">
       <div class="row justify-center q-pa-md">
-        <div class="col-10">
+        <div class="col-9">
           <div class="row justify-between">
             <div v-if="!($q.screen.sm || $q.screen.md)" class="col-3">
               <div class="row">
                 <q-card
-                  class="shadow-box shadow-2 bg-accent q-mb-lg q-pa-sm flex"
+                  class="shadow-box shadow-2 bg-light-blue-10 q-mb-lg q-pa-sm flex"
                   style="height:50px; border-radius: 6px; width: 100%;">
                   <p class="text-h6 text-weight-bold text-white">Filter Categories</p>
                 </q-card>
                 <filters
-                  :product-group-id="selectedProductGroupId"
-                  @searchProducts="search"
+                  :productGroupId="selectedProductGroupId"
+                  @filter="filter"
                   :page="page"
                 />
               </div>
             </div>
             <div :class="{'col-8': !($q.screen.sm || $q.screen.md) }">
-              <div class="">
+              <div v-if="searchInProgress" class="row justify-center items-center full-height">
+                  <q-spinner-cube
+                      size="100"
+                      color="primary"
+                    />
+                </div>
+              <div v-else>
                 <div class="row q-col-gutter-md justify-start">
                   <div v-for="(product, index) in products" class="col-4 " :key="index">
                     <product-card :product="product"></product-card>
@@ -30,13 +36,14 @@
                   style=" width: available"
                 >
                   <q-pagination
+                    v-if="!searchInProgress"
                     :max="noOfPages"
                     :max-pages="6"
                     unelevated
                     :min="min"
                     icon-next="mdi-arrow-right-bold-outline"
                     icon-prev="mdi-arrow-left-bold-outline"
-                    v-model="currentPage"
+                    v-model="page"
                     active-color="accent"
                     color="accent"
                     direction-links
@@ -66,8 +73,7 @@ export default {
   data() {
     return {
       min: 1,
-      currentPage: 1,
-      page: 1
+      currentPage: 1
     }
   },
 
@@ -77,9 +83,26 @@ export default {
       noOfProducts: 'productSearch/getNoOfProducts',
       response: 'productSearch/getWhole',
       getAllProductGroups: 'productGroups/getAll',
+      getPage: 'productSearch/getPage',
+      searchInProgress: 'productSearch/isSearchInProgress'
     }),
     selectedProductGroupId() {
       return parseInt(this.$route.params.id)
+    },
+    productGroupId() {
+      return this.$route.params.id
+        ? parseInt(this.$route.params.id)
+        : null
+    },
+    page:{
+      get(){
+        return this.getPage
+      },
+      set(page){
+        if(page !== this.getPage){
+          this.setPage(page)
+        }
+      }
     },
     noOfPages(){
       return Math.ceil(this.noOfProducts / 9)
@@ -89,31 +112,28 @@ export default {
   methods: {
     ...mapActions({
       searchProducts: 'productSearch/search',
+      filterProducts: 'productSearch/filter',
+      setProductGroupId: "productSearch/setProductGroupId",
+      setPage: "productSearch/setPage"
     }),
-    search({productGroupId, filters}) {
-      this.searchProducts({productGroupId, filters, page: this.currentPage, itemsPerPage: 9})
+    filter(){
+      this.filterProducts(this.productGroupId)
     }
   },
 
-  mounted() {
-
-  },
 
   created() {
-    this.search({productGroupId: this.selectedProductGroupId, filters: []})
+    if(this.productGroupId){
+      this.setProductGroupId(this.productGroupId)
+    }
   },
 
   watch: {
-    selectedProductGroupId() {
-      this.search({
-        productGroupId: this.selectedProductGroupId,
-        filters: [],
-      })
-    },
-    currentPage(newVal){
-      this.page = newVal
+    selectedProductGroupId(newId, oldId) {
+      if(newId !== oldId){
+        this.setProductGroupId(this.selectedProductGroupId)
+      }
     }
-
   },
 
 }

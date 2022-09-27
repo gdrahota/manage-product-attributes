@@ -1,35 +1,29 @@
 <template>
-  <div class="row q-px-none">
-    <div class="col-md-5 col-sm-12">
+  <div class="row q-px-sm">
+    <div class="col q-pr-xs">
       <q-select
-        :input-style="{fontSize: '8px'}"
         v-model="valueFrom"
         :options="optionsFrom"
         clearable
         dense
-        style="border-radius: 5px; background-color: #f2f9fd"
-        class="q-pl-sm"
         hide-bottom-space
         label="from"
         option-label="formatted"
         options-dense
-        borderless
+        outlined
       />
     </div>
-    <q-space />
-    <div class="col-md-5 col-sm-12">
+    <div class="col q-pl-xs">
       <q-select
         v-model="valueTill"
         :options="optionsTill"
         clearable
         dense
-        style="border-radius: 5px; background-color: #f2f9fd"
         hide-bottom-space
-        class="q-pl-sm"
         label="to"
         option-label="formatted"
         options-dense
-        borderless
+        outlined
       />
     </div>
   </div>
@@ -40,17 +34,6 @@ import { mapGetters } from 'vuex'
 
 import { sortByValue } from '@/sorters'
 
-const uniqueByKey = ( arr, prop ) => {
-  const values = []
-  return arr.reduce(( a, d ) => {
-    if ( !values.includes(d[ prop ]) ) {
-      values.push(d[ prop ])
-      a.push(d)
-    }
-    return a
-  }, [])
-}
-
 export default {
   computed: {
     ...mapGetters({
@@ -58,6 +41,7 @@ export default {
     }),
     options() {
       const { representationUnitFactor, unit, id, fractionalDigits } = this.attributeDef
+
       const options = this.getAttrValuesByAttrId(id).map(v => ({
           ...v,
           value: v.value * representationUnitFactor,
@@ -66,7 +50,7 @@ export default {
         }),
       )
 
-      return uniqueByKey(options, 'value').sort(sortByValue)
+      return options.sort(sortByValue)
     },
     optionsFrom() {
       if ( !this.valueTill ) {

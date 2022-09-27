@@ -1,12 +1,14 @@
 const getUrls = (entityName) => {
   const urls = {
     products: 'products',
+    manufacturers: 'manufacturers',
     productGroups: 'product-groups',
     productToProductGroups: 'product-to-product-groups',
     productAttributes: 'product-attributes',
     productAttributeValues: 'product-attribute-values',
     productAttributeGroupOfProductGroup: 'product-attribute-groups-of-product-groups',
     productSearch: 'product-search',
+    dealers: 'dealers'
   }
 
   return `/api/${urls[entityName]}`
@@ -53,6 +55,19 @@ export const action = async (actionName, payload, params) => {
       break
     }
 
+    case 'productAttributes.save': {
+      config.url = `${ getUrls('productAttributes') }`
+      config.method = 'PUT'
+      config.payload = payload
+      break
+    }
+    case 'productAttributes.add': {
+      config.url = `${ getUrls('productAttributes') }`
+      config.method = 'POST'
+      config.payload = payload
+      break
+    }
+
 
     // productToProductGroups
     case 'productToProductGroups.loadAll': {
@@ -96,9 +111,21 @@ export const action = async (actionName, payload, params) => {
 
     // productSearch
     case 'productSearch.search': {
-      config.url = `${getUrls('productSearch')}/${params.productGroupId}`
+      config.url = `${ getUrls('productSearch') }/search/${ params.searchStr }/${ params.page }/${ params.itemsPerPage }`
+      config.method = 'GET'
+      break
+    }
+
+    case 'productSearch.filter': {
+      config.url = `${ getUrls('productSearch') }/${ params.productGroupId }`
       config.method = 'POST'
       config.payload = payload
+      break
+    }
+
+    case 'show-products.loadById': {
+      config.url = `${ getUrls('productSearch') }/${ params.id }`
+      config.method = 'GET'
       break
     }
   }

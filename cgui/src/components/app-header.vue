@@ -13,7 +13,7 @@
         SolarTech
       </q-toolbar-title>
       <q-space/>
-      <q-btn color="#f4fafd" v-if="$q.screen.sm || $q.screen.xs" flat dense icon="mdi-menu" />
+      <q-btn :color="`light-blue-10`" v-if="$q.screen.sm || $q.screen.xs" flat dense icon="mdi-menu" />
       <q-tabs
         v-else
         v-model="tab"

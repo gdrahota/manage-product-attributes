@@ -24,7 +24,7 @@
                 <component
                   :is="getComponent(attribute.searchStrategy)"
                   :attributeDef="attribute"
-                  :filter="filters[attribute.id] || {}"
+                  :filter="filters.find(filter => attribute.id === filter.attrId) || {}"
                   :values="attribute.values"
                   @set="data => setFilter(attribute, data)"
                 />
@@ -41,7 +41,7 @@
         :disable="Object.keys(filters).length === 0"
         :text-color="Object.keys(filters).length === 0 ? 'accent' : 'white'"
         label="Apply Filter"
-        @click="search"
+        @click="filter"
         class="full-width q-pa-sm"
       />
     </div>
@@ -49,10 +49,10 @@
 </template>
 
 <script>
-import { mapGetters } from 'vuex'
+import { mapGetters, mapMutations } from 'vuex'
 import Between from './between'
 import Equal from './equal'
-import {mapActions} from "vuex/dist/vuex.esm.browser";
+import LessThanEqual from './less-than-equal'
 
 export default {
   computed: {
@@ -72,7 +72,7 @@ export default {
       return this.getAttrGroupsByProductGroupId(this.productGroupId).map(attrGroup => {
         const attributes = attrGroup.attributes.map(( { position, attrId } ) => {
           const baseAttr = this.getAttributeById(attrId)
-          const { fractionalDigits, productGroupId, representationUnit, representationUnitFactor, searchStrategy, unit } =
+          const { fractionalDigits, productGroupId, representationUnit, representationUnitFactor, searchStrategy } =
             productGroup.attributes.find(a => a.attrId === attrId)
 
           return {
@@ -99,15 +99,17 @@ export default {
   }),
 
   methods: {
-    init() {
-      this.filters = {}
-    },
+    ...mapMutations({
+      _setFilter: 'productSearch/SET_FILTER'
+    }), 
     getComponent( searchStrategy ) {
       switch ( searchStrategy ) {
         case 'BETWEEN':
-          return Between
+          return Between 
         case 'EQ':
           return Equal
+        case 'LTE':
+          return LessThanEqual  
         default:
           console.error(`Unknown search strategy: "${ searchStrategy }"`)
 
@@ -115,53 +117,50 @@ export default {
       }
     },
     setFilter( attribute, data ) {
-      this.$set(this.filters, attribute.id, {
-        type: attribute.type,
-        searchStrategy: attribute.searchStrategy,
+      this._setFilter({
         attrId: attribute.id,
-        ...data,
+        searchStrategy: attribute.searchStrategy,
+        productValueType: attribute.type,
+        ...data
       })
     },
-    ...mapActions({
-      filterProducts: "productSearch/filter",
-      setProductGroupId: "productSearch/setProductGroupId",
-      setPage: "productSearch/setPage"
-    }),
-    filter(){
-      this.filterProducts()
+    
+    filter() {
+      this.$emit('filter')
     },
-    search() {
-      const filters = Object.values(this.filters).map(obj => {
-        const response = {
-          attrId: obj.attrId,
-          productValueType: obj.type,
-          searchStrategy: obj.searchStrategy,
-        }
 
-        switch ( obj.searchStrategy ) {
-          case 'BETWEEN': {
-            if ( obj.valueFrom ) {
-              response.valueIdFrom = obj.valueFrom.id
-            }
+    // search() {
+    //   const filters = Object.values(this.filters).map(obj => {
+    //     const response = {
+    //       attrId: obj.attrId,
+    //       productValueType: obj.type,
+    //       searchStrategy: obj.searchStrategy,
+    //     }
 
-            if ( obj.valueTill ) {
-              response.valueIdTill = obj.valueTill.id
-            }
-          }
-            break
+    //     switch ( obj.searchStrategy ) {
+    //       case 'BETWEEN': {
+    //         if ( obj.valueFrom ) {
+    //           response.valueIdFrom = obj.valueFrom.id
+    //         }
 
-          case 'EQ': {
-            if ( obj.value ) {
-              response.valueId = obj.value.id
-            }
-          }
-        }
+    //         if ( obj.valueTill ) {
+    //           response.valueIdTill = obj.valueTill.id
+    //         }
+    //       }
+    //         break
 
-        return response
-      })
+    //       case 'EQ': {
+    //         if ( obj.value ) {
+    //           response.valueId = obj.value.id
+    //         }
+    //       }
+    //     }
 
-      this.$emit('searchProducts', { productGroupId: this.productGroupId, filters })
-    },
+    //     return response
+    //   })
+
+    //   this.$emit('searchProducts', { productGroupId: this.productGroupId, filters })
+    // },
   },
 
   props: {
@@ -178,10 +177,6 @@ export default {
   watch: {
     productGroupId() {
       this.init()
-    },
-    page(newVal, oldVal){
-      console.log('new: '+newVal)
-      this.search()
     }
   },
 }
