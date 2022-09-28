@@ -33,8 +33,6 @@ class ProductSearchRoutes {
         itemsPerPage: parseInt( req.params.itemsPerPage || '10' )
       }
 
-      console.log( '==>', req.params )
-
       const results = await model.searchProducts( searchStr, params )
 
       res.send( results )

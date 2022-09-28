@@ -97,7 +97,7 @@ export class ProductSearch {
     const query = pg( 'products as p' )
       .where( 'p.show', true )
 
-    if ( searchStr ) {
+    if ( searchStr !== '@all@' ) {
       query.whereILike( 'name', `%${ searchStr }%` )
     }
 
