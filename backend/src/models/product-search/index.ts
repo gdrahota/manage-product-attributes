@@ -94,7 +94,6 @@ export class ProductSearch {
 
   async searchProducts( searchStr: string, params: ISearchProductsProp ): Promise<tResponse> {
     const { page, itemsPerPage } = params
-
     const query = pg( 'products as p' )
       .where( 'p.show', true )
 
@@ -182,7 +181,7 @@ export class ProductSearch {
 
       const attrDef = await this.productAttributeTable.getById( attribute.attrId ) as IProductAttributeTable
 
-      response[attribute.attrId] = results.map( ( r: tProductAttributeValueTable ) => {
+      response[ attribute.attrId ] = results.map( ( r: tProductAttributeValueTable ) => {
         const commonAttrs: any = {
           id: r.id,
           attrId: r.attrId

@@ -1,10 +1,10 @@
-import { Request, Response, Router } from "express"
-import { IProductSearchFilter, ProductSearch } from "../../models/product-search"
+import { Request, Response, Router } from 'express'
+import { IProductSearchFilter, ProductSearch } from '../../models/product-search'
 
 class ProductSearchRoutes {
   static registerRoutes() {
     return Router()
-      .get( '/search/:searchStr/:page?/:itemPerPage?', ProductSearchRoutes.searchProduct )
+      .get( '/search/:searchStr/:page?/:itemsPerPage?', ProductSearchRoutes.searchProduct )
       .get( '/:id', ProductSearchRoutes.getById )
       .post( '/:productGroupId', ProductSearchRoutes.filterProduct )
   }
@@ -32,6 +32,8 @@ class ProductSearchRoutes {
         page: parseInt( req.params.page || '1' ),
         itemsPerPage: parseInt( req.params.itemsPerPage || '10' )
       }
+
+      console.log( '==>', req.params )
 
       const results = await model.searchProducts( searchStr, params )
 
