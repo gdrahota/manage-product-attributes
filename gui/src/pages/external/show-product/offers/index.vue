@@ -15,7 +15,7 @@
           class="row offer text-blue-8"
       >
         <div class="col-4 text-grey-8">{{ offer.dealer.name }}</div>
-        <div class="col-2 right">1 bis 2 Wochen</div>
+        <div class="col-2 right">1 to 2 weeks</div>
         <div class="col-2 right">{{ offer.itemPrice | number(2) }} €</div>
         <div class="col-2 right">{{ offer.shippingPrice| number(2) }} €</div>
         <div class="col-2 right">{{ offer.totalPrice | number(2) }} €</div>

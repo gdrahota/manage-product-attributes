@@ -28,7 +28,7 @@
     <div class="row border-top">
       <div class="col-3">
         <div class="q-pa-md text-bold text-brown" style="margin-top: 6px">
-          {{ numberOfProducts }} Produkte
+          {{ numberOfProducts | number }} Products
         </div>
       </div>
 
@@ -65,7 +65,7 @@ export default {
   },
 
   computed: {
-    ...mapGetters({
+    ...mapGetters( {
       getProductGroupById: 'productGroups/getById',
       products: 'productSearch/getProducts',
       manufacturers: 'manufacturers/getAll',
@@ -75,17 +75,17 @@ export default {
       getItemsPerPage: 'productSearch/getItemsPerPage',
       filters: 'productSearch/getFilters',
       searchInProgress: 'productSearch/isSearchInProgress',
-    }),
+    } ),
     productGroupId() {
       return this.$route.params.id
-        ? parseInt(this.$route.params.id)
+        ? parseInt( this.$route.params.id )
         : null
     },
     productGroup() {
-      return this.getProductGroupById(this.productGroupId)
+      return this.getProductGroupById( this.productGroupId )
     },
     selectedProductGroupId() {
-      return parseInt(this.$route.params.id)
+      return parseInt( this.$route.params.id )
     },
     productGroups() {
       return this.getAllProductGroups
@@ -96,42 +96,42 @@ export default {
       },
       set( page ) {
         if ( this.getPage !== page ) {
-          this.setPage(page)
+          this.setPage( page )
         }
       },
     },
     lastPage() {
-      return Math.ceil(this.numberOfProducts / 10)
+      return Math.ceil( this.numberOfProducts / 10 )
     },
   },
 
   created() {
     if ( this.productGroupId ) {
-      this.setProductGroupId(this.productGroupId)
+      this.setProductGroupId( this.productGroupId )
     }
   },
 
   methods: {
-    ...mapActions({
+    ...mapActions( {
       filterProducts: 'productSearch/filter',
       setProductGroupId: 'productSearch/setProductGroupId',
       setPage: 'productSearch/setPage',
-    }),
+    } ),
     routeTo( id ) {
-      this.$router.push({
+      this.$router.push( {
         name: 'manage-product',
         params: { id },
-      })
+      } )
     },
     filter() {
-      this.filterProducts(this.productGroupId)
+      this.filterProducts( this.productGroupId )
     },
   },
 
   watch: {
     selectedProductGroupId( newId, oldId ) {
       if ( newId !== oldId ) {
-        this.setProductGroupId(this.selectedProductGroupId)
+        this.setProductGroupId( this.selectedProductGroupId )
       }
     },
   },
