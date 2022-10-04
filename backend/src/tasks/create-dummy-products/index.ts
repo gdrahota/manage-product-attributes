@@ -91,10 +91,10 @@ export default async () => {
       boolValue: null
     }
 
-    return await productAttributeValue.add( value ) as unknown as IAttributeValue
+    return (await productAttributeValue.add( value )) as IAttributeValue
   }
 
-  const array = Array.from( Array( 333 ).keys() )
+  const array = Array.from( Array( 2468 ).keys() )
 
   await Bluebird.each( array, async ( i, pos ) => {
     const width = await generateWidth()
@@ -103,11 +103,11 @@ export default async () => {
 
 
     const product: Omit<IProduct, 'id'> = {
-      name: `product-${ pos + 1 }`,
+      name: `Module EA45-${ pos + 1 }-${ peekPower.value }`,
       productGroups: [ productGroups[ 0 ] ],
       manufacturerProductId: `manufacturerProduct-${ pos + 1 }`,
       files: [],
-      manufacturer: manufacturers[ 0 ],
+      manufacturer: manufacturers[ Math.floor( Math.random() * manufacturers.length ) ],
       show: false,
       attributeValues: [
         await generateHeight(),
