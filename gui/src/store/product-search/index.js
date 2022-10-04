@@ -1,6 +1,7 @@
 import Vue from 'vue'
 import { action } from '@/store/actions'
 import isEqual from 'lodash.isequal'
+import { EnumSearchStrategy } from '@/store/enums/search-strategy'
 
 const state = {
   searchInProgress: false,
@@ -15,8 +16,8 @@ const state = {
 }
 
 const search = async ( { commit, state }, searchStr ) => {
-  commit('SET_SEARCH_IN_PROGRESS', true)
-  commit('SET_PAGE', 1)
+  commit( 'SET_SEARCH_IN_PROGRESS', true )
+  commit( 'SET_PAGE', 1 )
 
   const params = {
     searchStr,
@@ -24,17 +25,17 @@ const search = async ( { commit, state }, searchStr ) => {
     itemsPerPage: state.itemsPerPage,
   }
 
-  const result = await action('productSearch.search', null, params)
+  const result = await action( 'productSearch.search', null, params )
 
-  commit('STORE_SEARCH_RESPONSE', result)
-  commit('SET_SEARCH_IN_PROGRESS', false)
+  commit( 'STORE_SEARCH_RESPONSE', result )
+  commit( 'SET_SEARCH_IN_PROGRESS', false )
 
 }
 
 const filter = async ( { commit, state } ) => {
   try {
-    commit('SET_SEARCH_IN_PROGRESS', true)
-    commit('STORE_SEARCH_RESPONSE', null)
+    commit( 'SET_SEARCH_IN_PROGRESS', true )
+    commit( 'STORE_SEARCH_RESPONSE', null )
 
     const productGroupId = state.productGroupId
 
@@ -42,7 +43,7 @@ const filter = async ( { commit, state } ) => {
       return val === undefined || val === null
     }
 
-    const filters = state.filters.map(f => {
+    const filters = state.filters.map( f => {
       const response = {
         attrId: f.attrId,
         productValueType: f.productValueType,
@@ -56,20 +57,20 @@ const filter = async ( { commit, state } ) => {
         { from: 'values', to: 'valueIds' },
       ]
 
-      nameMaps.forEach(nameMap => {
-        if ( !isNullOrUndefined(f[ nameMap.from ]?.id) ) {
+      nameMaps.forEach( nameMap => {
+        if ( !isNullOrUndefined( f[ nameMap.from ]?.id ) ) {
           response[ nameMap.to ] = f[ nameMap.from ]?.id
         }
-      })
+      } )
 
       return response
-    })
+    } )
 
-    if ( !isEqual(state.previousFilters, filters) ) {
-      commit('SET_PAGE', 1)
+    if ( !isEqual( state.previousFilters, state.filters ) ) {
+      commit( 'SET_PAGE', 1 )
     }
 
-    commit('SET_PREVIOUS_FILTERS', filters)
+    commit( 'SET_PREVIOUS_FILTERS', JSON.parse( JSON.stringify( state.filters ) ) )
 
     const payload = {
       filters,
@@ -77,29 +78,31 @@ const filter = async ( { commit, state } ) => {
       itemsPerPage: state.itemsPerPage,
     }
 
-    const result = await action('productSearch.filter', payload, { productGroupId })
+    action( 'productSearch.filter', payload, { productGroupId } )
+      .then( result => {
+        commit( 'STORE_SEARCH_RESPONSE', result )
+        commit( 'SET_SEARCH_IN_PROGRESS', false )
+      } )
 
-    commit('STORE_SEARCH_RESPONSE', result)
-    commit('SET_SEARCH_IN_PROGRESS', false)
   } catch
     ( err ) {
-    console.error('ERROR in store/products/load', err)
+    console.error( 'ERROR in store/products/load', err )
   }
 }
 
 const setProductGroupId = ( { commit, dispatch }, productGroupId ) => {
-  commit('SET_PRODUCT_GROUP_ID', productGroupId)
+  commit( 'SET_PRODUCT_GROUP_ID', productGroupId )
 
   if ( productGroupId ) {
-    dispatch('filter')
+    dispatch( 'filter' )
   }
 }
 
 const setPage = ( { commit, dispatch }, page ) => {
-  commit('SET_PAGE', page)
+  commit( 'SET_PAGE', page )
 
   if ( state.productGroupId ) {
-    dispatch('filter')
+    dispatch( 'filter' )
   }
 }
 
@@ -116,6 +119,7 @@ const SET_PRODUCT_GROUP_ID = ( state, id ) => {
 
   state.page = 1
   state.filters = []
+  state.previousFilters = []
   state.searchInProgress = false
   state.itemsPerPage = 10
   state.foundProducts = []
@@ -142,17 +146,30 @@ const STORE_SEARCH_RESPONSE = ( state, response ) => {
 const SET_PAGE = ( state, page ) => {
   state.page = page
 }
+
 const SET_PREVIOUS_FILTERS = ( state, filters ) => {
   state.previousFilters = filters
 }
 
 const SET_FILTER = ( state, data ) => {
-  const idx = state.filters.findIndex(( { attrId } ) => attrId === data.attrId)
+  const idx = state.filters.findIndex( ( { attrId } ) => attrId === data.attrId )
+
+  if ( data.searchStrategy === EnumSearchStrategy.BETWEEN ) {
+    if ( !data.valueFrom && !data.valueTill ) {
+      Vue.delete( state.filters, idx )
+      return
+    }
+  } else {
+    if ( !data.value ) {
+      Vue.delete( state.filters, idx )
+      return
+    }
+  }
 
   if ( idx === -1 ) {
-    state.filters.push(data)
+    state.filters.push( data )
   } else {
-    Vue.set(state.filters, idx, data)
+    Vue.set( state.filters, idx, data )
   }
 }
 
@@ -167,7 +184,7 @@ const mutations = {
 
 const getters = {
   getProducts: state => state.foundProducts,
-  getProductById: state => productId => state.foundProducts.find(( { id } ) => id === productId),
+  getProductById: state => productId => state.foundProducts.find( ( { id } ) => id === productId ),
   getAttrValuesByAttrId: state => attrId => state.foundAttributes && state.foundAttributes[ attrId ]
     ? state.foundAttributes[ attrId ]
     : [],
@@ -176,6 +193,7 @@ const getters = {
   getFilters: state => state.filters,
   getPage: state => state.page,
   getItemsPerPage: state => state.itemsPerPage,
+  haveFiltersBeenChanged: state => !isEqual( state.previousFilters, state.filters ),
 }
 
 export default {

@@ -8,7 +8,7 @@
     <q-card-section class="q-pa-none">
       <div v-if="product" class="row">
         <div class="col-1 flex flex-center">
-          <div class="position">{{ (position + 1) + (page - 1) * itemsPerPage }}</div>
+          <div class="position q-pl-sm">{{ ( position + 1 ) + ( page - 1 ) * itemsPerPage | number }}</div>
         </div>
 
         <div class="col-2">
@@ -81,21 +81,21 @@ export default {
   },
 
   computed: {
-    ...mapGetters({
+    ...mapGetters( {
       getProductGroupById: 'productGroups/getById',
       getByProductGroupId: 'productAttributeGroupsOfProductGroups/getByProductGroupId',
       getProductAttributeById: 'productAttributes/getById',
       itemsPerPage: 'productSearch/getItemsPerPage',
       page: 'productSearch/getPage',
-    }),
+    } ),
     productAttributeGroupsOfProductGroup() {
-      return this.getByProductGroupId(this.productGroup.id)
+      return this.getByProductGroupId( this.productGroup.id )
     },
     firstProductGroup() {
-      return this.productAttributeGroupsOfProductGroup.find(( { position } ) => position === 0)
+      return this.productAttributeGroupsOfProductGroup.find( ( { position } ) => position === 0 )
     },
     files() {
-      const pictures = this.product.files.filter(( file ) => [ 'image/jpeg', 'image/png', 'image/webp' ].includes(file.mimeType))
+      const pictures = this.product.files.filter( ( file ) => [ 'image/jpeg', 'image/png', 'image/webp' ].includes( file.mimeType ) )
 
       if ( pictures.length > 1 ) {
         return [ pictures[ 0 ], pictures[ 1 ] ]
@@ -119,7 +119,7 @@ export default {
       }
     },
     routeTo( route ) {
-      this.$router.push(route)
+      this.$router.push( route )
     },
   },
 
@@ -152,14 +152,10 @@ export default {
     margin-top: 7px
 
   .position
-    font-size: 30px
+    font-size: 20px
     color: #888
     border: 0
-    height: 80px
     width: 80px
-    padding-top: 18px
-    text-align: center
-    vertical-align: center
 
   .offers
     font-size: 16px

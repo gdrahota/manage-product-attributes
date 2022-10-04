@@ -1,6 +1,6 @@
-import Bluebird from "bluebird"
-import { IProductAttributeTable, ProductAttributeTable } from "../../db/tables/product-attributes"
-import { EnumProductValueType } from "../../db/enums/product-value-type"
+import Bluebird from 'bluebird'
+import { IProductAttributeTable, ProductAttributeTable } from '../../db/tables/product-attributes'
+import { EnumProductValueType } from '../../db/enums/product-value-type'
 
 export const createProductAttributes = async () => {
   const attrs: Omit<IProductAttributeTable, 'id'>[] = [
@@ -9,35 +9,35 @@ export const createProductAttributes = async () => {
       type: EnumProductValueType.DECIMAL,
       unit: 'mm',
       fractionalDigits: 0,
-      description: null,
+      description: 'from top to bottom',
     },
     {
       name: 'Width',
       type: EnumProductValueType.DECIMAL,
       unit: 'mm',
       fractionalDigits: 0,
-      description: null
+      description: 'from left to right'
     },
     {
       name: 'Depth',
       type: EnumProductValueType.DECIMAL,
       unit: 'mm',
       fractionalDigits: 0,
-      description: null
+      description: 'from front to rear'
     },
     {
       name: 'Weight',
       type: EnumProductValueType.DECIMAL,
       unit: 'g',
       fractionalDigits: 0,
-      description: null
+      description: 'This is the product\s weight, packing material excluded.'
     },
     {
       name: 'Peak Power',
       type: EnumProductValueType.DECIMAL,
       unit: 'Wp',
       fractionalDigits: 0,
-      description: null
+      description: 'Peak Power is the maximum power generation possible under standard conditions.'
     },
   ]
   const productAttributeTable = new ProductAttributeTable()
