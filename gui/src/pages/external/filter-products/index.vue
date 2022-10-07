@@ -8,7 +8,7 @@
       />
     </div>
 
-    <div style="height: calc(100vh - 189px); overflow-y: auto">
+    <div style="height: calc(100vh - 169px); overflow-y: auto">
       <div class="q-pl-sm row q-ma-sm">
         <div
           v-for="(product, pos) of products"

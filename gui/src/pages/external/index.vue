@@ -8,7 +8,7 @@
       <q-scroll-area class="fit border-right">
         <q-splitter
           v-model="splitterWidth"
-          style="height: calc(100vh - 49px)"
+          style="height: calc(100vh - 50px)"
           unit="px"
         >
           <template v-slot:before>
