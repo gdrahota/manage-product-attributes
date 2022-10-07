@@ -3,6 +3,7 @@
     <q-layout view="hHh lpR fFf">
       <app-header></app-header>
       <router-view></router-view>
+      <app-footer></app-footer>
     </q-layout>
   </div>
 </template>
@@ -10,10 +11,12 @@
 <script>
 import { mapActions } from 'vuex';
 import AppHeader from "@/components/app-header";
+import AppFooter from "@/components/app-footer";
 
 export default {
   components: {
-    AppHeader
+    AppHeader,
+    AppFooter
   },
 
   data: () => ({

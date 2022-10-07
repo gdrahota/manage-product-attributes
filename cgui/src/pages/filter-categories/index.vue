@@ -6,11 +6,17 @@
           <div class="row justify-between">
             <div v-if="!($q.screen.sm || $q.screen.md)" class="col-3">
               <div class="row">
-                <q-card
-                  class="shadow-box shadow-2 bg-light-blue-10 q-mb-lg q-pa-sm flex"
-                  style="height:50px; border-radius: 6px; width: 100%;">
-                  <p class="text-h6 text-weight-bold text-white">Filter Categories</p>
-                </q-card>
+                <div
+                  style="height:50px; border-radius: 6px; width: 100%;"
+                  class="row"
+                >
+                  <q-icon
+                    name="filter_alt"
+                    color="light-blue-10"
+                    size="md"
+                  />
+                  <p class="text-h6 text-weight-bold text-light-blue-10">Filter Products</p>
+                </div>
                 <filters
                   :productGroupId="selectedProductGroupId"
                   @filter="filter"
@@ -23,12 +29,23 @@
                   <q-spinner-cube
                       size="100"
                       color="primary"
-                    />
-                </div>
+                  />
+              </div>
               <div v-else>
+                <div class="row justify-end q-mb-md">
+                  <q-btn flat round color="light-blue-10" icon="grid_view" @click="viewStatus = 'grid'"/>
+                  <q-btn flat round color="light-blue-10" icon="view_list" @click="viewStatus = 'list'"/>
+                </div>
                 <div class="row q-col-gutter-md justify-start">
-                  <div v-for="(product, index) in products" class="col-4 " :key="index">
-                    <product-card :product="product"></product-card>
+                  <div
+                    v-for="(product) in products"
+                    :class="{'col-4 q-pa-sm q-mb-sm': viewStatus === 'grid', 'col-12 items-center q-my-md': viewStatus === 'list'}"
+                    :key="product.id"
+                  >
+                    <product-card
+                      :product="product"
+                      :view-style="viewStatus"
+                    />
                   </div>
                 </div>
                 <div
@@ -73,7 +90,7 @@ export default {
   data() {
     return {
       min: 1,
-      currentPage: 1
+      viewStatus: 'grid'
     }
   },
 

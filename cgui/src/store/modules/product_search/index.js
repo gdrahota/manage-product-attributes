@@ -12,15 +12,15 @@ const state = {
   foundProducts: [],
   foundAttributes: [],
   numberOfProducts: 0,
-  searchInProgress: false
+  searchInProgress: false,
+  searchString: ''
 }
 
 const search = async ( { commit, state }, searchStr ) => {
   commit('SET_SEARCH_IN_PROGRESS', true)
-  commit('SET_PAGE', 1)
 
   const params = {
-    searchStr,
+    searchStr: state.searchString,
     page: state.page,
     itemsPerPage: state.itemsPerPage,
   }
@@ -48,10 +48,13 @@ const setPage = ( { state, commit, dispatch }, page ) => {
   }
 }
 
+const setSearchString = ({ commit }, searchStr) => {
+  commit('SET_SEARCH_STRING', searchStr)
+}
 
-const setSearchPage = ( {commit, dispatch}, page ) => {
+
+const setSearchPage = ( {state, commit, dispatch}, page ) => {
   commit('SET_PAGE', page)
-
   dispatch('search')
 }
 
@@ -116,7 +119,8 @@ const actions = {
   filter,
   setProductGroupId,
   setPage,
-  setSearchPage
+  setSearchPage,
+  setSearchString
 }
 
 // mutations
@@ -129,6 +133,10 @@ const SET_PRODUCT_GROUP_ID = ( state, id ) => {
   state.foundProducts = []
   state.foundAttributes = []
   state.numberOfProducts = 0
+}
+
+const SET_SEARCH_STRING = ( state, str ) => {
+  state.searchString = str
 }
 
 const SET_SEARCH_IN_PROGRESS = ( state, val ) => {
@@ -185,7 +193,8 @@ const mutations = {
   STORE_FILTER_RESPONSE,
   SET_FILTER,
   SET_PREVIOUS_FILTERS,
-  SET_PAGE
+  SET_PAGE,
+  SET_SEARCH_STRING
 }
 
 const getters = {

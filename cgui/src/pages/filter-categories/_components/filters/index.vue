@@ -101,15 +101,15 @@ export default {
   methods: {
     ...mapMutations({
       _setFilter: 'productSearch/SET_FILTER'
-    }), 
+    }),
     getComponent( searchStrategy ) {
       switch ( searchStrategy ) {
         case 'BETWEEN':
-          return Between 
+          return Between
         case 'EQ':
           return Equal
         case 'LTE':
-          return LessThanEqual  
+          return LessThanEqual
         default:
           console.error(`Unknown search strategy: "${ searchStrategy }"`)
 
@@ -124,43 +124,11 @@ export default {
         ...data
       })
     },
-    
+
     filter() {
       this.$emit('filter')
     },
 
-    // search() {
-    //   const filters = Object.values(this.filters).map(obj => {
-    //     const response = {
-    //       attrId: obj.attrId,
-    //       productValueType: obj.type,
-    //       searchStrategy: obj.searchStrategy,
-    //     }
-
-    //     switch ( obj.searchStrategy ) {
-    //       case 'BETWEEN': {
-    //         if ( obj.valueFrom ) {
-    //           response.valueIdFrom = obj.valueFrom.id
-    //         }
-
-    //         if ( obj.valueTill ) {
-    //           response.valueIdTill = obj.valueTill.id
-    //         }
-    //       }
-    //         break
-
-    //       case 'EQ': {
-    //         if ( obj.value ) {
-    //           response.valueId = obj.value.id
-    //         }
-    //       }
-    //     }
-
-    //     return response
-    //   })
-
-    //   this.$emit('searchProducts', { productGroupId: this.productGroupId, filters })
-    // },
   },
 
   props: {

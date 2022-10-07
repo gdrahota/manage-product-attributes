@@ -42,7 +42,6 @@
           </q-page-container>
         </q-parallax>
       </div>
-      <div class="footer"></div>
     </div>
 </template>
 

@@ -1,16 +1,73 @@
 <template>
   <q-page-container>
     <q-page>
-      <div class="row q-pa-lg">
-        <div class="col-10">
-          <div class="row justify-center">
-            <div class="col-3">
-              <div>
-                <img src="../../assets/1.jpg" />
+      <div class="row justify-center q-pa-lg">
+        <div class="col-9">
+          <div v-if="!product" class="row justify-center items-center full-height">
+            <q-spinner-cube
+              size="100"
+              color="primary"
+            />
+          </div>
+          <div v-else class="container q-mb-lg">
+            <div class="text-h5 text-grey-5 text-weight-bold">
+              {{product.manufacturer.name}} {{ product.name}}
+            </div>
+            <div class="row justify-center">
+              <div class="col-3">
+                <div>
+                  <img
+                    class="full-width"
+                    src="../../assets/1.jpg"
+                  />
+                </div>
+              </div>
+              <div class="col-8 q-ml-md">
+                <div class="column">
+<!--                  <div class="text-weight-bold text-h5 text-grey-8">{{product.name}}</div>-->
+                  <details-items
+                    :product="product"
+                    :product-groups="productGroups"
+                  />
+                  <div
+                    flat
+                  >
+                    <div class="row dense items-center">
+                      <div class="text-left text-grey-5 text-weight-bold">Description</div>
+                      <q-space />
+                      <q-card-actions>
+                        <q-btn
+                          color="grey"
+                          round
+                          flat
+                          unelevated
+                          dense
+                          :icon="expanded ? 'keyboard_arrow_up' : 'keyboard_arrow_down'"
+                          @click="expanded = !expanded"
+                        />
+                      </q-card-actions>
+                    </div>
+                    <div
+                      class="text-weight-medium text-caption text-grey-6 ellipsis-2-lines"
+                      v-html="product.description"
+                      v-show="!expanded"
+                    >
+                    </div>
+                    <q-slide-transition>
+                      <div v-show="expanded">
+                        <div class="text-subitle2">
+                          <div class="text-weight-medium text-caption text-grey-6 border-left" v-html="product.description"></div>
+                        </div>
+                      </div>
+                    </q-slide-transition>
+                  </div>
+                </div>
               </div>
             </div>
-            <div class="cols-9">
-              {{ product }}
+          </div>
+          <div class="container">
+            <div v-if="product">
+              <offers :product="product"/>
             </div>
           </div>
         </div>
@@ -21,28 +78,55 @@
 
 <script>
 import {mapActions, mapGetters} from "vuex";
+import DetailsItems from "@/pages/product-detail/details-items";
+import Offers from "../../pages/product-detail/offer"
 
 export default {
   name: "index",
+  components: {
+    DetailsItems,
+    Offers
+  },
   data(){
     return{
-      productId: null
+      expanded: false
     }
   },
   computed: {
     ...mapGetters({
-      getProduct: 'products/getById'
+      getProduct: 'showProducts/getById',
+      getProductGroupById: 'productGroups/getById',
+      isLoadingProduct: 'showProducts/isLoadingProductWithId'
     }),
+    productId(){
+      return parseInt(this.$route.params.id)
+    },
     product(){
-      return this.getProduct(this.productId)
-    }
+      return this.productId ? this.getProduct(this.productId) : {}
+    },
+    productGroups() {
+      return this.product
+        ? this.product.productGroups.map(( { id } ) => this.getProductGroupById(id))
+        : []
+    },
+  },
+  methods: {
+    ...mapActions({
+      loadProduct: 'showProducts/loadById'
+    })
   },
   mounted() {
-    this.productId = parseInt(this.$route.params.id)
+    this.loadProduct(this.productId)
+    console.log('the product ==>')
+    console.log(this.product)
   }
 }
 </script>
 
-<style scoped>
-
+<style lang="sass" scoped>
+  .container
+    background-color: white
+    border-radius: 6px
+    padding: 20px
+    box-shadow: 1px 1px 30px 4px #cae9f6
 </style>
