@@ -1,8 +1,8 @@
 <template>
   <transition v-if="show" name="bounce">
     <div
-      :class="{'p_card row bg-white outline full-width' : viewStyle === 'list', 'p_card bg-white': viewStyle === 'grid'}"
-      :style="{height: viewStyle === 'list'? '220px' : '380px', width: '100%'}"
+      :class="{'p_card row bg-white outline full-width' : viewStyle === ListLayoutType.LIST, 'p_card bg-white': viewStyle === ListLayoutType.GRID}"
+      :style="{height: viewStyle === ListLayoutType.LIST? '220px' : '380px', width: '100%'}"
       @click="moveToDetailPage(product.id)"
       @mouseover="showCol = true"
       @mouseleave="showCol = false"
@@ -11,34 +11,36 @@
         <img
           class="q-pa-sm"
           src="../../assets/1.jpg"
-          :style="{height: viewStyle === 'list'? '220px' : '240px'}"
+          :style="{height: viewStyle === ListLayoutType.LIST? '220px' : '240px'}"
+          alt=""
         />
       </div>
 
-      <div :class="{'column q-pa-sm justify-center': viewStyle === 'grid', 'col-9 column justify-center items-start': viewStyle === 'list'}">
-        <div class="card_title text-center">{{product.manufacturer.name}} {{ product.name }}</div>
+      <div
+        :class="{'column q-pa-sm justify-center': viewStyle === ListLayoutType.GRID, 'col-9 column justify-center items-start': viewStyle === ListLayoutType.LIST}">
+        <div class="card_title text-center">{{ product.manufacturer.name }} {{ product.name }}</div>
         <div
-          v-if="viewStyle === 'list'"
-          :class="{'card_sub_title q-pt-sm text-center ellipsis-2-lines': viewStyle === 'grid', 'card_sub_title q-pt-sm text-start ellipsis-2-lines': viewStyle === 'list'}"
+          v-if="viewStyle === ListLayoutType.LIST"
+          :class="{'card_sub_title q-pt-sm text-center ellipsis-2-lines': viewStyle === ListLayoutType.GRID, 'card_sub_title q-pt-sm text-start ellipsis-2-lines': viewStyle === ListLayoutType.LIST}"
           style="width: 90%"
           v-html="product.description"
         >
         </div>
-        <div :style="viewStyle === 'grid'? {width: '100%'} : {width: '90%'}">
-          <div :class="{'row justify-center': viewStyle === 'grid', 'row justify-start': viewStyle === 'list'}">
-            <div class="text-grey-8 overflow-hidden text-weight-bold text-h6">{{product.bestPrice}}€</div>
+        <div :style="viewStyle === ListLayoutType.GRID? {width: '100%'} : {width: '90%'}">
+          <div :class="{'row justify-center': viewStyle === ListLayoutType.GRID, 'row justify-start': viewStyle === ListLayoutType.LIST}">
+            <div class="text-grey-8 overflow-hidden text-weight-bold text-h6">{{ product.bestPrice }}€</div>
             <q-icon
               name="verified"
               color="amber-8"
               size="xs"
             />
           </div>
-          <div :class="{'row justify-center': viewStyle === 'grid', 'row': viewStyle === 'list'}">
+          <div :class="{'row justify-center': viewStyle === ListLayoutType.GRID, 'row': viewStyle === ListLayoutType.LIST}">
             <div
               class="text-grey-10 ellipsis"
               :style="{width: '90%'}"
             >
-              {{product.bestPriceDealer.name}} akmvaldmavd;mvad.mvkasdkvasbdn,vnapsdovmla;sdm;sakldamldkmvkalk
+              {{ product.bestPriceDealer.name }}
             </div>
             <q-icon
               name="star"
@@ -69,38 +71,49 @@
 </template>
 
 <script>
+import { ListLayoutType } from '@/store/enums/list-layout-type'
+
 export default {
   name: 'ProductCard',
-  data(){
-    return{
+
+  computed: {
+    ListLayoutType() {
+      return ListLayoutType
+    },
+  },
+
+  data() {
+    return {
       showCol: false,
-      show: false
-    }
-  },
-  props: {
-    product: Object,
-    viewStyle: String
-  },
-  methods: {
-    moveToDetailPage(productId){
-      this.$router.push({
-        name: 'product-details',
-        params: {
-          id: productId
-        }
-      })
+      show: false,
     }
   },
 
+  methods: {
+    moveToDetailPage( productId ) {
+      this.$router.push( {
+        name: 'product-details',
+        params: {
+          id: productId,
+        },
+      } )
+    },
+  },
+
+  props: {
+    product: Object,
+    viewStyle: String,
+  },
+
   watch: {
-   viewStyle(newVal, oldVal){
-       this.show = true
-   }
+    viewStyle( newVal, oldVal ) {
+      this.show = true
+    },
   },
 
   mounted() {
     this.show = true
-  }
+  },
 }
 </script>
 
@@ -147,9 +160,7 @@ export default {
       transform: scale(1.5)
 
     100%
-    transform: scale(1)
-
-
+      transform: scale(1)
 
 .card_title
   font-size: 17px

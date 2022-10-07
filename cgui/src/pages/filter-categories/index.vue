@@ -17,34 +17,34 @@
                   />
                   <p class="text-h6 text-weight-bold text-light-blue-10">Filter Products</p>
                 </div>
-                <filters
+                <search-strategies
                   :productGroupId="selectedProductGroupId"
-                  @filter="filter"
                   :page="page"
+                  @filter="loadFilteredProducts"
                 />
               </div>
             </div>
             <div :class="{'col-8': !($q.screen.sm || $q.screen.md) }">
               <div v-if="searchInProgress" class="row justify-center items-center full-height">
-                  <q-spinner-cube
-                      size="100"
-                      color="primary"
-                  />
+                <q-spinner-cube
+                  color="primary"
+                  size="100"
+                />
               </div>
               <div v-else>
                 <div class="row justify-end q-mb-md">
-                  <q-btn flat round color="light-blue-10" icon="grid_view" @click="viewStatus = 'grid'"/>
-                  <q-btn flat round color="light-blue-10" icon="view_list" @click="viewStatus = 'list'"/>
+                  <q-btn color="light-blue-10" flat icon="grid_view" round @click="listLayoutType = ListLayoutType.GRID" />
+                  <q-btn color="light-blue-10" flat icon="view_list" round @click="listLayoutType = ListLayoutType.LIST" />
                 </div>
                 <div class="row q-col-gutter-md justify-start">
                   <div
                     v-for="(product) in products"
-                    :class="{'col-4 q-pa-sm q-mb-sm': viewStatus === 'grid', 'col-12 items-center q-my-md': viewStatus === 'list'}"
+                    :class="{'col-4 q-pa-sm q-mb-sm': listLayoutType === ListLayoutType.GRID, 'col-12 items-center q-my-md': listLayoutType === ListLayoutType.LIST}"
                     :key="product.id"
                   >
                     <product-card
                       :product="product"
-                      :view-style="viewStatus"
+                      :view-style="listLayoutType"
                     />
                   </div>
                 </div>
@@ -54,13 +54,13 @@
                 >
                   <q-pagination
                     v-if="!searchInProgress"
+                    v-model="page"
                     :max="noOfPages"
+                    :min="numberOfFirstPage"
                     :max-pages="6"
                     unelevated
-                    :min="min"
                     icon-next="mdi-arrow-right-bold-outline"
                     icon-prev="mdi-arrow-left-bold-outline"
-                    v-model="page"
                     active-color="accent"
                     color="accent"
                     direction-links
@@ -77,88 +77,96 @@
 </template>
 
 <script>
-import Filters from './_components/filters/index.vue'
-import ProductCard from '@/components/products/product-card.vue';
-import {mapActions, mapGetters} from 'vuex';
+import { mapActions, mapGetters } from 'vuex'
+
+import SearchStrategies from './search-strategies'
+import ProductCard from '@/components/products/product-card'
+import { ListLayoutType } from '@/store/enums/list-layout-type'
 
 export default {
   name: 'index',
+
   components: {
-    Filters,
-    ProductCard
-  },
-  data() {
-    return {
-      min: 1,
-      viewStatus: 'grid'
-    }
+    SearchStrategies,
+    ProductCard,
   },
 
   computed: {
-    ...mapGetters({
+    ...mapGetters( {
       products: 'productSearch/getProducts',
       noOfProducts: 'productSearch/getNoOfProducts',
       response: 'productSearch/getWhole',
       getAllProductGroups: 'productGroups/getAll',
       getPage: 'productSearch/getPage',
-      searchInProgress: 'productSearch/isSearchInProgress'
-    }),
+      searchInProgress: 'productSearch/isSearchInProgress',
+    } ),
     selectedProductGroupId() {
-      return parseInt(this.$route.params.id)
+      return parseInt( this.$route.params.id )
     },
     productGroupId() {
       return this.$route.params.id
-        ? parseInt(this.$route.params.id)
+        ? parseInt( this.$route.params.id )
         : null
     },
-    page:{
-      get(){
+    page: {
+      get() {
         return this.getPage
       },
-      set(page){
-        if(page !== this.getPage){
-          this.setPage(page)
+      set( page ) {
+        if ( page !== this.getPage ) {
+          this.setPage( page )
         }
-      }
+      },
     },
-    noOfPages(){
-      return Math.ceil(this.noOfProducts / 9)
+    noOfPages() {
+      return Math.ceil( this.noOfProducts / 9 )
+    },
+    numberOfFirstPage() {
+      return 1
+    },
+    ListLayoutType() {
+      return ListLayoutType
+    },
+  },
+
+  data() {
+    return {
+      listLayoutType: ListLayoutType.GRID,
+    }
+  },
+
+  created() {
+    if ( this.productGroupId ) {
+      this.setProductGroupId( this.productGroupId )
     }
   },
 
   methods: {
-    ...mapActions({
+    ...mapActions( {
       searchProducts: 'productSearch/search',
       filterProducts: 'productSearch/filter',
-      setProductGroupId: "productSearch/setProductGroupId",
-      setPage: "productSearch/setPage"
-    }),
-    filter(){
-      this.filterProducts(this.productGroupId)
-    }
-  },
-
-
-  created() {
-    if(this.productGroupId){
-      this.setProductGroupId(this.productGroupId)
-    }
+      setProductGroupId: 'productSearch/setProductGroupId',
+      setPage: 'productSearch/setPage',
+    } ),
+    loadFilteredProducts() {
+      this.filterProducts( this.productGroupId )
+    },
   },
 
   watch: {
-    selectedProductGroupId(newId, oldId) {
-      if(newId !== oldId){
-        this.setProductGroupId(this.selectedProductGroupId)
+    selectedProductGroupId( newId, oldId ) {
+      if ( newId !== oldId ) {
+        this.setProductGroupId( newId )
       }
-    }
+    },
   },
 
 }
 </script>
 
 <style scoped lang="sass">
-  .p_container
-    border-radius: 6px
-    box-shadow: 1px 1px 30px 4px #cae9f6
+.p_container
+  border-radius: 6px
+  box-shadow: 1px 1px 30px 4px #cae9f6
 
 </style>

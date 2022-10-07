@@ -23,7 +23,7 @@
                   autofocus
                 >
                   <template v-slot:append>
-                    <q-icon name="mdi-magnify"/>
+                    <q-icon name="mdi-magnify" />
                   </template>
                 </q-input>
               </div>
@@ -57,14 +57,14 @@
                     round
                     color="light-blue-10"
                     icon="grid_view"
-                    @click="viewStatus = 'grid'"
+                    @click="viewStatus = ListLayoutType.GRID"
                   />
                   <q-btn
                     flat
                     round
                     color="light-blue-10"
                     icon="view_list"
-                    @click="viewStatus = 'list'"
+                    @click="viewStatus = ListLayoutType.LIST"
                   />
                 </div>
               </div>
@@ -85,7 +85,7 @@
                   v-else
                   v-for="(product, index) in searchResult"
                   :key="index"
-                  :class="{'col-4 q-pa-sm q-mb-sm': viewStatus === 'grid', 'col-12 items-center q-my-md': viewStatus === 'list'}"
+                  :class="{'col-4 q-pa-sm q-mb-sm': viewStatus === ListLayoutType.GRID, 'col-12 items-center q-my-md': viewStatus === ListLayoutType.LIST}"
                 >
                   <product-card
                     :product="product"
@@ -110,7 +110,7 @@
                     color="accent"
                     direction-links
                   />
-                  <div>[ A <b>Total</b> Of <b>{{ Math.ceil((getNoOfProducts / 9)) }}</b> Pages ]</div>
+                  <div>[ A <b>Total</b> Of <b>{{ Math.ceil( ( getNoOfProducts / 9 ) ) }}</b> Pages ]</div>
                 </div>
               </div>
             </div>
@@ -122,72 +122,77 @@
 </template>
 
 <script>
-import {mapActions, mapGetters} from "vuex";
-import ProductCard from "@/components/products/product-card";
-import ProductCategory from "@/components/products/product-category";
+import { mapActions, mapGetters } from 'vuex'
+
+import ProductCard from '@/components/products/product-card'
+import ProductCategory from '@/components/products/product-category'
+import { ListLayoutType } from '@/store/enums/list-layout-type'
 
 export default {
-  name: "products",
-  components: {ProductCategory, ProductCard},
+  name: 'products',
+  components: { ProductCategory, ProductCard },
   data() {
     return {
       searchText: '',
-      viewStatus: 'grid',
+      viewStatus: ListLayoutType.GRID,
     }
   },
 
   computed: {
-    ...mapGetters({
-      getNoOfProducts: "productSearch/getNoOfProducts",
-      searchResult: "productSearch/getProducts",
-      getPage: "productSearch/getPage",
-      searchInProgress: "productSearch/isSearchInProgress",
-      categories: "productGroups/getAll"
-    }),
+    ...mapGetters( {
+      getNoOfProducts: 'productSearch/getNoOfProducts',
+      searchResult: 'productSearch/getProducts',
+      getPage: 'productSearch/getPage',
+      searchInProgress: 'productSearch/isSearchInProgress',
+      categories: 'productGroups/getAll',
+    } ),
     page: {
       get() {
         return this.getPage
       },
-      set(page) {
-        if (this.getPage !== page) {
-          this.setPage(page)
+      set( page ) {
+        if ( this.getPage !== page ) {
+          this.setPage( page )
         }
-      }
-    }
+      },
+    },
+    ListLayoutType() {
+      return ListLayoutType
+    },
   },
 
   watch: {
     '$route.query.query': {
-      handler(newVal) {
+      handler( newVal ) {
         this.searchText = newVal
       },
-      immediate: true
-    }
+      immediate: true,
+    },
   },
 
   methods: {
-    ...mapActions({
+    ...mapActions( {
       doSearch: 'productSearch/search',
       setPage: 'productSearch/setSearchPage',
-      setSearchString: 'productSearch/setSearchString'
-    }),
+      setSearchString: 'productSearch/setSearchString',
+    } ),
 
     filterProducts() {
       const searchString = this.searchText ? this.searchText : this.$route.query.query ? this.$route.query.query : '@all@'
       const inputed = searchString.toLowerCase()
-      this.setSearchString(inputed)
+      this.setSearchString( inputed )
       this.doSearch()
     },
 
     updateSearchQuery() {
-      this.$router.push({path: '/search', query: {query: this.searchText}}).catch(() => {
-      })
-    }
+      this.$router.push( { path: '/search', query: { query: this.searchText } } ).catch( () => {
+      } )
+    },
   },
 
   created() {
     this.filterProducts()
-  }
+  },
 
 }
 </script>
