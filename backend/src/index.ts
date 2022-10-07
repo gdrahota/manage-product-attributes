@@ -1,9 +1,10 @@
 import express, { Express, NextFunction, Request, Response } from 'express'
 import dotenv from 'dotenv'
-import { connectToDatabases } from "./db/connect"
-import { registerRoutes } from "./endpoints"
-import { ensureDefaultTables } from "./seeder"
-import { fileUploadMiddleware } from "./middle-ware/file-upload"
+import { connectToDatabases } from './db/connect'
+import { registerRoutes } from './endpoints'
+import { ensureDefaultTables } from './seeder'
+import { fileUploadMiddleware } from './middle-ware/file-upload'
+import { createTasks } from './tasks'
 
 (async () => {
   Error.stackTraceLimit = Infinity
@@ -34,5 +35,5 @@ import { fileUploadMiddleware } from "./middle-ware/file-upload"
 
   await ensureDefaultTables()
 
-  // await createTasks()
+  await createTasks()
 })()

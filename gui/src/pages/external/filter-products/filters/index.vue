@@ -1,80 +1,84 @@
 <template>
-  <q-btn-dropdown
-    v-model="dropDownState"
+  <q-btn
     :label="dropDownLabel"
-    align="left"
-    class="full-width text-black q-py-sm text-body1 bg-deep-orange-1"
-    content-class="bg-white"
-    outline
-    icon="mdi-filter"
+    :color="dropDownState ? 'grey-4' : 'orange-9'"
+    icon="mdi-filter-outline"
+    icon-right="mdi-chevron-down"
     no-caps
   >
-    <div class="row">
-      <q-card
-        v-for="(group, key) of productAttrGroups"
-        :key="key"
-        class="col-6 q-pt-md"
-        flat
-      >
-        <q-card-section class="q-py-none">
-          <div class="text-h6">{{ group.name }}</div>
-        </q-card-section>
+    <q-menu
+      v-model="dropDownState"
+    >
+      <q-card class="bg-orange-1" style="width: calc(100vw - 350px)">
+        <q-card-actions class="bg-orange-2 q-pa-none">
+          <q-btn
+            :color="haveFiltersBeenChanged ? 'orange-9' : 'grey'"
+            :disable="!haveFiltersBeenChanged"
+            class="q-ma-md flex-block"
+            label="Apply Filter"
+            style="margin-top: 13px"
+            @click="filter"
+          />
 
-        <q-card-section class="q-pt-none">
-          <div
-            v-for="(attribute, attrId) of group.attributes"
-            :key="attrId"
+          <q-checkbox
+            v-model="closeFilterDialog"
+            class="q-py-md"
+            color="grey"
+            label="Close after filtering"
+          />
+        </q-card-actions>
+
+        <q-separator />
+
+        <div class="row">
+          <q-card
+            v-for="(group, key) of productAttrGroups"
+            :key="key"
+            class="col-6 q-pt-md bg-orange-1"
+            flat
           >
-            <div class="row q-py-md">
-              <div class="col-4">
-                <q-field
-                  borderless
-                  dense
-                >
-                  <template v-slot:control>
-                    <div class="q-px-sm" style="text-align: right; width: 100%">
-                      <span class="text-body2">{{ attribute.name }}:</span>
-                    </div>
-                  </template>
-                </q-field>
+            <q-card-section class="q-py-none bg-orange-1">
+              <show-description :description="group.description" style="top: -3px" />
+              <span class="text-h6 q-pt-sm">{{ group.name }}</span>
+            </q-card-section>
+
+            <q-card-section class="q-pt-none bg-orange-1">
+              <div
+                v-for="(attribute, attrId) of group.attributes"
+                :key="attrId"
+              >
+                <div class="row q-py-md">
+                  <div class="col-4">
+                    <q-field
+                      borderless
+                      dense
+                    >
+                      <template v-slot:control>
+                        <div class="q-px-sm" style="text-align: right; width: 100%">
+                          <show-description :description="attribute.description" style="top: -1px" />
+                          <span class="text-body2">{{ attribute.name }}</span>
+                        </div>
+                      </template>
+                    </q-field>
+                  </div>
+                  <div class="col-8">
+                    <component
+                      :is="getComponent(attribute.searchStrategy)"
+                      :attributeDef="attribute"
+                      :filter="filters.find(filter => attribute.id === filter.attrId) || {}"
+                      :values="attribute.values"
+                      @set="data => setFilter(attribute, data)"
+                    />
+                  </div>
+                </div>
               </div>
-              <div class="col-8">
-                <component
-                  :is="getComponent(attribute.searchStrategy)"
-                  :attributeDef="attribute"
-                  :filter="filters.find(filter => attribute.id === filter.attrId) || {}"
-                  :values="attribute.values"
-                  @set="data => setFilter(attribute, data)"
-                />
-              </div>
-            </div>
-          </div>
-        </q-card-section>
+            </q-card-section>
+          </q-card>
+        </div>
+
       </q-card>
-    </div>
-
-    <q-separator />
-
-    <div class="flex">
-      <q-btn
-        :color="filters.length === 0 ? 'grey' : 'brown'"
-        :disable="filters.length === 0"
-        class="q-ma-md flex-block"
-        label="Apply Filter"
-        style="margin-top: 13px"
-        @click="filter"
-      />
-
-      <div class="flex-block">
-        <q-checkbox
-          v-model="closeFilterDialog"
-          class="q-py-md"
-          color="grey"
-          label="Close after filtering"
-        />
-      </div>
-    </div>
-  </q-btn-dropdown>
+    </q-menu>
+  </q-btn>
 </template>
 
 <script>
@@ -84,15 +88,22 @@ import { EnumSearchStrategy } from '@/store/enums/search-strategy'
 import Between from './between'
 import Equal from './equal'
 import LessThanEqual from './less-than-equal'
+import ShowDescription from './show-description'
 
 export default {
+  components: {
+    ShowDescription,
+  },
+
   computed: {
-    ...mapGetters({
-      'getAttrGroupsByProductGroupId': 'productAttributeGroupsOfProductGroups/getByProductGroupId',
-      'getAttributeById': 'productAttributes/getById',
-      'getProductGroupById': 'productGroups/getById',
-      'getFilters': 'productSearch/getFilters',
-    }),
+    ...mapGetters( {
+      getAttrGroupsByProductGroupId: 'productAttributeGroupsOfProductGroups/getByProductGroupId',
+      getAttributeById: 'productAttributes/getById',
+      getProductGroupById: 'productGroups/getById',
+
+      getFilters: 'productSearch/getFilters',
+      haveFiltersBeenChanged: 'productSearch/haveFiltersBeenChanged',
+    } ),
     filters() {
       return this.getFilters
     },

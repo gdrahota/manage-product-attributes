@@ -18,7 +18,7 @@
     <div v-if="products.length > 0 && !searchInProgress" class="row border-top">
       <div class="col-3">
         <div class="q-pa-md text-bold text-brown" style="margin-top: 6px">
-          {{ numberOfProducts }} Produkte
+          {{ numberOfProducts }} Products
         </div>
       </div>
 
