@@ -9,11 +9,14 @@
           <img
             style="border-radius: 10px; object-fit: cover"
             :src="require(`../../assets/${category.id}.jpg`)"
+            alt="image for product category"
             width="100%"
             height="150px"
           />
           <div class="card_title q-pt-md q-pl-md text-left">{{ category.name }}</div>
-          <div class="card_sub_title q-pt-md q-pl-md text-left">{{ getCategoryProductsLength(category.id) }} products found</div>
+          <div class="card_sub_title q-pt-md q-pl-md text-left">{{ getCategoryProductsLength(category.id) }} products
+            found
+          </div>
         </div>
       </div>
     </div>
@@ -21,7 +24,8 @@
 </template>
 
 <script>
-import { mapGetters } from 'vuex'
+import {mapGetters} from 'vuex'
+
 export default {
   name: 'CategoriesCard',
 
@@ -29,6 +33,13 @@ export default {
     return {
       show: false
     }
+  },
+
+  computed: {
+    ...mapGetters({
+      productGroups: 'productGroups/getAll',
+      products: 'products/getAll'
+    }),
   },
 
   methods: {
@@ -41,17 +52,11 @@ export default {
       })
     },
 
-    getCategoryProductsLength(categoryId){
-      let f_products = this.products.filter((product) => product.productGroups[0].id === categoryId)
-      return f_products.length
+    getCategoryProductsLength(categoryId) {
+      const FIRST_PRODUCT_GROUP_ID = 0
+      const filteredProducts = this.products.filter(product => product.productGroups[FIRST_PRODUCT_GROUP_ID].id === categoryId)
+      return filteredProducts.length
     }
-  },
-
-  computed: {
-    ...mapGetters({
-      productGroups: 'productGroups/getAll',
-      products: 'products/getAll'
-    }),
   },
 
 }
