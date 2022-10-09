@@ -1,7 +1,10 @@
 <template>
   <transition v-if="show" name="bounce">
     <div
-      :class="{'p_card row bg-white outline full-width' : viewStyle === ListLayoutType.LIST, 'p_card bg-white': viewStyle === ListLayoutType.GRID}"
+      :class="{
+      'p_card row bg-white outline full-width' : viewStyle === ListLayoutType.LIST,
+      'p_card bg-white': viewStyle === ListLayoutType.GRID
+      }"
       :style="{height: viewStyle === ListLayoutType.LIST? '220px' : '380px', width: '100%'}"
       @click="moveToDetailPage(product.id)"
       @mouseover="showCol = true"
@@ -17,11 +20,17 @@
       </div>
 
       <div
-        :class="{'column q-pa-sm justify-center': viewStyle === ListLayoutType.GRID, 'col-9 column justify-center items-start': viewStyle === ListLayoutType.LIST}">
+        :class="{
+        'column q-pa-sm justify-center': viewStyle === ListLayoutType.GRID,
+        'col-9 column justify-center items-start': viewStyle === ListLayoutType.LIST
+      }">
         <div class="card_title text-center">{{ product.manufacturer.name }} {{ product.name }}</div>
         <div
           v-if="viewStyle === ListLayoutType.LIST"
-          :class="{'card_sub_title q-pt-sm text-center ellipsis-2-lines': viewStyle === ListLayoutType.GRID, 'card_sub_title q-pt-sm text-start ellipsis-2-lines': viewStyle === ListLayoutType.LIST}"
+          :class="{
+            'card_sub_title q-pt-sm text-center ellipsis-2-lines': viewStyle === ListLayoutType.GRID,
+            'card_sub_title q-pt-sm text-start ellipsis-2-lines': viewStyle === ListLayoutType.LIST
+          }"
           style="width: 90%"
           v-html="product.description"
         >
@@ -103,12 +112,6 @@ export default {
   props: {
     product: Object,
     viewStyle: String,
-  },
-
-  watch: {
-    viewStyle( newVal, oldVal ) {
-      this.show = true
-    },
   },
 
   mounted() {
