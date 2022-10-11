@@ -1,8 +1,8 @@
 <template>
-  <div class="main q-mb-md">
+  <div class="wrapper q-mb-md">
     <div
       class="container cursor-pointer row q-pa-sm bg-white"
-      @click="moveToFilterPage(category.id)"
+      @click="navigateToFilterPage(category.id)"
     >
       <div class="col-4">
         <img
@@ -16,15 +16,20 @@
           class="text-grey-6 text-weight-medium ellipsis"
           style="font-size: 16px"
         >
-          {{category.name}}
+          {{ category.name }}
         </div>
-        <div>Show Number of Products</div>
+        <div
+          class="text-grey-8 text-caption ellipsis"
+        >
+          {{ category.description ? category.description : 'Product Category description here' }}
+        </div>
       </div>
     </div>
     <div
-      style="height: 3px;"
-      class="belt bg-light-blue-10"
+      style="height: 3px"
+      class="card_base_line bg-light-blue-10"
     >
+<!--      empty div for baseline animation-->
     </div>
   </div>
 </template>
@@ -32,14 +37,9 @@
 <script>
 export default {
   name: "product-category",
-  props: {
-    category:{
-      type: Object,
-      required: true
-    }
-  },
+
   methods: {
-    moveToFilterPage(id){
+    navigateToFilterPage(id){
       this.$router.push({
         params:{
           id: id
@@ -47,7 +47,14 @@ export default {
         name: 'main_filter'
       })
     }
-  }
+  },
+
+  props: {
+    category:{
+      type: Object,
+      required: true
+    }
+  },
 }
 </script>
 
@@ -56,13 +63,15 @@ export default {
     box-shadow: 1px 1px 30px 4px #edf7fc77
     height: 100px
 
-  .main
-    .belt
+  .wrapper
+    .card_base_line
       animation: regression 1.0s
-      width: 0%
+      width: 0
 
     &:hover
-      .belt
+      animation: zoom-in-zoom-out 1.5s
+
+      .card_base_line
         animation: progress 1.0s
         width: 100%
 
@@ -90,6 +99,15 @@ export default {
         100%
           width: 100%
 
+      @keyframes zoom-in-zoom-out
+        0%
+          transform: scale(1, 1)
+
+        50%
+          transform: scale(1.05, 1.05)
+
+        100%
+          transform: scale(1, 1)
 
   @keyframes regression
     0%
@@ -114,6 +132,4 @@ export default {
       width: 10%
     100%
       width: 0
-
-
 </style>
