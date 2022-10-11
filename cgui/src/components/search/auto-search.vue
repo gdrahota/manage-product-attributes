@@ -5,21 +5,25 @@
       :input-style="{padding: '30px', fontSize: '16px'}"
       use-input
       :loading="isLoading"
-      @keydown.enter="moveToSearchLanding"
-      @input="doSearch(searchString)"
+      @keydown.enter="navigateToSearchLandingPage"
+      @input="doSearch"
       v-model="searchString"
       borderless
       class="full-height"
       standout="no-border-rounded q-mb-md"
     >
       <template v-slot:append>
-        <q-icon size="30px" class="q-pr-lg q-pt-xs full-width" name="mdi-magnify"/>
+        <q-icon
+          size="30px"
+          class="q-pr-lg q-pt-xs full-width"
+          name="mdi-magnify"
+        />
       </template>
     </q-input>
     <div
       v-if="searchString !== ''"
-      class="found"
-      @click="moveToSearchLanding"
+      class="base_container"
+      @click="navigateToSearchLandingPage"
     >
       <div style="padding: 30px">
         <span
@@ -28,10 +32,14 @@
         >
           {{searchString}}
         </span>
-        <span class="">
+        <span>
           in Products
         </span>
-        <span style="font-size: 11px; font-style: italic; font-weight: bold">{{ searchResult.length }} found</span>
+        <span
+          style="font-size: 11px; font-style: italic; font-weight: bold"
+        >
+          {{ searchResult }} found
+        </span>
       </div>
     </div>
 
@@ -43,56 +51,35 @@ import {mapGetters} from 'vuex'
 import {mapActions} from "vuex/dist/vuex.esm.browser";
 
 export default {
-  data: () => ({
-    isLoading: false,
-    items: [
-      'Solar Panel',
-      'PVC',
-      'Inverter',
-      'Solar Battery',
-      'Mounter',
-      'Connector'
-    ],
-    options: [],
-    groupOptions: [],
-    model: [],
-    searchString: "",
-    tab: null,
-  }),
+  name: 'auto-search',
 
   computed: {
     ...mapGetters({
       products: 'products/getAll',
       productGroups: 'productGroups/getAll',
-      searchResult: 'products/getSearchResult'
+      searchResult: 'productSearch/getNoOfProducts'
     }),
   },
 
+  data: () => ({
+    isLoading: false,
+    searchString: ""
+  }),
 
   methods: {
     ...mapActions({
-      doSearch: "products/search"
+      search: "productSearch/search",
+      setSearchString: "productSearch/setSearchString",
+      setPage:"productSearch/setSearchPage"
     }),
 
-    getCategorySearch(category) {
-      const inputed = this.searchString.toLowerCase()
-      let f_products = this.products.filter((product) => product.productGroups[0].id === category.id)
-      return f_products.filter((item) => (item.name.toLowerCase()).includes(inputed)).length
+    doSearch(){
+      this.setSearchString(this.searchString);
+      this.search(this.searchString)
+      this.setPage(1)
     },
 
-    filterFxn() {
-      this.isLoading = true
-      if (this.searchString === "") {
-        this.options = []
-        this.isLoading = false
-        return
-      }
-      const inputed = this.searchString.toLowerCase()
-      this.options = this.products.filter((item) => (item.name.toLowerCase()).includes(inputed))
-      this.isLoading = false
-    },
-
-    moveToSearchLanding() {
+    navigateToSearchLandingPage() {
       this.$router.push({
         name: 'products',
         query: {
@@ -107,18 +94,10 @@ export default {
 </script>
 
 <style lang="sass" scoped>
-.found
-  cursor: pointer
-  &:hover
-    background-color: #edf7fc
-
 .container
   width: 800px
   border-radius: 7px
   box-shadow: 1px 1px 30px 4px #cae9f6
-  -webkit-transition: max-height 0.8s
-  -moz-transition: max-height 0.8s
-  transition: max-height 0.8s
 
   @media only screen and (max-width: 800px)
     width: 90%
@@ -136,8 +115,9 @@ export default {
   100%
     transform: scale(1, 1)
 
-.m_item
+.base_container
+  cursor: pointer
+
   &:hover
-    background-color: white
-    font-weight: bolder
+    background-color: #edf7fc
 </style>
