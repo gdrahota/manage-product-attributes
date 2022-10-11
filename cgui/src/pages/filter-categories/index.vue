@@ -4,7 +4,10 @@
       <div class="row justify-center q-pa-md">
         <div class="col-9">
           <div class="row justify-between">
-            <div v-if="!($q.screen.sm || $q.screen.md)" class="col-3">
+            <div
+              v-if="!($q.screen.sm || $q.screen.md)"
+              class="col-3"
+            >
               <div class="row">
                 <div
                   style="height:50px; border-radius: 6px; width: 100%;"
@@ -15,7 +18,11 @@
                     color="light-blue-10"
                     size="md"
                   />
-                  <p class="text-h6 text-weight-bold text-light-blue-10">Filter Products</p>
+                  <p
+                    class="text-h6 text-weight-bold text-light-blue-10"
+                  >
+                    Filter Products
+                  </p>
                 </div>
                 <search-strategies
                   :productGroupId="selectedProductGroupId"
@@ -25,7 +32,10 @@
               </div>
             </div>
             <div :class="{'col-8': !($q.screen.sm || $q.screen.md) }">
-              <div v-if="searchInProgress" class="row justify-center items-center full-height">
+              <div
+                v-if="searchInProgress"
+                class="row justify-center items-center full-height"
+              >
                 <q-spinner-cube
                   color="primary"
                   size="100"
@@ -33,13 +43,26 @@
               </div>
               <div v-else>
                 <div class="row justify-end q-mb-md">
-                  <q-btn color="light-blue-10" flat icon="grid_view" round @click="listLayoutType = ListLayoutType.GRID" />
-                  <q-btn color="light-blue-10" flat icon="view_list" round @click="listLayoutType = ListLayoutType.LIST" />
+                  <q-btn
+                    color="light-blue-10"
+                    flat icon="grid_view"
+                    round
+                    @click="listLayoutType = ListLayoutType.GRID"
+                  />
+                  <q-btn
+                    color="light-blue-10"
+                    flat icon="view_list"
+                    round
+                    @click="listLayoutType = ListLayoutType.LIST"
+                  />
                 </div>
                 <div class="row q-col-gutter-md justify-start">
                   <div
                     v-for="(product) in products"
-                    :class="{'col-4 q-pa-sm q-mb-sm': listLayoutType === ListLayoutType.GRID, 'col-12 items-center q-my-md': listLayoutType === ListLayoutType.LIST}"
+                    :class="{
+                      'col-4 q-pa-sm q-mb-sm': listLayoutType === ListLayoutType.GRID,
+                      'col-12 items-center q-my-md': listLayoutType === ListLayoutType.LIST
+                    }"
                     :key="product.id"
                   >
                     <product-card
@@ -65,7 +88,9 @@
                     color="accent"
                     direction-links
                   />
-                  <div><b>[</b> A Total Of <b>{{ noOfPages }}</b> Pages <b>]</b></div>
+                  <div>
+                    <b>[</b> A Total Of <b>{{ noOfPages }}</b> Pages <b>]</b>
+                  </div>
                 </div>
               </div>
             </div>
@@ -168,5 +193,4 @@ export default {
 .p_container
   border-radius: 6px
   box-shadow: 1px 1px 30px 4px #cae9f6
-
 </style>
