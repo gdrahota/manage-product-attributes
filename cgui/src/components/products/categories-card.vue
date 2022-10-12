@@ -1,25 +1,25 @@
 <template>
   <div class="row justify-center full-width q-my-sm">
-    <div v-for="(category, index) in productGroups" :key="index">
-      <div
-        class="q-ma-sm c_card bg-white"
-        @click="navToFilter(category.id)"
-      >
-        <div class="column text-bold justify-between">
-          <img
-            style="border-radius: 10px; object-fit: cover"
-            :src="require(`../../assets/${category.id}.jpg`)"
-            alt="image for product category"
-            width="100%"
-            height="150px"
-          />
-          <div class="card_title q-pt-md q-pl-md text-left">{{ category.name }}</div>
-          <div class="card_sub_title q-pt-md q-pl-md text-left">{{ getCategoryProductsLength(category.id) }} products
-            found
+      <div v-for="(category, index) in productGroups" :key="index">
+        <div
+          class="q-ma-sm c_card bg-white"
+          @click="navToFilter(category.id)"
+        >
+          <div class="column text-bold justify-between">
+            <img
+              style="border-radius: 10px; object-fit: cover"
+              :src="require(`../../assets/${category.id}.jpg`)"
+              alt="image for product category"
+              width="100%"
+              height="150px"
+            />
+            <div class="card_title q-pt-md q-pl-md text-left">{{ category.name }}</div>
+            <div class="card_sub_title q-pt-md q-pl-md text-left">{{ getCategoryProductsLength(category.id) }} products
+              found
+            </div>
           </div>
         </div>
       </div>
-    </div>
   </div>
 </template>
 
@@ -29,17 +29,17 @@ import {mapGetters} from 'vuex'
 export default {
   name: 'CategoriesCard',
 
-  data() {
-    return {
-      show: false
-    }
-  },
-
   computed: {
     ...mapGetters({
       productGroups: 'productGroups/getAll',
       products: 'products/getAll'
     }),
+  },
+
+  data() {
+    return {
+      show: false
+    }
   },
 
   methods: {
@@ -83,9 +83,6 @@ export default {
 
       100%
         transform: scale(1, 1)
-
-
-
 
     .card_title
       font-size: small

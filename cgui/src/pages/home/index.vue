@@ -1,9 +1,8 @@
 <template>
     <div class="q-pa-md q-gutter-md">
       <div class="row justify-between">
-
         <q-parallax
-          :height="1500"
+          :height="1000"
           style="background-size: contain"
         >
           <template v-slot:media>
@@ -13,18 +12,23 @@
             />
           </template>
           <q-page-container>
-            <q-page class="">
+            <q-page>
               <div class="banner column justify-center items-center">
                 <div class="row justify-baseline items-baseline">
-                  <p class="text-subtitle-1 text-accent text-weight-bolder q-pr-md">Find anything solar here</p>
+                  <p
+                    class="text-subtitle-1 text-accent text-weight-bolder q-pr-md"
+                  >
+                    Find anything solar here
+                  </p>
                 </div>
                 <auto-search></auto-search>
               </div>
-
               <div class="row justify-center">
                 <div class="col-12">
-                  <div class="row q-pa-lg justify-center items-center text-center" style="height:300px"
-                       v-if="products.length === 0">
+                  <div
+                    class="row q-pa-lg justify-center items-center text-center"
+                    style="height:300px"
+                    v-if="products.length === 0">
                     <q-spinner-cube
                       size="100"
                       color="primary"
@@ -32,8 +36,13 @@
                   </div>
                   <div v-else class="row q-pa-lg full-width justify-center items-center text-start">
                     <div class="text-center">
-                      <div class="q-pt-lg text-h6 text-accent">Browse Our Popular Categories And Filter Products Below</div>
-                      <category-card></category-card>
+                      <div
+                        class="q-pt-lg full-width text-h4 text-weight-medium text-accent"
+                        style="height: 100%"
+                      >
+                        POPULAR CATEGORIES
+                      </div>
+                      <category-card />
                     </div>
                   </div>
                 </div>
