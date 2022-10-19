@@ -19,10 +19,6 @@ export default {
     AppFooter
   },
 
-  data: () => ({
-
-  }),
-
   methods: {
     ...mapActions({
       loadProducts: 'products/loadAll',

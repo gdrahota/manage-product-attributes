@@ -65,9 +65,6 @@ export default {
     CategoryCard,
     AutoSearch
   },
-  data() {
-    return {}
-  },
 
   computed: {
     ...mapGetters({
