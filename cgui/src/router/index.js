@@ -3,7 +3,7 @@ import VueRouter from 'vue-router'
 import Home from '@/pages/home'
 import FilterCategories from '@/pages/filter-categories'
 import ProductsPage from '@/pages/products'
-import ProductDetail from "@/pages/product-detail";
+import ProductDetail from "@/pages/product";
 
 
 Vue.use(VueRouter)

@@ -25,7 +25,7 @@
               </div>
               <div class="col-8 q-ml-md">
                 <div class="column">
-                  <details-items
+                  <product-groups-and-files
                     :product="product"
                     :product-groups="productGroups"
                   />
@@ -78,13 +78,13 @@
 
 <script>
 import { mapActions, mapGetters } from 'vuex'
-import DetailsItems from '@/pages/product-detail/details-items'
-import Offers from '../../pages/product-detail/offer'
+import ProductGroupsAndFiles from '@/pages/product/product-groups-and-files'
+import Offers from './offer'
 
 export default {
   name: 'index',
   components: {
-    DetailsItems,
+    ProductGroupsAndFiles,
     Offers,
   },
   data() {

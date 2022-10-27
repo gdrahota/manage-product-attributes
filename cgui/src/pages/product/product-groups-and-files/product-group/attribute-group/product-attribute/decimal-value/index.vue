@@ -8,7 +8,7 @@
 </template>
 
 <script>
-import { mapGetters } from 'vuex'
+import {mapGetters} from 'vuex'
 
 export default {
   computed: {
@@ -19,22 +19,18 @@ export default {
       return this.getById(this.attribute.attrId)
     },
     formattedValue() {
-      if ( this.attributeValue.value === undefined ) {
+      if (this.attributeValue.value === undefined) {
         return ''
       }
 
-      const { fractionalDigits, representationUnitFactor, representationUnit } = this.attribute
+      const {fractionalDigits, representationUnitFactor, representationUnit} = this.attribute
       const formattedValue = this.$root.$options.filters.number(this.attributeValue.value * representationUnitFactor, fractionalDigits || 0)
-      return `${ formattedValue } ${ representationUnit }`
+      return `${formattedValue} ${representationUnit}`
     },
   },
 
   props: {
     attribute: {
-      type: Object,
-      required: true,
-    },
-    productGroup: {
       type: Object,
       required: true,
     },
