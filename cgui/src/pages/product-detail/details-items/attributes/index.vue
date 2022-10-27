@@ -1,41 +1,37 @@
 <template>
-  <table>
-    <thead>
-      <tr>
-        <th
-          scope="col"
-          class="text-left"
+  <div>
+    <div
+      class="row"
+      v-for="(attributeGroup, pos) in attributeGroups"
+      :key="attributeGroup.id"
+      :class="{'bg-grey-2': (parseInt(pos))%2 === 0}"
+    >
+      <div class="col">
+        {{attributeGroup.name}}
+      </div>
+      <div class="col">
+        <div
+          class="col"
+          v-for="attribute in attributeGroup.attributes"
+          :key="attribute.id"
         >
-          Product Attribute
-        </th>
-        <th
-          scope="col"
-          class="text-right"
-        >
-          Value
-        </th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr
-        v-for="(attr, pos) of attributes"
-        :key="pos"
-        :class="{'bg-grey-2': (parseInt(pos))%2 === 0}"
-      >
-        <td class="text-weight-bold">
-          {{ getById(attr.attrId).name }}
-        </td>
-        <td style="padding: 0">
-          <component
-            :is="getComponent(getById(attr.attrId).type)"
-            :attribute="attr"
-            :attribute-value="getProductAttributeValue(attr)"
-            :product-group="productGroup"
-          />
-        </td>
-      </tr>
-    </tbody>
-  </table>
+          <div class="" v-for="att in attributes" :key="att.id">
+            <div class="row" v-if="att.attrId === attribute.attrId">
+              <div class="col">{{getById(att.attrId).name}}</div>
+              <attribute-group
+                class="col"
+                :product-group="productGroup"
+                :attribute="att"
+                :product="product"
+              />
+            </div>
+
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
 </template>
 
 <script>
@@ -44,27 +40,26 @@ import { sortByPosition } from '@/sorters'
 
 import DecimalValue from './decimal-value'
 import TextValue from './text-value'
+import AttributeGroup from './attribute-groups'
 
 export default {
   components: {
-    DecimalValue,
+    AttributeGroup
   },
 
   computed: {
     ...mapGetters({
       getById: 'productAttributes/getById',
+      getAttributeGroups: 'productAttributeGroupsOfProductGroups/getByProductGroupId',
+
     }),
+    attributeGroups(){
+      const FIRST_PRODUCT_GROUP = 0
+      return this.getAttributeGroups(this.product.productGroups[ FIRST_PRODUCT_GROUP ].id)
+    },
     attributes() {
       return Object.values(this.productGroup.attributes).sort(sortByPosition)
     },
-    dimensions() {
-      let dims = []
-      let others = []
-      for (const attr in this.attributes) {
-
-      }
-      return dims
-    }
   },
 
   methods: {

@@ -20,7 +20,7 @@ const actions = {
   loadAll
 }
 
-//getters
+//mutations
 const STORE_ALL_PRODUCT_GROUPS = (state, items) => {
   state.items = items
 }
