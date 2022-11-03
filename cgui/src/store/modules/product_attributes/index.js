@@ -1,4 +1,3 @@
-import Vue from 'vue'
 import {action} from '@/store/actions'
 
 const state = {

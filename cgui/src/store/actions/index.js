@@ -2,11 +2,11 @@ const getUrls = (entityName) => {
   const urls = {
     products: 'products',
     manufacturers: 'manufacturers',
-    productGroups: 'product-group',
-    productToProductGroups: 'product-to-product-group',
-    productAttributes: 'product-product-group',
+    productGroups: 'product-groups',
+    productToProductGroups: 'product-to-product-groups',
+    productAttributes: 'product-attributes',
     productAttributeValues: 'product-attribute-values',
-    productAttributeGroupOfProductGroup: 'product-product-attribute-of-product-group',
+    productAttributeGroupOfProductGroup: 'product-attribute-groups-of-product-groups',
     productSearch: 'product-search',
     dealers: 'dealers'
   }
