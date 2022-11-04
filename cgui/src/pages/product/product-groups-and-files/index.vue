@@ -1,8 +1,8 @@
 <template>
   <div class="q-px-none">
     <div>
-      <div class="column full-width">
-        <div class="row">
+      <div class="row full-width">
+        <div class="col-12">
           <product-group
             :product="product"
             :product-group="productGroups[0]"

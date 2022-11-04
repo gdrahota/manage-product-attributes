@@ -29,7 +29,7 @@
                     :product="product"
                     :product-groups="productGroups"
                   />
-                  <div>
+                  <div v-if="product.description">
                     <div class="row dense items-center">
                       <div class="text-left text-grey-5 text-weight-bold">Description</div>
                       <q-space />

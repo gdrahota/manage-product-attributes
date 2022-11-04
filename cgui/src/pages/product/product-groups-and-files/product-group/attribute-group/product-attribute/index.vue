@@ -1,6 +1,6 @@
 <template>
-  <div>
-    <div>
+  <div class="column full-width">
+    <div class="text-weight-bold full-width">
       {{ productAttribute.name }}
     </div>
     <component

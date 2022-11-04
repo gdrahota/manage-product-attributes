@@ -1,7 +1,7 @@
 <template>
   <div>
     <div
-      class="row"
+      class="col-12"
       v-for="(attributeGroup, pos) in attributeGroups"
       :key="attributeGroup.id"
       :class="{'bg-grey-2': (parseInt(pos))%2 === 0}"

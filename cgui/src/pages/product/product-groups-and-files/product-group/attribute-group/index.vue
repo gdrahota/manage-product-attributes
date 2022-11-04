@@ -1,9 +1,10 @@
 <template>
-  <div>
-    <div>{{ attributeGroup.name }}</div>
+  <div class="row">
+    <div class="col-4 text-weight-bolder">{{ attributeGroup.name }}</div>
     <div
       v-for="attribute of attributeGroup.attributes"
       :key="attribute.id"
+      class="row"
     >
       <product-attribute
         :product="product"
