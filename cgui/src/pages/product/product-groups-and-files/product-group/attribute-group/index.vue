@@ -1,6 +1,6 @@
 <template>
   <div class="row">
-    <div 
+    <div
       class="col-4 text-weight-bolder"
       style="padding-top: 3px"
     >

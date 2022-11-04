@@ -12,10 +12,10 @@
     >
       <div class="col-3">
         <img
-          class="q-pa-sm"
           src="../../assets/1.jpg"
-          :style="{height: viewStyle === ListLayoutType.LIST? '220px' : '240px'}"
-          alt=""
+          alt="solar panel"
+          :height="viewStyle === ListLayoutType.LIST? '220px':'240px'"
+          class="q-pa-sm"
         />
       </div>
 
@@ -24,7 +24,7 @@
         'column q-pa-sm justify-center': viewStyle === ListLayoutType.GRID,
         'col-9 column justify-center items-start': viewStyle === ListLayoutType.LIST
       }">
-        <div class="card_title text-center">{{ product.manufacturer.name }} {{ product.name }}</div>
+        <div class="full-width card_title text-center overflow-hidden ellipsis">{{ product.manufacturer.name }} {{ product.name }}</div>
         <div
           v-if="viewStyle === ListLayoutType.LIST"
           :class="{
@@ -44,10 +44,13 @@
               size="xs"
             />
           </div>
-          <div :class="{'row justify-center': viewStyle === ListLayoutType.GRID, 'row': viewStyle === ListLayoutType.LIST}">
+          <div
+            :class="{'row justify-center': viewStyle === ListLayoutType.GRID, 'row': viewStyle === ListLayoutType.LIST}"
+            style="width: 100%"
+          >
             <div
-              class="text-grey-10 ellipsis"
-              :style="{width: '90%'}"
+              class="text-grey-10 ellipsis col"
+              style="width: available"
             >
               {{ product.bestPriceDealer.name }}
             </div>
@@ -55,6 +58,7 @@
               name="star"
               color="amber-8"
               size="xs"
+              class="col-1"
             />
           </div>
         </div>
