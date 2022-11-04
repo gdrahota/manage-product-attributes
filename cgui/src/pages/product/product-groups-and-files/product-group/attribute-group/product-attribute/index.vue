@@ -1,5 +1,8 @@
 <template>
-  <div class="column full-width">
+  <div
+    class="q-pr-xl column full-width"
+    style="padding-top: 3px; padding-bottom: 3px"
+  >
     <div class="text-weight-bold full-width">
       {{ productAttribute.name }}
     </div>
