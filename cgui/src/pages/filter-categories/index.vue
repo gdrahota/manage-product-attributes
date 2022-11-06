@@ -1,11 +1,11 @@
 <template>
   <q-page-container>
-    <q-page class="">
+    <q-page>
       <div class="row justify-center q-pa-md">
-        <div class="col-9">
-          <div class="row justify-between">
+        <div :class="{'col-9': !($q.screen.xs || $q.screen.sm),'col-12': !($q.screen.md || $q.screen.lg || $q.screen.xl)}">
+          <div class="row justify-between full-width q-px-md">
             <div
-              v-if="!($q.screen.sm || $q.screen.md)"
+              v-if="!($q.screen.xs || $q.screen.sm || $q.screen.md)"
               class="col-3"
             >
               <div class="row">
@@ -13,25 +13,28 @@
                   style="height:50px; border-radius: 6px; width: 100%;"
                   class="row"
                 >
-                  <q-icon
-                    name="filter_alt"
-                    color="light-blue-10"
-                    size="md"
-                  />
-                  <p
-                    class="text-h6 text-weight-bold text-light-blue-10"
+                  <div
+                    v-if="!($q.screen.xs || $q.screen.sm)"
+                    class="q-pt-sm q-pl-sm bg-light-blue-10 full-width"
+                    style="border-radius: 6px; height: 40px"
                   >
-                    Filter Products
-                  </p>
+                    <p
+                      class="text-bold text-white items-center"
+                      style="font-size: 16px"
+                    >
+                      FILTER CATEGORIES
+                    </p>
+                  </div>
                 </div>
                 <search-strategies
+                  v-if="!($q.screen.xs || $q.screen.sm)"
                   :productGroupId="selectedProductGroupId"
                   :page="page"
                   @filter="loadFilteredProducts"
                 />
               </div>
             </div>
-            <div :class="{'col-8': !($q.screen.sm || $q.screen.md) }">
+            <div :class="{'col-8': !($q.screen.xs || $q.screen.sm || $q.screen.md) }">
               <div
                 v-if="searchInProgress"
                 class="row justify-center items-center full-height"
@@ -41,26 +44,41 @@
                   size="100"
                 />
               </div>
-              <div v-else>
-                <div class="row justify-end q-mb-md">
-                  <q-btn
-                    color="light-blue-10"
-                    flat icon="grid_view"
-                    round
-                    @click="listLayoutType = ListLayoutType.GRID"
-                  />
-                  <q-btn
-                    color="light-blue-10"
-                    flat icon="view_list"
-                    round
-                    @click="listLayoutType = ListLayoutType.LIST"
-                  />
+              <div
+                v-else
+                class="justify-center"
+              >
+                <div class="row justify-between q-mb-md">
+                  <div>
+                    <q-icon
+                      v-if="$q.screen.xs || $q.screen.sm"
+                      name="filter_alt"
+                      color="light-blue-10"
+                      size="md"
+                    />
+                  </div>
+                  <div class="row justify-end">
+                    <q-btn
+                      color="light-blue-10"
+                      flat icon="grid_view"
+                      round
+                      @click="listLayoutType = ListLayoutType.GRID"
+                    />
+                    <q-btn
+                      color="light-blue-10"
+                      flat icon="view_list"
+                      round
+                      @click="listLayoutType = ListLayoutType.LIST"
+                    />
+                  </div>
                 </div>
-                <div class="row q-col-gutter-md justify-start">
+                <div class="row justify-start">
                   <div
                     v-for="(product) in products"
                     :class="{
                       'col-4 q-pa-sm q-mb-sm': listLayoutType === ListLayoutType.GRID,
+                      'col-12 items-center q-my-md': listLayoutType === ListLayoutType.LIST,
+                      'col-6 q-pa-sm q-mb-sm': listLayoutType === ListLayoutType.GRID && ($q.screen.sm || $q.screen.xs),
                       'col-12 items-center q-my-md': listLayoutType === ListLayoutType.LIST
                     }"
                     :key="product.id"
@@ -80,7 +98,7 @@
                     v-model="page"
                     :max="noOfPages"
                     :min="numberOfFirstPage"
-                    :max-pages="6"
+                    :max-pages="$q.screen.xs || $q.screen.sm ? 3 : 6"
                     unelevated
                     icon-next="mdi-arrow-right-bold-outline"
                     icon-prev="mdi-arrow-left-bold-outline"
@@ -88,7 +106,7 @@
                     color="accent"
                     direction-links
                   />
-                  <div>
+                  <div v-if="!($q.screen.xs)">
                     <b>[</b> A Total Of <b>{{ noOfPages }}</b> Pages <b>]</b>
                   </div>
                 </div>
