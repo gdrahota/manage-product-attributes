@@ -1,4 +1,4 @@
-import { Promise as BluebirdPromise } from 'bluebird'
+import Bluebird from 'bluebird'
 
 import { IManufacturerTable, ManufacturerTable } from '../../db/tables/manufacturers'
 import { ProductGroupTable } from '../../db/tables/product-groups'
@@ -64,14 +64,14 @@ export class ProductService {
 
     const productToProductGroups = await this.productToProductGroupTable.getByProductId( id )
 
-    const productGroups = await BluebirdPromise.mapSeries( productToProductGroups, productToProductGroup => {
+    const productGroups = await Bluebird.mapSeries( productToProductGroups, productToProductGroup => {
       return this.productGroupTable.getById( productToProductGroup.productGroupId )
     } ) as unknown as IProductGroup[]
 
 
     const productToAttributeRawValues = await this.productToAttributeValueTable.getByProductId( id ) as IProductToAttributeValueTable[]
 
-    const attributeValues = await BluebirdPromise.map( productToAttributeRawValues, async ( attributeRawValue: IProductToAttributeValueTable ) => {
+    const attributeValues = await Bluebird.map( productToAttributeRawValues, async ( attributeRawValue: IProductToAttributeValueTable ) => {
       const attrValue = await this.productAttributeValueTable.getById( attributeRawValue.productAttributeValueId ) as unknown as tProductAttributeValueTable
 
       if ( ! attrValue ) {
@@ -133,7 +133,7 @@ export class ProductService {
   async getAll(): Promise<IProduct[]> {
     const allProducts = this.productTable.getAll()
 
-    return BluebirdPromise.mapSeries( allProducts, ( { id } ) => {
+    return Bluebird.mapSeries( allProducts, ( { id } ) => {
       return this.getById( id )
     } )
   }
@@ -185,11 +185,11 @@ export class ProductService {
     const pgsToBeDeleted = oldProductGroups.filter( oId => ! newProductGroups.includes( oId ) )
     const pgsToBeAdded = newProductGroups.filter( ( nId: number ) => ! oldProductGroups.includes( nId ) )
 
-    await BluebirdPromise.each( pgsToBeDeleted, pgToBeDeleted => {
+    await Bluebird.each( pgsToBeDeleted, pgToBeDeleted => {
       return this.productToProductGroupTable.deleteByProductIdAndProductGroupId( productId, pgToBeDeleted )
     } )
 
-    await BluebirdPromise.each( pgsToBeAdded, productGroupId => {
+    await Bluebird.each( pgsToBeAdded, productGroupId => {
       return this.productToProductGroupTable.add( camelToSnakeRecord( { productId, productGroupId } ) )
     } )
 
@@ -200,11 +200,11 @@ export class ProductService {
     const attrValuesToBeDeleted = oldAttrValues.filter( oId => ! newAttrValues.includes( oId ) )
     const attrValuesToBeAdded = newAttrValues.filter( ( nId: number ) => ! oldAttrValues.includes( nId ) )
 
-    await BluebirdPromise.each( attrValuesToBeDeleted, productAttributeValueId => {
+    await Bluebird.each( attrValuesToBeDeleted, productAttributeValueId => {
       return this.productToAttributeValueTable.deleteByProductIdAndAttributeValueId( productId, productAttributeValueId )
     } )
 
-    await BluebirdPromise.each( attrValuesToBeAdded, productAttributeValueId => {
+    await Bluebird.each( attrValuesToBeAdded, productAttributeValueId => {
       return this.productToAttributeValueTable.add( camelToSnakeRecord( { productId, productAttributeValueId } ) )
     } )
 
@@ -214,7 +214,7 @@ export class ProductService {
 
     const filesToBeDeleted = oldFileIds.filter( oId => ! newFileIds.includes( oId ) )
 
-    await BluebirdPromise.each( filesToBeDeleted, fileId => {
+    await Bluebird.each( filesToBeDeleted, fileId => {
       return this.fileTable.delete( fileId )
     } )
 

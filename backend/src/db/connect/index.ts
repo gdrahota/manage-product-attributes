@@ -3,7 +3,7 @@ import dotenv from 'dotenv'
 
 dotenv.config()
 
-const { DB_STRING, SCHEMA_NAME } = process.env
+const { DB_STRING } = process.env
 
 const postgresConnectionConfig: any = {
   client: 'pg',
@@ -19,4 +19,6 @@ export const connectToDatabases = ( dbSchemaName: string = 'public' ): void => {
 
   postgresConnectionConfig.searchPath = [ dbSchemaName ]
   pg = require( 'knex' )( postgresConnectionConfig )
+
+  console.log( 'connected' )
 }

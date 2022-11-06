@@ -11,7 +11,6 @@ import { createTasks } from './tasks'
   dotenv.config()
 
   connectToDatabases()
-  console.log( 'connected' )
 
   const app: Express = express()
   const port = process.env.PORT || 3000
