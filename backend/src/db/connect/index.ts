@@ -1,21 +1,22 @@
-import { Knex } from "knex"
-import dotenv from "dotenv"
+import { Knex } from 'knex'
+import dotenv from 'dotenv'
 
 dotenv.config()
 
 const { DB_STRING, SCHEMA_NAME } = process.env
 
-const postgresConnectionConfig = {
+const postgresConnectionConfig: any = {
   client: 'pg',
   connection: DB_STRING,
   debug: false,
   secure: true,
-  searchPath: [ SCHEMA_NAME ],
 }
 
 export let pg: Knex
 
-export const connectToDatabases = (): void => {
+export const connectToDatabases = ( dbSchemaName: string = 'public' ): void => {
   console.log( 'trying to connect to postgres db server...' )
+
+  postgresConnectionConfig.searchPath = [ dbSchemaName ]
   pg = require( 'knex' )( postgresConnectionConfig )
 }

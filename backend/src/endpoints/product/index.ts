@@ -1,8 +1,8 @@
-import { DefaultRestEndpoint } from "../_base_class"
-import { Request, Response, Router } from "express"
-import { errorHandler } from "../error-handler"
-import { IProductTable } from "../../db/tables/products"
-import { ProductService } from "../../models/product"
+import { DefaultRestEndpoint } from '../_base_class'
+import { Request, Response, Router } from 'express'
+import { errorHandler } from '../error-handler'
+import { IProductTable } from '../../db/tables/products'
+import { ProductService } from '../../services/product'
 
 class ProductRoutes extends DefaultRestEndpoint<IProductTable> {
   static async getByManufacturerId( req: Request, res: Response, model: any ): Promise<void> {

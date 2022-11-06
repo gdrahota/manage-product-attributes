@@ -1,14 +1,14 @@
 import { DataType } from '../../enums/data-type'
-import { IField, ITableDef } from "../../../seeder/table-defs/type"
-import { pg } from "../../connect"
-import { camelToSnakeCase } from "../index"
-import { tTableDef } from "../../../seeder"
+import { IField, ITableDef } from '../../../seeder/table-defs/type'
+import { pg } from '../../connect'
+import { camelToSnakeCase } from '../index'
+import { tTableDef } from '../../../seeder'
 
-export const createTableFromModel = async ( model: ITableDef ): Promise<void> => {
+export const createTableFromModel = async ( model: ITableDef, schemaName: string = 'public' ): Promise<void> => {
   const { name, fields, indexes } = model as tTableDef
 
   await pg.schema
-    .withSchema( 'public' )
+    .withSchema( schemaName )
     .createTable( name, ( tbl: any ) => {
       tbl.increments( 'id' ).primary()
 

@@ -1,8 +1,8 @@
-import { IAttributeValue } from "../product"
-import { ProductAttributeValueTable } from "../../db/tables/product-attribute-values"
-import { IProductAttributeTable, ProductAttributeTable } from "../../db/tables/product-attributes"
-import Bluebird from "bluebird"
-import { camelToSnakeRecord } from "../../db/helper"
+import { IAttributeValue } from '../product'
+import { ProductAttributeValueTable } from '../../db/tables/product-attribute-values'
+import { IProductAttributeTable, ProductAttributeTable } from '../../db/tables/product-attributes'
+import Bluebird from 'bluebird'
+import { camelToSnakeRecord } from '../../db/helper'
 
 export interface IProductAttribute {
   id: number

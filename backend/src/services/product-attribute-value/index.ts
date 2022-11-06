@@ -1,7 +1,7 @@
-import { ProductAttributeValueTable, tProductAttributeValueTable } from "../../db/tables/product-attribute-values"
-import { ProductAttribute } from "../product-attribute"
-import { IAttributeValue } from "../product"
-import { EnumProductValueType } from "../../db/enums/product-value-type"
+import { ProductAttributeValueTable, tProductAttributeValueTable } from '../../db/tables/product-attribute-values'
+import { ProductAttribute } from '../product-attribute'
+import { IAttributeValue } from '../product'
+import { EnumProductValueType } from '../../db/enums/product-value-type'
 
 export class ProductAttributeValue {
   private productAttributeValueTable = new ProductAttributeValueTable()

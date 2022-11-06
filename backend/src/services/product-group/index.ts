@@ -1,11 +1,11 @@
 import { Promise as BluebirdPromise } from 'bluebird'
-import { ProductGroupTable } from "../../db/tables/product-groups"
+import { ProductGroupTable } from '../../db/tables/product-groups'
 import {
   IProductAttributesOfProductGroupTable,
   ProductAttributesOfProductGroupTable
-} from "../../db/tables/product-attributes-of-product-group"
-import { camelToSnakeRecord } from "../../db/helper"
-import { pg } from "../../db/connect"
+} from '../../db/tables/product-attributes-of-product-group'
+import { camelToSnakeRecord } from '../../db/helper'
+import { pg } from '../../db/connect'
 
 export interface IProductGroup {
   id: number

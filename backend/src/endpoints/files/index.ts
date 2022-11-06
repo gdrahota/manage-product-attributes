@@ -1,7 +1,7 @@
 import { NextFunction, Request, Response, Router } from 'express'
-import { File } from '../../models/files'
-import { EnumEntityName } from "../../db/tables/files"
-import { errorHandler } from "../error-handler"
+import { File } from '../../services/files'
+import { EnumEntityName } from '../../db/tables/files'
+import { errorHandler } from '../error-handler'
 
 class FileRoutes {
   static registerRoutes() {

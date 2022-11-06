@@ -1,6 +1,6 @@
 import { Promise as BlueBird } from 'bluebird'
-import { createTableFromModel } from "../db/helper/database-table-create"
-import { DataType } from "../db/enums/data-type"
+import { createTableFromModel } from '../db/helper/database-table-create'
+import { DataType } from '../db/enums/data-type'
 
 type tField = {
   name: string,
@@ -41,7 +41,8 @@ export const ensureDefaultTables = async () => {
   await BlueBird.each( dirNames, async ( dirName: string ) => {
     try {
       const tableDefDDL = require( `./table-defs/${ dirName }/def` ).default
-      await createTableFromModel( tableDefDDL )
+      await createTableFromModel( tableDefDDL, 'test' )
+
     } catch ( err: any ) {
       if ( err.code !== '42P07' ) {
         console.error( `ERROR on ensuring default table "${ dirName }":`, err )

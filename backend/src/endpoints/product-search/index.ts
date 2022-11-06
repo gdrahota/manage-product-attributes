@@ -1,5 +1,5 @@
 import { Request, Response, Router } from 'express'
-import { IProductSearchFilter, ProductSearch } from '../../models/product-search'
+import { IProductSearchFilter, ProductSearch } from '../../services/product-search'
 
 class ProductSearchRoutes {
   static registerRoutes() {

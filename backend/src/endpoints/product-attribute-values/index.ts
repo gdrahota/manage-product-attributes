@@ -1,6 +1,6 @@
-import { DefaultRestEndpoint } from "../_base_class"
-import { tProductAttributeValueTable } from "../../db/tables/product-attribute-values"
-import { ProductAttributeValue } from "../../models/product-attribute-value"
+import { DefaultRestEndpoint } from '../_base_class'
+import { tProductAttributeValueTable } from '../../db/tables/product-attribute-values'
+import { ProductAttributeValue } from '../../services/product-attribute-value'
 
 class ProductAttributeValueEndpoint extends DefaultRestEndpoint<tProductAttributeValueTable> {
   static registerRoutes() {

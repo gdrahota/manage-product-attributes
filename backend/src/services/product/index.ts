@@ -1,17 +1,18 @@
-import { IManufacturerTable, ManufacturerTable } from "../../db/tables/manufacturers"
-import { ProductGroupTable } from "../../db/tables/product-groups"
-import { ProductTable } from "../../db/tables/products"
-import { ProductToProductGroupTable } from "../../db/tables/product-to-product-groups"
-import { IProductGroup, ProductGroupService } from "../product-group"
 import { Promise as BluebirdPromise } from 'bluebird'
-import { IProductToAttributeValueTable, ProductToAttributeValueTable } from "../../db/tables/product-attribute-to-values"
-import { IProductAttributeTable, ProductAttributeTable } from "../../db/tables/product-attributes"
-import { ProductAttributeValueTable, tProductAttributeValueTable } from "../../db/tables/product-attribute-values"
-import { camelToSnakeRecord } from "../../db/helper"
-import { DealerTable, tDealerTable } from "../../db/tables/dealers"
-import { ProductOfferCurrentTable } from "../../db/tables/product-offers-current"
-import { EnumEntityName, FileTable, tFileTable } from "../../db/tables/files"
-import { IProductOffer } from "../../db/tables/product-offers-history"
+
+import { IManufacturerTable, ManufacturerTable } from '../../db/tables/manufacturers'
+import { ProductGroupTable } from '../../db/tables/product-groups'
+import { ProductTable } from '../../db/tables/products'
+import { ProductToProductGroupTable } from '../../db/tables/product-to-product-groups'
+import { IProductGroup, ProductGroupService } from '../product-group'
+import { IProductToAttributeValueTable, ProductToAttributeValueTable } from '../../db/tables/product-attribute-to-values'
+import { IProductAttributeTable, ProductAttributeTable } from '../../db/tables/product-attributes'
+import { ProductAttributeValueTable, tProductAttributeValueTable } from '../../db/tables/product-attribute-values'
+import { camelToSnakeRecord } from '../../db/helper'
+import { DealerTable, tDealerTable } from '../../db/tables/dealers'
+import { ProductOfferCurrentTable } from '../../db/tables/product-offers-current'
+import { EnumEntityName, FileTable, tFileTable } from '../../db/tables/files'
+import { IProductOffer } from '../../db/tables/product-offers-history'
 
 export interface IAttributeValue {
   id: number

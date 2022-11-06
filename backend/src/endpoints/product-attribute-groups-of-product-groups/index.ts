@@ -1,5 +1,5 @@
-import { DefaultRestEndpoint } from "../_base_class"
-import { AttributeGroupOfProductGroup, IAttributeGroupOfProductGroup } from "../../models/attribute-group-of-product-group"
+import { DefaultRestEndpoint } from '../_base_class'
+import { AttributeGroupOfProductGroup, IAttributeGroupOfProductGroup } from '../../services/attribute-group-of-product-group'
 
 class AttributeGroupOfProductGroupEndpoint extends DefaultRestEndpoint<IAttributeGroupOfProductGroup> {
 }

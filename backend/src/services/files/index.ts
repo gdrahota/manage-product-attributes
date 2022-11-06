@@ -1,8 +1,8 @@
-import dotenv from "dotenv"
+import dotenv from 'dotenv'
 import fileUpload from 'express-fileupload'
-import { EnumEntityName, FileTable, tFileTable } from "../../db/tables/files"
+import { EnumEntityName, FileTable, tFileTable } from '../../db/tables/files'
 import { PutObjectCommand, S3Client } from '@aws-sdk/client-s3'
-import { PutObjectCommandInput } from "@aws-sdk/client-s3/dist-types/commands/PutObjectCommand"
+import { PutObjectCommandInput } from '@aws-sdk/client-s3/dist-types/commands/PutObjectCommand'
 
 dotenv.config()
 

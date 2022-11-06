@@ -1,11 +1,11 @@
-import { camelToSnakeRecord } from "../../db/helper"
-import { AttributeGroupOfProductGroupTable, IAttributeGroupOfProductGroupTable } from "../../db/tables/attribute_groups_of_product_groups"
-import { pg } from "../../db/connect"
-import Bluebird from "bluebird"
+import { camelToSnakeRecord } from '../../db/helper'
+import { AttributeGroupOfProductGroupTable, IAttributeGroupOfProductGroupTable } from '../../db/tables/attribute_groups_of_product_groups'
+import { pg } from '../../db/connect'
+import Bluebird from 'bluebird'
 import {
   AttributeOfAttributeGroupOfProductGroupTable,
   IAttributeOfAttributeGroupOfProductGroupTable
-} from "../../db/tables/attributes-of-attribute-groups-of-product-groups"
+} from '../../db/tables/attributes-of-attribute-groups-of-product-groups'
 
 export interface IAttributeGroupOfProductGroup {
   id: number
