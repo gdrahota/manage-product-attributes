@@ -60,7 +60,6 @@ export default {
   },
   mounted(){
     console.log('Showing passed ==<')
-    console.log(this.type)
   }
 
 }

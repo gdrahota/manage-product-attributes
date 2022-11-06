@@ -1,5 +1,5 @@
-import { Request, Response, Router } from "express"
-import { errorHandler } from "../error-handler"
+import { Request, Response, Router } from 'express'
+import { errorHandler } from '../error-handler'
 
 export class DefaultRestEndpoint<T> {
   static registerDefaultRoutes( model: any, router: Router = Router() ) {

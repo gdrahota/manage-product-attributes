@@ -4,7 +4,6 @@ import { connectToDatabases } from './db/connect'
 import { registerRoutes } from './endpoints'
 import { ensureDefaultTables } from './seeder'
 import { fileUploadMiddleware } from './middle-ware/file-upload'
-import { createTasks } from './tasks'
 
 (async () => {
   Error.stackTraceLimit = Infinity
@@ -34,5 +33,5 @@ import { createTasks } from './tasks'
 
   await ensureDefaultTables()
 
-  await createTasks()
+  // await createTasks()
 })()

@@ -53,7 +53,7 @@
               dense
               padding
               separator
-              style="height: calc(100vh - 185px); overflow-y: auto"
+              style="height: calc(100vh - 240px); overflow-y: auto"
             >
               <q-separator />
               <template v-for="(product, pos) in products">
@@ -78,6 +78,20 @@
                 <q-separator :key="pos + '-sep'" />
               </template>
             </q-list>
+
+            <q-pagination
+              v-if="numberOfItems > 20"
+              v-model="page"
+              :max="Math.ceil(numberOfItems / 20)"
+              :max-pages="4"
+              active-color="accent"
+              class="q-my-sm"
+              color="accent"
+              input
+              input-class="text-orange-10"
+              unelevated
+              @input="setPage"
+            />
           </div>
         </q-scroll-area>
       </template>
@@ -94,59 +108,91 @@
 </template>
 
 <script>
-import { mapGetters } from 'vuex'
+import { mapActions, mapGetters } from 'vuex'
 
 export default {
   computed: {
-    ...mapGetters({
-      getByProductGroupId: 'products/getByProductGroupId',
+    ...mapGetters( {
+      getPage: 'products/getPage',
+      getNumberOfItems: 'products/getNumberOfItems',
       manufacturers: 'manufacturers/getAll',
       getAllProductGroups: 'productGroups/getAll',
       getProductGroupById: 'productGroups/getById',
-    }),
+    } ),
     productGroups() {
       return this.getAllProductGroups
     },
     products() {
-      return this.productGroup?.id
-        ? this.getByProductGroupId(this.productGroup.id)
-        : []
+      return this.getPage
+    },
+    numberOfItems() {
+      return this.getNumberOfItems
     },
     productGroup() {
       return this.$route.params.productGroupId
-        ? this.getProductGroupById(this.$route.params.productGroupId)
+        ? this.getProductGroupById( this.$route.params.productGroupId )
         : null
     },
   },
 
-  data: () => ({
+  created() {
+    this.loadPage( this.$route.params.productGroupId )
+  },
+
+  data: () => ( {
     splitter: 300,
-  }),
+    page: 1,
+  } ),
 
   methods: {
+    ...mapActions( {
+      loadPageAction: 'products/loadPage',
+    } ),
+    loadPage( productGroupId ) {
+      if ( productGroupId ) {
+        this.loadPageAction( {
+          productGroupId,
+          page: 1,
+          itemsPerPage: 20,
+        } )
+      }
+    },
+    setPage( page ) {
+      this.loadPageAction( {
+        productGroupId: this.$route.params.productGroupId,
+        page: page,
+        itemsPerPage: 20,
+      } )
+    },
     isSelected( product ) {
       return this.$route.params.id && product
-        ? parseInt(product.id) === parseInt(this.$route.params.id)
+        ? parseInt( product.id ) === parseInt( this.$route.params.id )
         : false
     },
     setProductGroup( productGroup ) {
-      this.$router.push({
+      this.$router.push( {
         name: 'manage-products',
         params: {
           productGroupId: productGroup?.id,
           id: undefined,
         },
-      })
+      } )
+
+      this.loadPage( productGroup.id )
     },
     routeToProduct( id ) {
-      this.$router.push({
+      this.$router.push( {
         name: 'manage-product',
         params: {
           productGroupId: this.productGroup.id,
           id,
         },
-      })
+      } )
     },
+  },
+
+  updated() {
+    this.loadPage( this.$route.params.productGroupId )
   },
 }
 </script>

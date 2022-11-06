@@ -18,30 +18,31 @@ export default {
     Menu,
   },
 
-  data: () => ({
+  created() {
+    this.loadManufacturers()
+    this.loadProductGroups()
+    this.loadProductToProductGroups()
+    this.loadProductAttributes()
+    this.loadProductAttributeGroupsOfProductGroups()
+    this.loadDealers()
+  },
+
+  data: () => ( {
     left: false,
-  }),
+  } ),
 
   methods: {
-    ...mapActions({
-      loadProducts: 'products/loadAll',
+    ...mapActions( {
       loadManufacturers: 'manufacturers/loadAll',
       loadProductGroups: 'productGroups/loadAll',
       loadProductToProductGroups: 'productToProductGroups/loadAll',
       loadProductAttributes: 'productAttributes/loadAll',
       loadProductAttributeGroupsOfProductGroups: 'productAttributeGroupsOfProductGroups/loadAll',
       loadDealers: 'dealers/loadAll',
-    }),
+    } ),
   },
 
   mounted() {
-    this.loadManufacturers()
-    this.loadProducts()
-    this.loadProductGroups()
-    this.loadProductToProductGroups()
-    this.loadProductAttributes()
-    this.loadProductAttributeGroupsOfProductGroups()
-    this.loadDealers()
   },
 }
 </script>
