@@ -12,7 +12,6 @@ export default {
 
   methods: {
     ...mapActions({
-      loadProducts: 'products/loadAll',
       loadManufacturers: 'manufacturers/loadAll',
       loadProductGroups: 'productGroups/loadAll',
       loadProductToProductGroups: 'productToProductGroups/loadAll',
@@ -24,7 +23,6 @@ export default {
 
   mounted() {
     this.loadManufacturers()
-    this.loadProducts()
     this.loadProductGroups()
     this.loadProductToProductGroups()
     this.loadProductAttributes()

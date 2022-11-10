@@ -31,10 +31,23 @@ class ProductRoutes extends DefaultRestEndpoint<IProductTable> {
     const model = new ProductService()
 
     const router = Router()
-      .get( '/product-group/:id', ( req: Request, res: Response ) => ProductRoutes.getByManufacturerId( req, res, model ) )
+      .get( '/page/:productGroupId/:page/:itemsPerPage', ( req, res ) => ProductRoutes.getPage( req, res, model ) )
+      .get( '/by-manufacturer/:id', ( req: Request, res: Response ) => ProductRoutes.getByManufacturerId( req, res, model ) )
       .put( '/:productId', ProductRoutes.saveChanges )
 
     return ProductRoutes.registerDefaultRoutes( model, router )
+  }
+
+  private static async getPage( req: Request, res: Response, model: any ): Promise<void> {
+    try {
+      const { productGroupId, page, itemsPerPage } = req.params
+      const items = await model.getPage( parseInt( productGroupId ), parseInt( page ), parseInt( itemsPerPage ) )
+
+      res.send( items )
+
+    } catch ( err ) {
+      errorHandler( req, res, err )
+    }
   }
 }
 

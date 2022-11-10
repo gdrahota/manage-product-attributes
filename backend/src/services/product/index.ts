@@ -13,6 +13,7 @@ import { DealerTable, tDealerTable } from '../../db/tables/dealers'
 import { ProductOfferCurrentTable } from '../../db/tables/product-offers-current'
 import { EnumEntityName, FileTable, tFileTable } from '../../db/tables/files'
 import { IProductOffer } from '../../db/tables/product-offers-history'
+import { IPage } from '../../db/tables/_base_class'
 
 export interface IAttributeValue {
   id: number
@@ -130,10 +131,23 @@ export class ProductService {
     }
   }
 
-  async getAll(): Promise<IProduct[]> {
-    const allProducts = this.productTable.getAll()
+  async getPage( productGroupId: number, page: number = 1, itemPerPage: number = 10 ): Promise<IPage<IProduct>> {
+    const response = await this.productTable.getPage( productGroupId, page, itemPerPage )
 
-    return Bluebird.mapSeries( allProducts, ( { id } ) => {
+    const items: IProduct[] = await Bluebird.mapSeries( response.items, ( { id } ) => {
+      return this.getById( id )
+    } )
+
+    return {
+      ...response,
+      items,
+    }
+  }
+
+  async getAll(): Promise<IProduct[]> {
+    const response = await this.productTable.getAll()
+
+    return Bluebird.mapSeries( response, ( { id } ) => {
       return this.getById( id )
     } )
   }

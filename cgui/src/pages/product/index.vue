@@ -117,8 +117,6 @@ export default {
   },
   mounted() {
     this.loadProduct( this.productId )
-    console.log( 'the product ==>' )
-    console.log( this.product )
   },
 }
 </script>

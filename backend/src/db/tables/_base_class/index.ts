@@ -1,5 +1,12 @@
-import { pg } from "../../connect"
-import { camelToSnakeRecord, snakeToCamelRecord } from "../../helper"
+import { pg } from '../../connect'
+import { camelToSnakeRecord, snakeToCamelRecord } from '../../helper'
+
+export interface IPage<T> {
+  items: T[],
+  numberOfItems: number,
+  page: number,
+  itemPerPage: number
+}
 
 export class GenericClass<T> {
   constructor( private name: string ) {
@@ -9,8 +16,9 @@ export class GenericClass<T> {
   }
 
   async getAll(): Promise<T[]> {
-    const records = await pg( this.name ).select().orderBy( 'id' )
-    return records.map( snakeToCamelRecord ) as T[]
+    return pg( this.name )
+      .select()
+      .orderBy( 'id' )
   }
 
   async getById( id: number = 0 ): Promise<T | null> {
@@ -20,7 +28,7 @@ export class GenericClass<T> {
 
     if ( response.length > 0 ) {
       // @ts-ignore
-      return snakeToCamelRecord( response[0] )
+      return snakeToCamelRecord( response[ 0 ] )
     }
 
     return null
