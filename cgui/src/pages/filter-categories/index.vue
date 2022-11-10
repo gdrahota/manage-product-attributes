@@ -1,7 +1,7 @@
 <template>
   <q-page-container>
     <q-page>
-      <div class="row justify-center q-pa-md">
+      <div :class="{'row justify-center q-pa-md': !$q.screen.xs}">
         <div :class="{'col-9': !($q.screen.xs || $q.screen.sm),'col-12': !($q.screen.md || $q.screen.lg || $q.screen.xl)}">
           <div class="row justify-between full-width q-px-md">
             <div
@@ -55,6 +55,7 @@
                       name="filter_alt"
                       color="light-blue-10"
                       size="md"
+                      class="q-mt-sm"
                     />
                   </div>
                   <div class="row justify-end">
