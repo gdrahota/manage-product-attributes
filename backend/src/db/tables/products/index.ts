@@ -5,7 +5,7 @@ import { snakeToCamelRecord } from '../../helper'
 export interface IProductTable {
   id: number
   name: string
-  description: string
+  description: string | null
   show: boolean
   manufacturerId: number
   eanCode: string | null

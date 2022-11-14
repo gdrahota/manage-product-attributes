@@ -1,5 +1,5 @@
 import { ProductService } from './index'
-import { dropAllTables, start, stop } from '../../../tests/setup'
+import { start, stop } from '../../../tests/setup'
 import { ensureDefaultTables } from '../../seeder'
 
 const productService = new ProductService()
@@ -13,7 +13,7 @@ beforeEach( async () => {
 } )
 
 afterEach( async () => {
-  await dropAllTables()
+  // await dropAllTables()
 } )
 
 afterAll( async () => {

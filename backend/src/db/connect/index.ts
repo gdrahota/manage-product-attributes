@@ -15,10 +15,6 @@ const postgresConnectionConfig: any = {
 export let pg: Knex
 
 export const connectToDatabases = ( dbSchemaName: string = 'public' ): void => {
-  console.log( 'trying to connect to postgres db server...' )
-
   postgresConnectionConfig.searchPath = [ dbSchemaName ]
   pg = require( 'knex' )( postgresConnectionConfig )
-
-  console.log( 'connected' )
 }
