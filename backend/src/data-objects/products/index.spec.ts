@@ -84,7 +84,8 @@ describe( 'data objects -> products', () => {
 
         const product = new ProductModel( 1 )
         const test = await product.get()
-
+        console.log(test)
+      
         expect( test.name ).toEqual( p1.name )
       } )
 
@@ -112,5 +113,19 @@ describe( 'data objects -> products', () => {
         const product = new ProductModel( 2 )
         await expect( () => product.get() ).rejects.toThrow( 'PRODUCT NOT FOUND' )
       } )
+
+      test( 'get() should get second product out of two having correct eanCode', async () => {
+        await ProductModel.add( p1 )
+        await ProductModel.add( p2 )
+
+        const product = new ProductModel( 2 )
+        const test = await product.get()
+
+        console.log(test);
+        
+
+        expect( test.eanCode ).toEqual( p2.eanCode )
+      } )
     } )
   } )
+} )
