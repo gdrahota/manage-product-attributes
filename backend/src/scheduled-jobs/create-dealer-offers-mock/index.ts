@@ -1,10 +1,10 @@
-import { DealerTable } from "../../db/tables/dealers"
-import { ProductTable } from "../../db/tables/products"
-import { EnumDealerStatus } from "../../seeder/table-defs/dealers/def"
-import Bluebird from "bluebird"
-import { ProductOfferHistoryTable, tProductOfferTable } from "../../db/tables/product-offers-history"
-import { DealerPriceImportRunTable } from "../../db/tables/dealer-price-import-runs"
-import { ProductOfferCurrentTable } from "../../db/tables/product-offers-current"
+import { DealerTable } from '../../db/tables/dealers'
+import { ProductTable } from '../../db/tables/products'
+import { EnumDealerStatus } from '../../seeder/table-defs/dealers/def'
+import Bluebird from 'bluebird'
+import { ProductOfferHistoryTable, tProductOfferTable } from '../../db/tables/product-offers-history'
+import { DealerPriceImportRunTable } from '../../db/tables/dealer-price-import-runs'
+import { ProductOfferCurrentTable } from '../../db/tables/product-offers-current'
 
 export const createDealerOffers = async () => {
   const dealerTable = new DealerTable()

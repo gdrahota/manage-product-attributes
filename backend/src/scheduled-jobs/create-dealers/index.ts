@@ -1,6 +1,6 @@
-import Bluebird from "bluebird"
-import { DealerTable, tDealerTable } from "../../db/tables/dealers"
-import { EnumDealerStatus } from "../../seeder/table-defs/dealers/def"
+import Bluebird from 'bluebird'
+import { DealerTable, tDealerTable } from '../../db/tables/dealers'
+import { EnumDealerStatus } from '../../seeder/table-defs/dealers/def'
 
 export const createDealers = async () => {
   const dealers: Omit<tDealerTable, 'id'>[] = [

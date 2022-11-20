@@ -1,8 +1,8 @@
-import Bluebird from "bluebird"
+import Bluebird from 'bluebird'
 import {
   AttributeOfAttributeGroupOfProductGroupTable,
   IAttributeOfAttributeGroupOfProductGroupTable
-} from "../../db/tables/attributes-of-attribute-groups-of-product-groups"
+} from '../../db/tables/attributes-of-attribute-groups-of-product-groups'
 
 export const createAttributeOfAttributeGroupOfProductGroup = async () => {
   const items: Omit<IAttributeOfAttributeGroupOfProductGroupTable, 'id'>[] = [

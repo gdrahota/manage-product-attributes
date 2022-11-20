@@ -16,15 +16,14 @@ import { fileUploadMiddleware } from './middle-ware/file-upload'
 
   app.use( express.json() )
 
-
   const log = ( req: Request, res: Response, next: NextFunction ) => {
     console.log( 'Requested Path: ', req.path )
     next()
   }
 
   app.use( log )
-  app.use( express.json() )
   app.use( fileUploadMiddleware )
+
   registerRoutes( app )
 
   app.listen( port, () => {

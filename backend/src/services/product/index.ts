@@ -239,7 +239,7 @@ export class ProductService {
     const productGroup = await this.productGroup.getById( productGroupId )
 
     if ( ! productGroup ) {
-      throw Error()
+      throw new Error( 'PRODUCT GROUP NOT FOUND' )
     }
 
     const newProductTable = await this.productTable.add( {

@@ -1,5 +1,5 @@
-import Bluebird from "bluebird"
-import { IProductGroupTable, ProductGroupTable } from "../../db/tables/product-groups"
+import Bluebird from 'bluebird'
+import { IProductGroupTable, ProductGroupTable } from '../../db/tables/product-groups'
 
 export const createProductGroups = async () => {
   const productGroups: Omit<IProductGroupTable, 'id'>[] = [

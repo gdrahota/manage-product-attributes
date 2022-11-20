@@ -32,7 +32,7 @@ class ProductRoutes extends DefaultRestEndpoint<IProductTable> {
 
     const router = Router()
       .get( '/page/:productGroupId/:page/:itemsPerPage', ( req, res ) => ProductRoutes.getPage( req, res, model ) )
-      .get( '/by-manufacturer/:id', ( req: Request, res: Response ) => ProductRoutes.getByManufacturerId( req, res, model ) )
+      .get( '/by-manufacturer/:manufacturerId', ( req: Request, res: Response ) => ProductRoutes.getByManufacturerId( req, res, model ) )
       .put( '/:productId', ProductRoutes.saveChanges )
 
     return ProductRoutes.registerDefaultRoutes( model, router )

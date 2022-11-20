@@ -22,9 +22,7 @@ export class GenericClass<T> {
   }
 
   async getById( id: number = 0 ): Promise<T | null> {
-    const response = await pg( this.name )
-      .where( 'id', id )
-      .select()
+    const response = await pg( this.name ).where( 'id', id )
 
     if ( response.length > 0 ) {
       // @ts-ignore

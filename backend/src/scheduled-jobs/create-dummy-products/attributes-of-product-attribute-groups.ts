@@ -1,9 +1,9 @@
-import Bluebird from "bluebird"
+import Bluebird from 'bluebird'
 import {
   IProductAttributesOfProductGroupTable,
   ProductAttributesOfProductGroupTable
-} from "../../db/tables/product-attributes-of-product-group"
-import { EnumSearchStrategy } from "../../db/enums/search-strategy"
+} from '../../db/tables/product-attributes-of-product-group'
+import { EnumSearchStrategy } from '../../db/enums/search-strategy'
 
 export const createAttributesOfProductAttributeGroups = async () => {
   const items: Omit<IProductAttributesOfProductGroupTable, 'id'>[] = [
