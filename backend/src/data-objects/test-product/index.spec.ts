@@ -1,4 +1,4 @@
-import {test, expect, describe, afterAll, beforeAll, beforeEach, afterEach} from '@jest/globals'
+import { afterAll, afterEach, beforeAll, beforeEach, describe, expect, test } from '@jest/globals'
 import { getSetupAndTeardownForTables, start, stop } from '../../../tests/setup'
 
 import productTableDef from '../../seeder/table-defs/products/def'
@@ -7,74 +7,73 @@ import { pg } from '../../db/connect'
 import { snakeToCamelRecord } from '../../db/helper'
 
 import { TestProductModel } from './index'
-import exp from 'constants'
 
 const { setupTables, tearDownTables } = getSetupAndTeardownForTables(
   [ productTableDef ],
   {},
 )
 
-const testProd1:IProductTable = {
-    id: 1000,
-    name: "",
-    description: null,
-    show: true,
-    eanCode: "",
-    manufacturerId: 2000,
-    manufacturerProductId: null,
-    bestPrice: null,
-    bestPriceDealerId: null
-  }
+const testProd1: IProductTable = {
+  id: 1000,
+  name: '',
+  description: null,
+  show: true,
+  eanCode: '',
+  manufacturerId: 2000,
+  manufacturerProductId: null,
+  bestPrice: null,
+  bestPriceDealerId: null
+}
 
-const testProd2:Omit<IProductTable, "id"> = {
-    name: "Apfelgetränk",
-    description: null,
-    show: true,
-    eanCode: "",
-    manufacturerId: 2000,
-    manufacturerProductId: null,
-    bestPrice: null,
-    bestPriceDealerId: null
-  }
+const testProd2: Omit<IProductTable, 'id'> = {
+  name: 'Apfelgetränk',
+  description: null,
+  show: true,
+  eanCode: '',
+  manufacturerId: 2000,
+  manufacturerProductId: null,
+  bestPrice: null,
+  bestPriceDealerId: null
+}
 
-  const testProd3:Object = {
-    name: "Schnitzel"
-  }  
+const testProd3: Object = {
+  name: 'Schnitzel'
+}
 
+//@ts-ignore
+const productWithoutName: IProductTable = {
+  description: null,
+  show: true,
+  eanCode: '',
+  manufacturerId: 2000,
+  manufacturerProductId: null,
+  bestPrice: null,
+  bestPriceDealerId: null
+}
+
+const productWithWrongAttributeTypes: IProductTable = {
   //@ts-ignore
-  const productWithoutName:IProductTable = {
-    description: null,
-    show: true,
-    eanCode: "",
-    manufacturerId: 2000,
-    manufacturerProductId: null,
-    bestPrice: null,
-    bestPriceDealerId: null
-  }
+  description: 2,
+  //@ts-ignore
+  show: 'true',
+  eanCode: '',
+  //@ts-ignore
+  manufacturerId: true,
+  manufacturerProductId: null,
+  bestPrice: null,
+  bestPriceDealerId: null
+}
 
-  const productWithWrongAttributeTypes:IProductTable = {
-    //@ts-ignore
-    description: 2,
-    //@ts-ignore
-    show: 'true',
-    eanCode: "",
-    //@ts-ignore
-    manufacturerId: true,
-    manufacturerProductId: null,
-    bestPrice: null,
-    bestPriceDealerId: null
-  }
-
-  const productWithNonExistingAttributes:Object = {
-    name: "Non-existing attribute",
-    description: '',
-    availability: true,
-    serialNo: "",
-    manufacturerId: 2000,
-    SupplierId: 3,
-    worsePrice: 4000,
-    bestPriceDealerId: 1
-  }
+const productWithNonExistingAttributes: Object = {
+  name: 'Non-existing attribute',
+  description: '',
+  availability: true,
+  serialNo: '',
+  manufacturerId: 2000,
+  SupplierId: 3,
+  worsePrice: 4000,
+  bestPriceDealerId: 1
+}
 
 beforeAll( start )
 
@@ -86,446 +85,467 @@ afterAll( stop )
 
 
 describe( 'data objects -> test products', () => {
-    describe( 'add', () => {
-        test('should add a product', async () => {
-            await TestProductModel.add( testProd2 )
-
-            const test = (await pg( 'products' )).map( snakeToCamelRecord )
-            expect( test ).toHaveLength( 1 )
-            expect( test[0].name ).toEqual( testProd2.name )
-        })
+  describe( 'add()', () => {
+    test( 'should add a product', async () => {
+      await TestProductModel.add( testProd2 )
 
-        test('should add a product with properties provided', async () => {
-            const test = await TestProductModel.add( testProd2 )
+      const test = (await pg( 'products' )).map( snakeToCamelRecord )
+      expect( test ).toHaveLength( 1 )
+      expect( test[ 0 ].name ).toEqual( testProd2.name )
+    } )
 
-            const record = await test.get()
+    test( 'should add a product with properties provided', async () => {
+      const test = await TestProductModel.add( testProd2 )
 
-            expect( testProd2.name ).toEqual(expect.stringMatching( record.name ))
-        })
+      const record = await test.get()
 
-        test('should return the new product', async () => {
-            const test = await TestProductModel.add( testProd2 )
+      expect( testProd2.name ).toEqual( expect.stringMatching( record.name ) )
+    } )
 
-            expect( test ).toBeInstanceOf( TestProductModel )
-            const record = await test.get()
+    test( 'should return the new product', async () => {
+      const test = await TestProductModel.add( testProd2 )
 
-            expect( record.id ).toEqual( 1 )
+      expect( test ).toBeInstanceOf( TestProductModel )
+      const record = await test.get()
 
-            expect( record ).toMatchObject( testProd2 )
-        })
+      expect( record.id ).toEqual( 1 )
 
-        test('add should remove ID field and replace it', async () => {
-            const test = await TestProductModel.add( testProd1 )
+      expect( record ).toMatchObject( testProd2 )
+    } )
 
-            const record = await test.get()
+    test( 'should remove ID field and replace it', async () => {
+      const test = await TestProductModel.add( testProd1 )
 
-            expect( record.id ).not.toEqual( testProd1.id )
-        })
+      const record = await test.get()
 
-        test('add() should throw "AT LEAST ONE REQUIRED FIELD MISSING"', async () => {
-            await expect( () => TestProductModel.add( productWithoutName )).rejects.toThrow('AT LEAST ONE REQUIRED FIELD MISSING')
-        })
+      expect( record.id ).not.toEqual( testProd1.id )
+    } )
 
-        test('add() should throw "AT LEAST ONE FIELD IS OF A WRONG VALUE TYPE"', async () => {
-            await expect( () => TestProductModel.add( productWithWrongAttributeTypes )).rejects.toThrow("AT LEAST ONE FIELD IS OF A WRONG VALUE TYPE")
-        })
+    test( 'should throw "AT LEAST ONE REQUIRED FIELD MISSING"', async () => {
+      await expect( () => TestProductModel.add( productWithoutName ) )
+        .rejects.toThrow( 'AT LEAST ONE REQUIRED FIELD MISSING' )
+    } )
 
-        test('add() should throw "AT LEAST ONE REQUIRED FIELD MISSING"',async () => {
-    
-            const emptyProduct = {}
-            //@ts-ignore
-            await expect( () => TestProductModel.add( emptyProduct )).rejects.toThrow('AT LEAST ONE REQUIRED FIELD MISSING')
-        })
+    test( 'should throw "AT LEAST ONE FIELD IS OF A WRONG VALUE TYPE"', async () => {
+      await expect( () => TestProductModel.add( productWithWrongAttributeTypes ) )
+        .rejects.toThrow( 'AT LEAST ONE FIELD IS OF A WRONG VALUE TYPE' )
+    } )
 
-        test('add() with duplicated object keys should resolve',async () => {
-    
-            //@ts-ignore
-            const productWithRepeatedField:Object = {
-                name: 'Orangen',
-                description: null,
-                show: true,
-                //@ts-ignore
-                show: false,
-                eanCode: "",
-                manufacturerId: 2000,
-                //@ts-ignore
-                manufacturerId: 5000,
-                manufacturerProductId: null,
-                bestPrice: null,
-                bestPriceDealerId: null
-              }
-            
-            //@ts-ignore
+    test( 'should throw "AT LEAST ONE REQUIRED FIELD MISSING"', async () => {
+      const emptyProduct = {}
 
-            const test = TestProductModel.add( productWithRepeatedField )
-            
-            expect( test ).resolves
+      //@ts-ignore
+      await expect( () => TestProductModel.add( emptyProduct ) )
+        .rejects.toThrow( 'AT LEAST ONE REQUIRED FIELD MISSING' )
+    } )
 
-        })
+    test( 'with duplicated object keys should resolve', async () => {
+      //@ts-ignore
+      const productWithRepeatedField: Object = {
+        name: 'Orangen',
+        description: null,
+        show: true,
+        //@ts-ignore
+        show: false,
+        eanCode: '',
+        manufacturerId: 2000,
+        //@ts-ignore
+        manufacturerId: 5000,
+        manufacturerProductId: null,
+        bestPrice: null,
+        bestPriceDealerId: null
+      }
 
-        test('add() should throw "AT LEAST ONE NON-EXISTING FIELD"', async () => {
-            const objectWithNonExistingFields = {
-                serialNumber: '25',
-                batchNumber: '001223'
-            }
-            //@ts-ignore
-            await expect( () => TestProductModel.add( objectWithNonExistingFields )).rejects.toThrow('AT LEAST ONE NON-EXISTING FIELD')
-        })
+      //@ts-ignore
+      const test = TestProductModel.add( productWithRepeatedField )
 
-        test('add() should return product with an id of type number', async () => {
-            const test = await TestProductModel.add( testProd2 )
+      expect( test ).resolves
+    } )
 
-            const record = await test.get()
+    test( 'should throw "AT LEAST ONE NON-EXISTING FIELD"', async () => {
+      const objectWithNonExistingFields = {
+        serialNumber: '25',
+        batchNumber: '001223'
+      }
 
-            expect( record.id ).not.toBeNaN()
-        })
+      //@ts-ignore
+      await expect( () => TestProductModel.add( objectWithNonExistingFields ) )
+        .rejects.toThrow( 'AT LEAST ONE NON-EXISTING FIELD' )
+    } )
 
-        test('add() should return a value that is defined as id', async () => {
-            const test = await TestProductModel.add( testProd2 )
+    test( 'should return product with an id of type number', async () => {
+      const test = await TestProductModel.add( testProd2 )
 
-            const record = await test.get()
+      const record = await test.get()
 
-            expect( record.id ).toBeDefined()
-        })
+      expect( record.id ).not.toBeNaN()
+    } )
 
-        test('add() should create a product with an id greater than 0', async () => {
-            const test = await TestProductModel.add( testProd2 )
+    test( 'should return a value that is defined as id', async () => {
+      const test = await TestProductModel.add( testProd2 )
 
-            const record = await test.get()
+      const record = await test.get()
 
-            expect( record.id ).toBeGreaterThan( 0 )
-        })
+      expect( record.id ).toBeDefined()
+    } )
 
-        test('add() should not return NULL',async () => {
-            const test = await TestProductModel.add( testProd2 )
+    test( 'should create a product with an id greater than 0', async () => {
+      const test = await TestProductModel.add( testProd2 )
 
-            expect( test ).not.toBeNull()
-        })
+      const record = await test.get()
 
-        describe('Products should have different IDs', () => {
-            test('Using Truthy', async () => {
-                const test1 = await TestProductModel.add( testProd2 )
-                const record1 = await test1.get()
+      expect( record.id ).toBeGreaterThan( 0 )
+    } )
 
-                const test2 = await TestProductModel.add( testProd1 )
-                const record2 = await test2.get()
+    test( 'should not return NULL', async () => {
+      const test = await TestProductModel.add( testProd2 )
 
-                expect( record1.id !== record2.id ).toBeTruthy()
-            })
+      expect( test ).not.toBeNull()
+    } )
 
-            test('Using Falsy', async () => {
-                const test1 = await TestProductModel.add( testProd2 )
-                const record1 = await test1.get()
+    describe( 'all products should have different IDs', () => {
+      test( 'product ids of both products added should be different (variant 1)', async () => {
+        const test1 = await TestProductModel.add( testProd2 )
+        const record1 = await test1.get()
 
-                const test2 = await TestProductModel.add( testProd1 )
-                const record2 = await test2.get()
+        const test2 = await TestProductModel.add( testProd1 )
+        const record2 = await test2.get()
 
-                expect( record1.id === record2.id ).toBeFalsy()
-            })
+        expect( record1.id !== record2.id ).toBeTruthy()
+      } )
 
-            test('Using toEqual',async () => {
-                const test1 = await TestProductModel.add( testProd2 )
-                const test2 = await TestProductModel.add( testProd1 )
-                
-                expect( test1 ).not.toEqual( test2 )
-            })
-        })
+      test( 'product ids of both products added should be different (variant 2)', async () => {
+        const test1 = await TestProductModel.add( testProd2 )
+        const record1 = await test1.get()
 
-        test('add() should return an ID', async () => {
-            const test = await TestProductModel.add( testProd2 )
+        const test2 = await TestProductModel.add( testProd1 )
+        const record2 = await test2.get()
 
-            expect( test ).toHaveProperty('id')
-        })
+        expect( record1.id === record2.id ).toBeFalsy()
+      } )
 
-        test('Product added should have properties of Object Passed', async () => {
-            const test = await TestProductModel.add( testProd2 )
+      test( 'product ids of both products added should be different (variant 3)', async () => {
+        const test1 = await TestProductModel.add( testProd2 )
+        const test2 = await TestProductModel.add( testProd1 )
 
-            const record = await test.get()
+        expect( test1 ).not.toEqual( test2 )
+      } )
+    } )
 
-            const mKeys = Object.keys( testProd2 )
+    test( 'should return an ID', async () => {
+      const test = await TestProductModel.add( testProd2 )
 
-            mKeys.map( (key) => {
-                expect( record ).toHaveProperty( key )
-            } )
-            
-        })
+      expect( test ).toHaveProperty( 'id' )
+    } )
 
-        test('add() should create a product with an id not less than 0', async () => {
-            const test = await TestProductModel.add( testProd2 )
+    test( 'Product added should have properties of Object Passed', async () => {
+      const test = await TestProductModel.add( testProd2 )
 
-            const record = await test.get()
+      const record = await test.get()
 
-            expect( record.id ).not.toBeLessThan( 1 )
-        })
+      const mKeys = Object.keys( testProd2 )
 
-        test('An instance should have same type as Object having same value of the key in the constructor', async () => {
-            const instanceProduct = new TestProductModel( 100 )
+      mKeys.map( ( key ) => {
+        expect( record ).toHaveProperty( key )
+      } )
 
-            expect( instanceProduct ).toEqual({ id: 100})
-        })
+    } )
 
-        test('An instance should not have same type and structure as Object having same value of the key in the constructor', async () => {
-            const instanceProduct = new TestProductModel( 100 )
+    test( 'add() should create a product with an id not less than 0', async () => {
+      const test = await TestProductModel.add( testProd2 )
 
-            expect( instanceProduct ).not.toStrictEqual({ id: 100})
-        })
+      const record = await test.get()
 
-        test('add() should make use of constructor', async () => {
-            const test = await TestProductModel.add( testProd2 )
+      expect( record.id ).not.toBeLessThan( 1 )
+    } )
 
-            expect.any( test )
-        })
+    test( 'An instance should have same type as Object having same value of the key in the constructor', async () => {
+      const instanceProduct = new TestProductModel( 100 )
 
-        test('add() should return object containing id', async () => {
-            const test = await TestProductModel.add( testProd2 )
+      expect( instanceProduct ).toEqual( { id: 100 } )
+    } )
 
-            expect( test ).toMatchObject( {id: expect.anything()})
-        })
+    test( 'An instance should not have same type and structure as Object having same value of the key in the constructor', async () => {
+      const instanceProduct = new TestProductModel( 100 )
 
-        test('add() should add just one product',async () => {
-            await TestProductModel.add( testProd2 )
+      expect( instanceProduct ).not.toStrictEqual( { id: 100 } )
+    } )
 
-            const test = (await pg( 'products' )).map( snakeToCamelRecord )
+    test( 'add() should make use of constructor', async () => {
+      const test = await TestProductModel.add( testProd2 )
 
-            expect( test ).toHaveLength( 1 )
-        })
+      expect.any( test )
+    } )
 
-        test('add() should resolve an object',async () => {
-            const test = TestProductModel.add( testProd2 )
+    test( 'add() should return object containing id', async () => {
+      const test = await TestProductModel.add( testProd2 )
 
-            expect( test ).resolves.toEqual({id: expect.anything()})
-        })
+      expect( test ).toMatchObject( { id: expect.anything() } )
+    } )
 
-        test('add() should be defined', async () => {
-            const test = TestProductModel.add( testProd2 )
+    test( 'add() should add just one product', async () => {
+      await TestProductModel.add( testProd2 )
 
-            expect( test ).toBeDefined()
-        })
+      const test = (await pg( 'products' )).map( snakeToCamelRecord )
 
-        test('add() should not return NULL',async () => {
-            const test = await TestProductModel.add( testProd2 )
+      expect( test ).toHaveLength( 1 )
+    } )
 
-            expect( test ).not.toBeNull()
-        })
-    })
+    test( 'add() should resolve an object', async () => {
+      const test = TestProductModel.add( testProd2 )
 
-    describe( 'update', () => {
-        test('should change product name to "Schnitzel"', async () => {
-            const testInstance = await TestProductModel.add( testProd2 )
+      expect( test ).resolves.toEqual( { id: expect.anything() } )
+    } )
 
-            await testInstance.update( testProd3 )
+    test( 'add() should be defined', async () => {
+      const test = TestProductModel.add( testProd2 )
 
-            const updatedProduct = await testInstance.get()
+      expect( test ).toBeDefined()
+    } )
 
-            expect( updatedProduct.name ).toEqual( 'Schnitzel' )
-        })
+    test( 'add() should not return NULL', async () => {
+      const test = await TestProductModel.add( testProd2 )
 
-        test('update() should throw "PRODUCT CANNOT FOUND"',async () => {
-            await TestProductModel.add( testProd2 )
+      expect( test ).not.toBeNull()
+    } )
+  } )
 
-            const product = new TestProductModel(999)
-            
-            expect( () => product.update( testProd3 ) ).rejects.toThrow("PRODUCT CANNOT BE FOUND")
-        })
+  describe( 'update()', () => {
+    test( 'should change product name to "Schnitzel"', async () => {
+      const testInstance = await TestProductModel.add( testProd2 )
 
+      await testInstance.update( testProd3 )
 
-        test('update() should throw "AT LEAST ONE FIELD IS OF WRONG VALUE TYPE"',async () => {
-            const test = await TestProductModel.add( testProd2 )
+      const updatedProduct = await testInstance.get()
 
+      expect( updatedProduct.name ).toEqual( 'Schnitzel' )
+    } )
 
-            expect( () => test.update( productWithWrongAttributeTypes ) ).rejects.toThrow("AT LEAST ONE FIELD IS OF WRONG VALUE TYPE")
-        })
+    test( 'updating a nonexistent product should throw "PRODUCT CANNOT FOUND"', async () => {
+      await TestProductModel.add( testProd2 )
 
-        test('update() should change object values with new values provided',async () => {
-            const updateName = {
-                name: 'Schuhe'
-            }
-            const test = await TestProductModel.add( testProd2 )
+      const product = new TestProductModel( 999 )
 
-            const record = await test.get()
+      await expect( () => product.update( testProd3 ) )
+        .rejects.toThrow( 'PRODUCT CANNOT BE FOUND' )
+    } )
 
-            const updatedRecord = await test.update( updateName )
+    test( 'should throw "AT LEAST ONE FIELD IS OF WRONG VALUE TYPE"', async () => {
+      const test = await TestProductModel.add( testProd2 )
 
-            expect( record === updatedRecord ).toBeFalsy()
-        } )
+      await expect( () => test.update( productWithWrongAttributeTypes ) )
+        .rejects.toThrow( 'AT LEAST ONE FIELD IS OF WRONG VALUE TYPE' )
+    } )
 
-        test('update() should return new product', async () => {
-            const test = await TestProductModel.add( testProd2 )
+    // @TODO: test is always falsy
+    test( 'should change product name to "Schuhe"', async () => {
+      const updateName = {
+        name: 'Schuhe'
+      }
 
-            const updatedData = await test.update( testProd3 )
+      const test = await TestProductModel.add( testProd2 )
 
-            expect( updatedData ).toReturn
-        })
+      const record = await test.get()
 
-        test('update() should return an object with the id', async () => {
-            const test = await TestProductModel.add( testProd2 )
+      const updatedRecord = await test.update( updateName )
 
-            const updatedData = await test.update( testProd3 )
+      expect( record === updatedRecord ).toBeFalsy()
+    } )
 
-            expect( updatedData ).toEqual(expect.objectContaining( { id: expect.anything() } ))
-            
-        })
+    // @TODO: fix it!
+    test( 'should return new product', async () => {
+      const test = await TestProductModel.add( testProd2 )
 
-        test('update() should not change the product ID',async () => {
-            const test = await TestProductModel.add( testProd2 )
+      const updatedData = await test.update( testProd3 )
 
-            const record = await test.get()
+      expect( updatedData ).toReturn
+    } )
 
-            const updatedData = await test.update( testProd3 )
+    test( 'should return an object with the id', async () => {
+      const test = await TestProductModel.add( testProd2 )
+      const updatedData = await test.update( testProd3 )
 
-            expect( record.id === updatedData.id ).toBeTruthy()
-        })
+      expect( updatedData )
+        .toEqual( expect.objectContaining( { id: expect.anything() } ) )
+    } )
 
-        test('update() should to resolve',async () => {
-            const test = await TestProductModel.add( testProd2 )
+    test( 'should not change the product ID', async () => {
+      const test = await TestProductModel.add( testProd2 )
 
-            const updateData = await test.update( testProd3 )
+      const record = await test.get()
 
-            expect( updateData ).resolves
-        })
+      const updatedData = await test.update( testProd3 )
 
-        test('updated product should have an id',async () => {
-            const test = await TestProductModel.add( testProd2 )
+      expect( record.id === updatedData.id ).toBeTruthy()
+    } )
 
-            const updateData = await test.update( testProd3 )
+    // @TODO: Doesn't male any sense!
+    test( 'should resolve', async () => {
+      const test = await TestProductModel.add( testProd2 )
 
-            expect( updateData ).toHaveProperty( 'id' )
-        })
+      const updateData = await test.update( testProd3 )
 
-        test('updated product should have a name',async () => {
-            const test = await TestProductModel.add( testProd2 )
+      expect( updateData ).resolves
+    } )
 
-            await test.update( testProd3 )
+    test( 'updated product should have an id', async () => {
+      const test = await TestProductModel.add( testProd2 )
 
-            const record = await test.get()
+      const updateData = await test.update( testProd3 )
 
-            expect( record ).toHaveProperty( 'name' )
-        })
+      expect( updateData ).toHaveProperty( 'id' )
+    } )
 
-        test('updated product should have properties matching argument for update function',async () => {
-            const test = await TestProductModel.add( testProd2 )
+    test( 'updated product should have a name', async () => {
+      const test = await TestProductModel.add( testProd2 )
 
-            const updateNameAndShow={
-                name: 'Mineralwasser',
-                show: false
-            }
+      await test.update( testProd3 )
 
-            await test.update( updateNameAndShow )
+      const record = await test.get()
 
-            await test.get()
+      expect( record ).toHaveProperty( 'name' )
+    } )
 
-            expect.stringContaining( updateNameAndShow.name )
-        })
+    // @TODO: Fix this test!
+    test( 'updated product should have properties matching argument for update function', async () => {
+      const test = await TestProductModel.add( testProd2 )
 
-        test('update() should remove id attribute if there is any',async () => {
-            const test = await TestProductModel.add( testProd2 )
+      const updateNameAndShow = {
+        name: 'Mineralwasser',
+        show: false
+      }
 
-            await test.update( testProd1 )
+      await test.update( updateNameAndShow )
 
-            const record = await test.get()
+      await test.get()
 
-            expect( record.id !== testProd1.id ).toBeTruthy
-        })
+      expect.stringContaining( updateNameAndShow.name )
+    } )
 
-        test('update() should throw "NO DATA HAS BEEN PASSED TO UPDATE PRODUCT"',async () => {
-            const test = await TestProductModel.add( testProd2 )
+    // @TODO: Fix this test!
+    test( 'should remove id attribute if there is any', async () => {
+      const test = await TestProductModel.add( testProd2 )
 
-            //@ts-ignore
-            expect( () => test.update( ) ).rejects.toThrow("NO DATA HAS BEEN PASSED TO UPDATE PRODUCT")
-        })
+      await test.update( testProd1 )
 
-    
-        // test('update() should remove')
-    })
+      const record = await test.get()
 
-    describe( 'get', () => {
-        test( 'get() should get one product out of one', async () => {
-            const test = await TestProductModel.add( testProd2 )
-    
-            const addedProduct = await test.get()
+      expect( record.id !== testProd1.id ).toBeTruthy
+    } )
 
-            expect( addedProduct.name ).toEqual( testProd2.name )
-        })
+    // @TODO: Fix this test!
+    test( 'should throw "NO DATA HAS BEEN PASSED TO UPDATE PRODUCT"', async () => {
+      const test = await TestProductModel.add( testProd2 )
 
-        test('get() should return an object',async () => {
-            const test = await TestProductModel.add( testProd2 )
-    
-            const addedProduct = await test.get()
+      // @ts-ignore
+      expect( () => test.update() ).rejects.toThrow( 'NO DATA HAS BEEN PASSED TO UPDATE PRODUCT' )
+    } )
+  } )
 
-            expect( typeof addedProduct === 'object' ).toBeTruthy
-        })
+  describe( 'get()', () => {
+    test( 'should get one product out of one', async () => {
+      const test = await TestProductModel.add( testProd2 )
 
-        test('get() should resolve',async () => {
-            const test = await TestProductModel.add( testProd2 )
-    
-            const addedProduct = await test.get()
+      const addedProduct = await test.get()
 
-            expect( addedProduct ).resolves
-        })
+      expect( addedProduct.name ).toEqual( testProd2.name )
+    } )
 
-        test('get() should should not return an array',async () => {
-            const test = await TestProductModel.add( testProd2 )
-    
-            const addedProduct = await test.get()
+    // @TODO: Fix this test!
+    test( 'should return an object', async () => {
+      const test = await TestProductModel.add( testProd2 )
 
-            expect( Array.isArray(addedProduct) ).toBeFalsy
-        })  
-        
-        test('get() should throw Error "PRODUCT NOT FOUND"',async () => {
-            const test = new TestProductModel(999)
+      const addedProduct = await test.get()
 
-            await expect(() => test.get()).rejects.toThrowError("PRODUCT NOT FOUND")
-        })  
+      expect( typeof addedProduct === 'object' ).toBeTruthy
+    } )
 
-        test('get() should return an object which is only different from add argument by the id attribute',async () => {
-            const test = await TestProductModel.add( testProd2 )
-    
-            const addedProduct = await test.get()
+    // @TODO: Fix this test!
+    test( 'should resolve', async () => {
+      const test = await TestProductModel.add( testProd2 )
 
-            const addedProductArray = Object.keys(addedProduct)
-            const instanceArray = Object.keys(testProd2)
+      const addedProduct = await test.get()
 
-            const difference = addedProductArray.filter(x => instanceArray.indexOf(x) === -1);
+      expect( addedProduct ).resolves
+    } )
 
-            expect( difference ).toEqual(['id'])
-        })
+    // @TODO: Fix this test!
+    test( 'should should not return an array', async () => {
+      const test = await TestProductModel.add( testProd2 )
 
-        test('get() should not be null',async () => {
-            const test = await TestProductModel.add( testProd2 )
-    
-            const addedProduct = await test.get()
+      const addedProduct = await test.get()
 
-            expect( addedProduct ).not.toBeNull
-        })
+      expect( Array.isArray( addedProduct ) ).toBeFalsy
+    } )
 
-        test('get() should not return undefined',async () => {
-            const test = await TestProductModel.add( testProd2 )
-    
-            const addedProduct = await test.get()
+    test( 'should throw Error "PRODUCT NOT FOUND"', async () => {
+      const test = new TestProductModel( 999 )
 
-            expect( addedProduct ).not.toBeUndefined
-        })
+      await expect( () => test.get() ).rejects.toThrowError( 'PRODUCT NOT FOUND' )
+    } )
 
-        test('get() should not return object one attribute short compared to object inserted',async () => {
-            const test = await TestProductModel.add( testProd2 )
-    
-            const addedProduct = await test.get()
+    test( 'should return an object which is only different from add argument by the id attribute', async () => {
+      const productAttributNames = Object.keys( testProd2 )
 
-            const addedProductArray = Object.keys(addedProduct)
-            const instanceArray = Object.keys(testProd2)
+      const test = await TestProductModel.add( testProd2 )
+      const productFromDatabase = await test.get()
+      const productFromDatabaseAttributNames = Object.keys( productFromDatabase )
 
-            expect( addedProductArray.length - instanceArray.length ).toBe( 1 )
-        })
+      const difference = productFromDatabaseAttributNames.filter( attrName => ! productAttributNames.includes( attrName ) )
 
-        test('get() should not update values of fields',async () => {
-            const test = await TestProductModel.add( testProd2 )
-    
-            const addedProduct = await test.get()
+      expect( difference ).toHaveLength( 1 )
+      expect( difference[ 0 ] ).toEqual( 'id' )
+    } )
 
-            expect( addedProduct.name ).toEqual(testProd2.name)
-            expect( addedProduct.description ).toEqual(testProd2.description)
-            expect( addedProduct.manufacturerId ).toEqual(testProd2.manufacturerId)
-        })
+    // @TODO: Fix this test!
+    test( 'should not be null', async () => {
+      const test = await TestProductModel.add( testProd2 )
 
-    })
-})
+      const addedProduct = await test.get()
+
+      expect( addedProduct ).not.toBeNull
+    } )
+
+    // @TODO: Fix this test!
+    test( 'get() should not return undefined', async () => {
+      const test = await TestProductModel.add( testProd2 )
+
+      const addedProduct = await test.get()
+
+      expect( addedProduct ).not.toBeUndefined
+    } )
+
+    // @TODO: Use more meaningful var names!
+    test( 'saved product should have one more attribute than the provided product', async () => {
+      const test = await TestProductModel.add( testProd2 )
+
+      const addedProduct = await test.get()
+
+      const addedProductArray = Object.keys( addedProduct )
+      const instanceArray = Object.keys( testProd2 )
+
+      expect( addedProductArray.length - instanceArray.length ).toBe( 1 )
+    } )
+
+    // @TODO: Rename the test!
+    test( 'should not update values of fields', async () => {
+      const test = await TestProductModel.add( testProd2 )
+
+      const addedProduct = await test.get()
+
+      expect( addedProduct.name ).toEqual( testProd2.name )
+      expect( addedProduct.description ).toEqual( testProd2.description )
+      expect( addedProduct.manufacturerId ).toEqual( testProd2.manufacturerId )
+    } )
+  } )
+
+  describe.only( 'getAll()', () => {
+    // @TODO: Implementation and test looks a bit weired!
+    test( 'show return an empty array', async () => {
+      const obj = new TestProductModel( 187492874293 )
+      const allProducts = await obj.getAll()
+
+      expect( allProducts ).toHaveLength( 0 )
+    } )
+  } )
+} )

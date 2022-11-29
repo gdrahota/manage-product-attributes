@@ -84,8 +84,7 @@ describe( 'data objects -> products', () => {
 
         const product = new ProductModel( 1 )
         const test = await product.get()
-        console.log(test)
-      
+
         expect( test.name ).toEqual( p1.name )
       } )
 
@@ -130,9 +129,6 @@ describe( 'data objects -> products', () => {
 
         const product = new ProductModel( 2 )
         const test = await product.get()
-
-        console.log(test);
-        
 
         expect( test.eanCode ).toEqual( p2.eanCode )
       } )
