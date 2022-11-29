@@ -92,4 +92,9 @@ export class TestProductModel {
 
     return insertedRecords as [ IProductTable ]
   }
+
+  async equals( otherProduct: TestProductModel ): Promise<boolean> {
+    // implementation is needed here
+    return false
+  }
 }
