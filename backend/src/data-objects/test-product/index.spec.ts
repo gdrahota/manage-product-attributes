@@ -294,7 +294,7 @@ describe( 'data objects -> test products', () => {
     test( 'add() should resolve an object', async () => {
       const test = TestProductModel.add( testProd2 )
 
-      expect( test ).resolves.toEqual( { id: expect.anything() } )
+      await expect(test).resolves.toEqual({id: expect.anything()})
     } )
 
     test( 'add() should be defined', async () => {
@@ -345,20 +345,20 @@ describe( 'data objects -> test products', () => {
 
       const test = await TestProductModel.add( testProd2 )
 
+      await test.update( updateName )
+
       const record = await test.get()
 
-      const updatedRecord = await test.update( updateName )
-
-      expect( record === updatedRecord ).toBeFalsy()
+      expect( record.name !== 'Schuhe' ).toBeFalsy()
     } )
 
     // @TODO: fix it!
-    test( 'should return new product', async () => {
+    test.only( 'should not return void', async () => {
       const test = await TestProductModel.add( testProd2 )
 
-      const updatedData = await test.update( testProd3 )
+      const updatedData = test.update( testProd3 )
 
-      expect( updatedData ).toReturn
+      await expect(updatedData).resolves.toEqual(expect.anything())
     } )
 
     test( 'should return an object with the id', async () => {
@@ -539,7 +539,7 @@ describe( 'data objects -> test products', () => {
     } )
   } )
 
-  describe.only( 'getAll()', () => {
+  describe( 'getAll()', () => {
     // @TODO: Implementation and test looks a bit weired!
     test( 'show return an empty array', async () => {
       const obj = new TestProductModel( 187492874293 )
