@@ -407,7 +407,7 @@ describe( 'data objects -> test products', () => {
     } )
 
     // @TODO: Fix this test!
-    test.only( 'updated product should have properties matching argument for update function', async () => {
+    test( 'updated product should have properties matching argument for update function', async () => {
       const test = await TestProductModel.add( testProd2 )
 
       const updateNameAndShow = {
@@ -423,22 +423,32 @@ describe( 'data objects -> test products', () => {
     } )
 
     // @TODO: Fix this test!
-    test( 'should remove id attribute if there is any', async () => {
+    test( 'should remove id attribute if there is any(truthy variant)', async () => {
       const test = await TestProductModel.add( testProd2 )
 
       await test.update( testProd1 )
 
       const record = await test.get()
 
-      expect( record.id !== testProd1.id ).toBeTruthy
+      expect( record.id !== testProd1.id ).toBeTruthy()
+    } )
+
+    test( 'should remove id attribute if there is any(falsy variant)', async () => {
+      const test = await TestProductModel.add( testProd2 )
+
+      await test.update( testProd1 )
+
+      const record = await test.get()
+
+      expect( record.id === testProd1.id ).toBeFalsy()
     } )
 
     // @TODO: Fix this test!
-    test( 'should throw "NO DATA HAS BEEN PASSED TO UPDATE PRODUCT"', async () => {
+    test.only( 'should throw "NO DATA HAS BEEN PASSED TO UPDATE PRODUCT"', async () => {
       const test = await TestProductModel.add( testProd2 )
 
       // @ts-ignore
-      expect( () => test.update() ).rejects.toThrow( 'NO DATA HAS BEEN PASSED TO UPDATE PRODUCT' )
+      await expect(() => test.update( )).rejects.toThrow('NO DATA HAS BEEN PASSED TO UPDATE PRODUCT')
     } )
   } )
 
