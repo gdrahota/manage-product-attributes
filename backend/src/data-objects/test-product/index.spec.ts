@@ -508,7 +508,7 @@ describe( 'data objects -> test products', () => {
     } )
 
     // @TODO: Fix this test!
-    test.only( 'should not be null', async () => {
+    test( 'should not be null', async () => {
       const test = await TestProductModel.add( testProd2 )
 
       const addedProduct = await test.get()
@@ -526,15 +526,16 @@ describe( 'data objects -> test products', () => {
     } )
 
     // @TODO: Use more meaningful var names!
-    test( 'saved product should have one more attribute than the provided product', async () => {
+    test.only( 'saved product should have one attribute more than the object passed to the add function', async () => {
       const test = await TestProductModel.add( testProd2 )
 
-      const addedProduct = await test.get()
+      const productRecord = await test.get()
 
-      const addedProductArray = Object.keys( addedProduct )
-      const instanceArray = Object.keys( testProd2 )
+      const productRecordKeysArray = Object.keys( productRecord )
 
-      expect( addedProductArray.length - instanceArray.length ).toBe( 1 )
+      const testProdKeysArray = Object.keys( testProd2 )
+
+      expect( productRecordKeysArray.length - testProdKeysArray.length ).toBe( 1 )
     } )
 
     // @TODO: Rename the test!
