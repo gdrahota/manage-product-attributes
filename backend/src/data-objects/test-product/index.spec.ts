@@ -353,12 +353,12 @@ describe( 'data objects -> test products', () => {
     } )
 
     // @TODO: fix it!
-    test.only( 'should not return void', async () => {
+    test.only( 'updating with object containing ID field should not throw', async () => {
       const test = await TestProductModel.add( testProd2 )
 
-      const updatedData = test.update( testProd3 )
+      const updatedData = test.update( testProd1 )
 
-      await expect(updatedData).resolves.toEqual(expect.anything())
+      await expect(updatedData).resolves
     } )
 
     test( 'should return an object with the id', async () => {

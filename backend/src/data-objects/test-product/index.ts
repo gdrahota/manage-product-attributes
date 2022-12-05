@@ -40,12 +40,13 @@ export class TestProductModel {
   }
 
   async update( data: Object ): Promise<IProductTable> {
+    //@ts-ignore
+    delete data.id
+
+
     if ( ! data ) {
       throw new Error( 'NO DATA HAS BEEN PASSED TO UPDATE PRODUCT' )
     }
-
-    //@ts-ignore
-    delete data.id
 
     try {
       const insertedData = await pg.from( TestProductModel.tableName ).where( 'id', this.id )
