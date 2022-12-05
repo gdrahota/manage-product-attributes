@@ -513,7 +513,7 @@ describe( 'data objects -> test products', () => {
 
       const addedProduct = await test.get()
 
-      expect( addedProduct ).not.toBeNull
+      expect( addedProduct ).not.toBeNull()
     } )
 
     // @TODO: Fix this test!
