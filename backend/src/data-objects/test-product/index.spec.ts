@@ -480,7 +480,7 @@ describe( 'data objects -> test products', () => {
     } )
 
     // @TODO: Fix this test!
-    test.only( 'should should not return an array', async () => {
+    test( 'should should not return an array', async () => {
       const test = await TestProductModel.add( testProd2 )
 
       const addedProduct = await test.get()
@@ -508,7 +508,7 @@ describe( 'data objects -> test products', () => {
     } )
 
     // @TODO: Fix this test!
-    test( 'should not be null', async () => {
+    test.only( 'should not be null', async () => {
       const test = await TestProductModel.add( testProd2 )
 
       const addedProduct = await test.get()
@@ -517,12 +517,12 @@ describe( 'data objects -> test products', () => {
     } )
 
     // @TODO: Fix this test!
-    test( 'get() should not return undefined', async () => {
+    test( 'should not return undefined', async () => {
       const test = await TestProductModel.add( testProd2 )
 
       const addedProduct = await test.get()
 
-      expect( addedProduct ).not.toBeUndefined
+      expect( addedProduct ).not.toBeUndefined()
     } )
 
     // @TODO: Use more meaningful var names!
