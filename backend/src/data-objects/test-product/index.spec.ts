@@ -526,7 +526,7 @@ describe( 'data objects -> test products', () => {
     } )
 
     // @TODO: Use more meaningful var names!
-    test.only( 'saved product should have one attribute more than the object passed to the add function', async () => {
+    test( 'saved product should have one attribute more than the object passed to the add function', async () => {
       const test = await TestProductModel.add( testProd2 )
 
       const productRecord = await test.get()
@@ -539,7 +539,7 @@ describe( 'data objects -> test products', () => {
     } )
 
     // @TODO: Rename the test!
-    test( 'should not update values of fields', async () => {
+    test.only( 'should not change the value of any field', async () => {
       const test = await TestProductModel.add( testProd2 )
 
       const addedProduct = await test.get()
