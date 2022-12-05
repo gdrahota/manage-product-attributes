@@ -291,7 +291,7 @@ describe( 'data objects -> test products', () => {
       expect( test ).toHaveLength( 1 )
     } )
 
-    test( 'add() should resolve an object', async () => {
+    test( 'add() should resolve to an object', async () => {
       const test = TestProductModel.add( testProd2 )
 
       await expect(test).resolves.toEqual({id: expect.anything()})
@@ -353,7 +353,7 @@ describe( 'data objects -> test products', () => {
     } )
 
     // @TODO: fix it!
-    test.only( 'updating with object containing ID field should not throw', async () => {
+    test( 'updating with object containing ID field should not throw', async () => {
       const test = await TestProductModel.add( testProd2 )
 
       const updatedData = test.update( testProd1 )
@@ -380,12 +380,12 @@ describe( 'data objects -> test products', () => {
     } )
 
     // @TODO: Doesn't male any sense!
-    test( 'should resolve', async () => {
+    test( 'should resolve to {"id": 1}', async () => {
       const test = await TestProductModel.add( testProd2 )
 
-      const updateData = await test.update( testProd3 )
+      const updateData = test.update( testProd3 )
 
-      expect( updateData ).resolves
+      await expect(updateData).resolves.toEqual({"id": 1})
     } )
 
     test( 'updated product should have an id', async () => {
@@ -407,7 +407,7 @@ describe( 'data objects -> test products', () => {
     } )
 
     // @TODO: Fix this test!
-    test( 'updated product should have properties matching argument for update function', async () => {
+    test.only( 'updated product should have properties matching argument for update function', async () => {
       const test = await TestProductModel.add( testProd2 )
 
       const updateNameAndShow = {
@@ -417,9 +417,9 @@ describe( 'data objects -> test products', () => {
 
       await test.update( updateNameAndShow )
 
-      await test.get()
+      const record = await test.get()
 
-      expect.stringContaining( updateNameAndShow.name )
+      expect( record.name ).toEqual(expect.stringContaining( updateNameAndShow.name ))
     } )
 
     // @TODO: Fix this test!
