@@ -444,7 +444,7 @@ describe( 'data objects -> test products', () => {
     } )
 
     // @TODO: Fix this test!
-    test.only( 'should throw "NO DATA HAS BEEN PASSED TO UPDATE PRODUCT"', async () => {
+    test( 'should throw "NO DATA HAS BEEN PASSED TO UPDATE PRODUCT"', async () => {
       const test = await TestProductModel.add( testProd2 )
 
       // @ts-ignore
@@ -462,12 +462,12 @@ describe( 'data objects -> test products', () => {
     } )
 
     // @TODO: Fix this test!
-    test( 'should return an object', async () => {
+    test.only( 'should return an object', async () => {
       const test = await TestProductModel.add( testProd2 )
 
       const addedProduct = await test.get()
 
-      expect( typeof addedProduct === 'object' ).toBeTruthy
+      expect( typeof addedProduct === 'object' ).toBeTruthy()
     } )
 
     // @TODO: Fix this test!
