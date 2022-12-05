@@ -462,7 +462,7 @@ describe( 'data objects -> test products', () => {
     } )
 
     // @TODO: Fix this test!
-    test.only( 'should return an object', async () => {
+    test( 'should return an object', async () => {
       const test = await TestProductModel.add( testProd2 )
 
       const addedProduct = await test.get()
@@ -471,12 +471,12 @@ describe( 'data objects -> test products', () => {
     } )
 
     // @TODO: Fix this test!
-    test( 'should resolve', async () => {
+    test.only( 'should resolve to an object', async () => {
       const test = await TestProductModel.add( testProd2 )
 
-      const addedProduct = await test.get()
+      const addedProduct = test.get()
 
-      expect( addedProduct ).resolves
+      await expect( addedProduct ).resolves.toEqual( expect.objectContaining( testProd2 ) )
     } )
 
     // @TODO: Fix this test!
