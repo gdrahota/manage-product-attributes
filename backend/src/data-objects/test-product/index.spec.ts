@@ -471,7 +471,7 @@ describe( 'data objects -> test products', () => {
     } )
 
     // @TODO: Fix this test!
-    test.only( 'should resolve to an object', async () => {
+    test( 'should resolve to an object', async () => {
       const test = await TestProductModel.add( testProd2 )
 
       const addedProduct = test.get()
@@ -480,12 +480,12 @@ describe( 'data objects -> test products', () => {
     } )
 
     // @TODO: Fix this test!
-    test( 'should should not return an array', async () => {
+    test.only( 'should should not return an array', async () => {
       const test = await TestProductModel.add( testProd2 )
 
       const addedProduct = await test.get()
 
-      expect( Array.isArray( addedProduct ) ).toBeFalsy
+      expect( Array.isArray( addedProduct ) ).toBeFalsy()
     } )
 
     test( 'should throw Error "PRODUCT NOT FOUND"', async () => {
