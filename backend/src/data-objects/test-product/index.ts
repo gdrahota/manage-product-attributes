@@ -95,6 +95,7 @@ export class TestProductModel {
 
   async equals( otherProduct: TestProductModel ): Promise<boolean> {
     // implementation is needed here
-    return false
+    return this.id === otherProduct.id;
+
   }
 }

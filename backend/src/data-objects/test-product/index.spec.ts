@@ -550,6 +550,22 @@ describe( 'data objects -> test products', () => {
     } )
   } )
 
+  describe('equals', () => {
+    test.only('two products created with the same object argument should not be the same', async () => {
+
+      const testProduct1 = await TestProductModel.add( testProd2 )
+
+      const testProduct2 = await TestProductModel.add( testProd2 )
+
+      const comparisonStatus = await testProduct1.equals( testProduct2 )
+
+      console.log(comparisonStatus)
+
+      expect( comparisonStatus ).toBeFalsy()
+
+    })
+  })
+
   describe( 'getAll()', () => {
     // @TODO: Implementation and test looks a bit weired!
     test( 'show return an empty array', async () => {
