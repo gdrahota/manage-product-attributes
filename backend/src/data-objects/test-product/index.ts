@@ -2,13 +2,19 @@ import { pg } from '../../db/connect'
 import { camelToSnakeRecord, snakeToCamelRecord } from '../../db/helper'
 import { IProductTable } from '../../db/tables/products'
 
+export type IEqualProduct = Pick<IProductTable, 'name' | 'manufacturerId' | 'manufacturerProductId'>
+
 export class TestProductModel {
   private static readonly tableName = 'products'
 
-  constructor( private readonly id: number ) {
-    if ( ! id ) {
+  constructor( private readonly _id: number ) {
+    if ( ! _id ) {
       throw new Error( 'PRODUCT_ID IS MISSING' )
     }
+  }
+
+  get id() {
+    return this._id
   }
 
   static async add( product: Omit<IProductTable, 'id'> ): Promise<TestProductModel> {
@@ -39,8 +45,7 @@ export class TestProductModel {
     }
   }
 
-  async update( data: Object ): Promise<IProductTable> {
-
+  async update( data: Partial<IProductTable> ): Promise<IProductTable> {
     if ( ! data ) {
       throw new Error( 'NO DATA HAS BEEN PASSED TO UPDATE PRODUCT' )
     }
@@ -48,14 +53,14 @@ export class TestProductModel {
     try {
       //@ts-ignore
       delete data.id
-      const record = await pg.from( TestProductModel.tableName ).where( 'id', this.id )
+      const record = await pg.from( TestProductModel.tableName ).where( 'id', this._id )
 
       if ( record.length === 0 ) {
         throw new Error( 'PRODUCT CANNOT BE FOUND' )
       }
 
       const updatedData = await pg( TestProductModel.tableName )
-        .where( 'id', this.id )
+        .where( 'id', this._id )
         .update( camelToSnakeRecord( data ), [ 'id' ] )
 
       const FIRST_RECORD_INDEX = 0
@@ -67,13 +72,17 @@ export class TestProductModel {
         throw new Error( 'AT LEAST ONE FIELD IS OF WRONG VALUE TYPE' )
       }
 
+      if ( error.code === '22P02' ) {
+        throw new Error( 'AT LEAST ONE FIELD IS OF WRONG VALUE TYPE' )
+      }
+
       throw error
     }
   }
 
   async get(): Promise<IProductTable> {
     try {
-      const insertedRecords = await pg.from( TestProductModel.tableName ).where( 'id', this.id )
+      const insertedRecords = await pg.from( TestProductModel.tableName ).where( 'id', this._id )
 
       if ( insertedRecords.length === 0 ) {
         throw new Error( 'PRODUCT NOT FOUND' )
@@ -93,9 +102,7 @@ export class TestProductModel {
     return insertedRecords as [ IProductTable ]
   }
 
-  async equals( otherProduct: TestProductModel ): Promise<boolean> {
-    // implementation is needed here
-    return this.id === otherProduct.id;
-
+  async isEqual( otherProduct: IEqualProduct ): Promise<boolean> {
+    return false
   }
 }
