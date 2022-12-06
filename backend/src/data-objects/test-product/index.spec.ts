@@ -333,7 +333,7 @@ describe( 'data objects -> test products', () => {
     test( 'should throw "AT LEAST ONE FIELD IS OF WRONG VALUE TYPE"', async () => {
       const test = await TestProductModel.add( testProd2 )
 
-      await expect( () => test.update( productWithWrongAttributeTypes ) )
+    expect(  () => test.update( productWithWrongAttributeTypes ) )
         .rejects.toThrow( 'AT LEAST ONE FIELD IS OF WRONG VALUE TYPE' )
     } )
 
@@ -358,7 +358,7 @@ describe( 'data objects -> test products', () => {
 
       const updatedData = test.update( testProd1 )
 
-      await expect(updatedData).resolves
+      await expect(updatedData).resolves.toEqual({"id": 1})
     } )
 
     test( 'should return an object with the id', async () => {
@@ -539,7 +539,7 @@ describe( 'data objects -> test products', () => {
     } )
 
     // @TODO: Rename the test!
-    test.only( 'should not change the value of any field', async () => {
+    test( 'should not change the value of any field', async () => {
       const test = await TestProductModel.add( testProd2 )
 
       const addedProduct = await test.get()

@@ -48,9 +48,9 @@ export class TestProductModel {
     try {
       //@ts-ignore
       delete data.id
-      const insertedData = await pg.from( TestProductModel.tableName ).where( 'id', this.id )
+      const record = await pg.from( TestProductModel.tableName ).where( 'id', this.id )
 
-      if ( insertedData.length === 0 ) {
+      if ( record.length === 0 ) {
         throw new Error( 'PRODUCT CANNOT BE FOUND' )
       }
 
