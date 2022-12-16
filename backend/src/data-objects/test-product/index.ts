@@ -1,6 +1,8 @@
 import { pg } from '../../db/connect'
 import { camelToSnakeRecord, snakeToCamelRecord } from '../../db/helper'
 import { IProductTable } from '../../db/tables/products'
+import {type} from "os";
+import {isArray} from "util";
 
 export type IEqualProduct = Pick<IProductTable, 'name' | 'manufacturerId' | 'manufacturerProductId'>
 
@@ -51,9 +53,14 @@ export class TestProductModel {
     }
 
     try {
+
       //@ts-ignore
       delete data.id
       const record = await pg.from( TestProductModel.tableName ).where( 'id', this._id )
+
+      if( Object.keys(data).length === 0){
+        throw new Error( 'NO DATA HAS BEEN PASSED TO UPDATE PRODUCT' )
+      }
 
       if ( record.length === 0 ) {
         throw new Error( 'PRODUCT CANNOT BE FOUND' )
@@ -68,6 +75,7 @@ export class TestProductModel {
       return snakeToCamelRecord( updatedData[ FIRST_RECORD_INDEX ] ) as IProductTable
 
     } catch ( error: any ) {
+      console.log(error.code)
       if ( error.code == '42P01' ) {
         throw new Error( 'AT LEAST ONE FIELD IS OF WRONG VALUE TYPE' )
       }
@@ -103,6 +111,56 @@ export class TestProductModel {
   }
 
   async isEqual( otherProduct: IEqualProduct ): Promise<boolean> {
-    return false
+    if(!otherProduct){
+      throw new Error("NO PRODUCT HAS BEEN PASSED TO COMPARE WITH")
+    }
+    else{
+      if( typeof otherProduct === 'object' && !Array.isArray(otherProduct)){
+        console.log('It is an object')
+        if (Object.keys(otherProduct).length == 0) {
+          throw new Error("INVALID OBJECT. AN EMPTY PRODUCT OBJECT CANNOT BE COMPARED")
+        } else {
+          if (otherProduct.name === undefined) {
+            throw new Error("PRODUCT NAME ATTRIBUTE DOES NOT EXIST")
+          }
+
+          if (otherProduct.name === null) {
+            throw new Error("PRODUCT DOES NOT HAVE A NAME")
+          }
+
+          if (otherProduct.manufacturerId === undefined) {
+            throw new Error("MANUFACTURER ID ATTRIBUTE DOES NOT EXIST")
+          }
+
+          if (otherProduct.manufacturerId === null) {
+            throw new Error("MANUFACTURER ID ATTRIBUTE DOES NOT EXIST")
+          }
+
+          if (otherProduct.manufacturerProductId === undefined) {
+            throw new Error("MANUFACTURER PRODUCT ID ATTRIBUTE DOES NOT EXIST")
+          }
+
+        }
+      }
+      else{
+        throw new Error("INVALID PRODUCT TYPE. PRODUCT SHOULD BE AN OBJECT")
+      }
+    }
+    try {
+      const productRecord = await this.get()
+
+      if (productRecord.manufacturerId === otherProduct.manufacturerId && productRecord.manufacturerProductId === otherProduct.manufacturerProductId) {
+        return stringCleaner(productRecord.name).toLowerCase() == stringCleaner(otherProduct.name).toLowerCase()
+      }
+      return false
+    }
+
+    catch (error: any) {
+      throw error
+    }
   }
+}
+
+function stringCleaner(str: String) {
+  return str.replace(/([^a-zA-Z1-90-9]+)/g, s0 => '')
 }

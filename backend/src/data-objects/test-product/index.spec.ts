@@ -292,10 +292,11 @@ describe( 'data objects -> test products', () => {
     } )
 
     // @TODO: fix the test!
-    test( 'should resolve to an object having an id', async () => {
-      const addProductFn = TestProductModel.add( testProd2 )
+    test( 'should return to an object having an id', async () => {
+      const addProductFn = await TestProductModel.add( testProd2 )
+      console.log(addProductFn)
+      expect( Object.keys(addProductFn) ).toEqual( ['_id'])
 
-      await expect( addProductFn ).resolves.toEqual( { id: expect.anything() } )
     } )
 
     test( 'add() should be defined', async () => {
@@ -494,13 +495,13 @@ describe( 'data objects -> test products', () => {
     } )
 
     test( 'should return an object which is only different from the add() argument by the attribute id', async () => {
-      const productAttributNames = Object.keys( testProd2 )
+      const productAttributeNames = Object.keys( testProd2 )
 
       const test = await TestProductModel.add( testProd2 )
       const productFromDatabase = await test.get()
       const productFromDatabaseAttributNames = Object.keys( productFromDatabase )
 
-      const difference = productFromDatabaseAttributNames.filter( attrName => ! productAttributNames.includes( attrName ) )
+      const difference = productFromDatabaseAttributNames.filter( attrName => ! productAttributeNames.includes( attrName ) )
 
       expect( difference ).toHaveLength( 1 )
       expect( difference[ 0 ] ).toEqual( 'id' )
@@ -546,15 +547,15 @@ describe( 'data objects -> test products', () => {
     } )
   } )
 
-  describe( 'isEqual()', () => {
+  describe.only( 'isEqual()', () => {
     const productRecord: Omit<IProductTable, 'id'> = {
       name: 'name-1',
       show: false,
-      manufacturerId: 12345,
+      manufacturerId: 1234,
       eanCode: null,
       bestPriceDealerId: null,
       bestPrice: null,
-      manufacturerProductId: null,
+      manufacturerProductId: 'ABC',
       description: null,
     }
 
@@ -565,7 +566,43 @@ describe( 'data objects -> test products', () => {
       testProduct2Obj = await TestProductModel.add( productRecord )
     } )
 
-    test( 'comparing name attrs "name-1" and "name-2" should return false', async () => {
+    test( 'comparing products with name attrs "name-1" and "name-1" having same manufacturer and manufacturer product ID should return true', async () => {
+      const productRecord2: IEqualProduct = {
+        name: 'name-1',
+        manufacturerId: 1234,
+        manufacturerProductId: 'ABC',
+      }
+
+      const comparisonStatus = await testProduct2Obj.isEqual( productRecord2 )
+
+      expect( comparisonStatus ).toBe( true )
+    } )
+
+    test( 'comparing products with name attrs "name-1" and "name-1" having same manufacturer ID but different manufacturer product ID should return false', async () => {
+      const productRecord2: IEqualProduct = {
+        name: 'name-1',
+        manufacturerId: 1234,
+        manufacturerProductId: 'ABCD',
+      }
+
+      const comparisonStatus = await testProduct2Obj.isEqual( productRecord2 )
+
+      expect( comparisonStatus ).toBe( false )
+    } )
+
+    test( 'comparing products with name attrs "name-1" and "name-1" having different manufacturer ID but same manufacturer product ID should return false', async () => {
+      const productRecord2: IEqualProduct = {
+        name: 'name-1',
+        manufacturerId: 12345,
+        manufacturerProductId: 'ABC',
+      }
+
+      const comparisonStatus = await testProduct2Obj.isEqual( productRecord2 )
+
+      expect( comparisonStatus ).toBe( false )
+    } )
+
+    test( 'comparing name attrs "name-1" and "name-2" of products with same manufacturer and manufacturer product ID should return false', async () => {
       const productRecord2: IEqualProduct = {
         name: 'name-2',
         manufacturerId: 1234,
@@ -577,7 +614,43 @@ describe( 'data objects -> test products', () => {
       expect( comparisonStatus ).toBeFalsy()
     } )
 
-    test( 'comparing name attrs "name-1" and "name - 1" should return true', async () => {
+    test( 'comparing name attrs "name-1" and "name-2" of products having different manufacturer ID but same manufacturer product ID should return false', async () => {
+      const productRecord2: IEqualProduct = {
+        name: 'name-2',
+        manufacturerId: 12345,
+        manufacturerProductId: 'ABC',
+      }
+
+      const comparisonStatus = await testProduct2Obj.isEqual( productRecord2 )
+
+      expect( comparisonStatus ).toBeFalsy()
+    } )
+
+    test( 'comparing name attrs "name-1" and "name-2" of products having same manufacturer ID but different manufacturer product ID should return false', async () => {
+      const productRecord2: IEqualProduct = {
+        name: 'name-2',
+        manufacturerId: 1234,
+        manufacturerProductId: 'ABCD',
+      }
+
+      const comparisonStatus = await testProduct2Obj.isEqual( productRecord2 )
+
+      expect( comparisonStatus ).toBeFalsy()
+    } )
+
+    test( 'comparing name attrs "name-1" and "name-2" of products having different manufacturer and manufacturer product ID should return false', async () => {
+      const productRecord2: IEqualProduct = {
+        name: 'name-2',
+        manufacturerId: 12345,
+        manufacturerProductId: 'ABCD',
+      }
+
+      const comparisonStatus = await testProduct2Obj.isEqual( productRecord2 )
+
+      expect( comparisonStatus ).toBeFalsy()
+    } )
+
+    test( 'comparing name attrs "name-1" and "name - 1" of products with same manufacturer and manufacturer product ID should return true', async () => {
       const productRecord2: IEqualProduct = {
         name: 'name - 1',
         manufacturerId: 1234,
@@ -589,18 +662,306 @@ describe( 'data objects -> test products', () => {
       expect( comparisonStatus ).toBeTruthy()
     } )
 
-    test( 'comparing name attrs "name-1" and "  NamE   - 1    " should return true', async () => {
+    test( 'comparing name attrs "name-1" and "name - 1" of products with same manufacturer ID but different manufacturer product ID should return false', async () => {
+      const productRecord2: IEqualProduct = {
+        name: 'name - 1',
+        manufacturerId: 1234,
+        manufacturerProductId: 'ABCD',
+      }
+
+      const comparisonStatus = await testProduct2Obj.isEqual( productRecord2 )
+
+      expect( comparisonStatus ).toBe( false )
+    } )
+
+    test( 'comparing name attrs "name-1" and "name - 1" of products with different manufacturer ID but same manufacturer product ID should return false', async () => {
+      const productRecord2: IEqualProduct = {
+        name: 'name - 1',
+        manufacturerId: 12345,
+        manufacturerProductId: 'ABC',
+      }
+
+      const comparisonStatus = await testProduct2Obj.isEqual( productRecord2 )
+
+      expect( comparisonStatus ).toBe( false )
+    } )
+
+    test( 'comparing name attrs "name-1" and "name - 1" of products with different manufacturer ID and manufacturer product ID should return false', async () => {
+      const productRecord2: IEqualProduct = {
+        name: 'name - 1',
+        manufacturerId: 12345,
+        manufacturerProductId: 'ABCD',
+      }
+
+      const comparisonStatus = await testProduct2Obj.isEqual( productRecord2 )
+
+      expect( comparisonStatus ).toBe( false )
+    } )
+
+    test( 'comparing products with name attrs "Name-1" and "name-1" having same manufacturer and manufacturer product ID should return true', async () => {
+      const productRecord2: IEqualProduct = {
+        name: 'Name-1',
+        manufacturerId: 1234,
+        manufacturerProductId: 'ABC',
+      }
+
+      const comparisonStatus = await testProduct2Obj.isEqual( productRecord2 )
+
+      expect( comparisonStatus ).toBe( true )
+    } )
+
+    test( 'comparing products with name attrs "Name1" and "name-1" having same manufacturer and manufacturer product ID should return true', async () => {
+      const productRecord2: IEqualProduct = {
+        name: 'Name1',
+        manufacturerId: 1234,
+        manufacturerProductId: 'ABC',
+      }
+
+      const comparisonStatus = await testProduct2Obj.isEqual( productRecord2 )
+
+      expect( comparisonStatus ).toBe( true )
+    } )
+
+    test( 'comparing products with name attrs "name-1." and "name-1" having same manufacturer and manufacturer product ID should return true', async () => {
+      const productRecord2: IEqualProduct = {
+        name: 'name-1.',
+        manufacturerId: 1234,
+        manufacturerProductId: 'ABC',
+      }
+
+      const comparisonStatus = await testProduct2Obj.isEqual( productRecord2 )
+
+      expect( comparisonStatus ).toBe( true )
+    } )
+
+    test( 'comparing name attrs "name-1" and "  NamE   - 1    " of products with same manufacturer and manufacturer product ID should return true', async () => {
       const productRecord2: IEqualProduct = {
         name: '  NamE   - 1    ',
         manufacturerId: 1234,
         manufacturerProductId: 'ABC',
       }
 
-      const testProduct2Obj = await TestProductModel.add( productRecord )
       const comparisonStatus = await testProduct2Obj.isEqual( productRecord2 )
 
       expect( comparisonStatus ).toBeTruthy()
     } )
+
+    test( 'comparing name attrs "name-1" and "  NamE   - 1    " of products with same manufacturer ID but different manufacturer product ID should return false', async () => {
+      const productRecord2: IEqualProduct = {
+        name: '  NamE   - 1    ',
+        manufacturerId: 1234,
+        manufacturerProductId: 'ABCD',
+      }
+
+      const comparisonStatus = await testProduct2Obj.isEqual( productRecord2 )
+
+      expect( comparisonStatus ).toBe( false )
+    } )
+
+    test( 'comparing name attrs "name-1" and "  NamE   - 1    " of products with different manufacturer ID but same manufacturer product ID should return false', async () => {
+      const productRecord2: IEqualProduct = {
+        name: '  NamE   - 1    ',
+        manufacturerId: 12345,
+        manufacturerProductId: 'ABC',
+      }
+
+      const comparisonStatus = await testProduct2Obj.isEqual( productRecord2 )
+
+      expect( comparisonStatus ).toBe( false )
+    } )
+
+    test( 'comparing products with name attrs "name--------1" and "name-1" having same manufacturer and manufacturer product ID should return true', async () => {
+      const productRecord2: IEqualProduct = {
+        name: 'name--------1',
+        manufacturerId: 1234,
+        manufacturerProductId: 'ABC',
+      }
+
+      const comparisonStatus = await testProduct2Obj.isEqual( productRecord2 )
+
+      expect( comparisonStatus ).toBe( true )
+    } )
+
+    test( 'comparing products with name attrs "name 1" and "name-1" having same manufacturer and manufacturer product ID should return true', async () => {
+      const productRecord2: IEqualProduct = {
+        name: 'name 1',
+        manufacturerId: 1234,
+        manufacturerProductId: 'ABC',
+      }
+
+      const comparisonStatus = await testProduct2Obj.isEqual( productRecord2 )
+
+      expect( comparisonStatus ).toBe( true )
+    } )
+
+    test( 'comparing products with name attrs "name-1." and "name-1" having same manufacturer and manufacturer product ID should return true', async () => {
+      const productRecord2: IEqualProduct = {
+        name: 'name-1.',
+        manufacturerId: 1234,
+        manufacturerProductId: 'ABC',
+      }
+
+      const comparisonStatus = await testProduct2Obj.isEqual( productRecord2 )
+
+      expect( comparisonStatus ).toBe( true )
+    } )
+
+    test( 'comparing products with name attrs "name-1," and "name-1" having same manufacturer and manufacturer product ID should return true', async () => {
+      const productRecord2: IEqualProduct = {
+        name: 'name-1,',
+        manufacturerId: 1234,
+        manufacturerProductId: 'ABC',
+      }
+
+      const comparisonStatus = await testProduct2Obj.isEqual( productRecord2 )
+
+      expect( comparisonStatus ).toBe( true )
+    } )
+
+    test( 'comparing products with name attrs "name-1 " and "name-1" having same manufacturer and manufacturer product ID should return true', async () => {
+      const productRecord2: IEqualProduct = {
+        name: 'name-1 ',
+        manufacturerId: 1234,
+        manufacturerProductId: 'ABC',
+      }
+
+      const comparisonStatus = await testProduct2Obj.isEqual( productRecord2 )
+
+      expect( comparisonStatus ).toBe( true )
+    } )
+
+    test( 'comparing a product with another product not having a name attribute should throw "PRODUCT NAME ATTRIBUTE DOES NOT EXIST"', async () => {
+      //@ts-ignore
+      const productRecord2: IEqualProduct = {
+        manufacturerId: 1234,
+        manufacturerProductId: 'ABC',
+      }
+
+      await expect(() => testProduct2Obj.isEqual( productRecord2 )).rejects.toThrow("PRODUCT NAME ATTRIBUTE DOES NOT EXIST")
+    } )
+
+    test( 'comparing a product with another product not having a name value NULL should throw "PRODUCT DOES NOT HAVE A NAME"', async () => {
+      const productRecord2: IEqualProduct = {
+        //@ts-ignore
+        name: null,
+        manufacturerId: 1234,
+        manufacturerProductId: 'ABC',
+      }
+
+      await expect(() => testProduct2Obj.isEqual( productRecord2 )).rejects.toThrow("PRODUCT DOES NOT HAVE A NAME")
+    } )
+
+    test( 'comparing a product with another product not having a manufacturer ID attribute should throw "MANUFACTURER ID ATTRIBUTE DOES NOT EXIST"', async () => {
+      //@ts-ignore
+      const productRecord2: IEqualProduct = {
+        name: 'name-1',
+        manufacturerProductId: 'ABC',
+      }
+
+      await expect(() => testProduct2Obj.isEqual( productRecord2 )).rejects.toThrow("MANUFACTURER ID ATTRIBUTE DOES NOT EXIST")
+    } )
+
+    test( 'comparing a product with another product not having a manufacturer ID attribute should throw "MANUFACTURER PRODUCT ID ATTRIBUTE DOES NOT EXIST"', async () => {
+      //@ts-ignore
+      const productRecord2: IEqualProduct = {
+        name: 'name-1',
+        manufacturerId: 1234,
+      }
+
+      await expect(() => testProduct2Obj.isEqual( productRecord2 )).rejects.toThrow("MANUFACTURER PRODUCT ID ATTRIBUTE DOES NOT EXIST")
+    } )
+
+    test( 'Passing an argument of type other than an object should throw "INVALID PRODUCT TYPE. PRODUCT SHOULD BE AN OBJECT"(Bool Type)', async () => {
+
+      const product2 = true
+
+      //@ts-ignore
+      await expect(() => testProduct2Obj.isEqual( product2 )).rejects.toThrow("INVALID PRODUCT TYPE. PRODUCT SHOULD BE AN OBJECT")
+    } )
+
+    test( 'Passing an argument of type other than an object should throw "INVALID PRODUCT TYPE. PRODUCT SHOULD BE AN OBJECT"(String Type)', async () => {
+
+      const product2 = 'Name-1'
+
+      //@ts-ignore
+      await expect(() => testProduct2Obj.isEqual( product2 )).rejects.toThrow("INVALID PRODUCT TYPE. PRODUCT SHOULD BE AN OBJECT")
+    } )
+
+    test( 'Passing an argument of type other than an object should throw "INVALID PRODUCT TYPE. PRODUCT SHOULD BE AN OBJECT"(Int Type)', async () => {
+
+      const product2 = 1000
+
+      //@ts-ignore
+      await expect(() => testProduct2Obj.isEqual( product2 )).rejects.toThrow("INVALID PRODUCT TYPE. PRODUCT SHOULD BE AN OBJECT")
+    } )
+
+    test( 'Passing an argument of type other than an object should throw "INVALID PRODUCT TYPE. PRODUCT SHOULD BE AN OBJECT"(Array Type)', async () => {
+
+      const product2 = ['name-1','1234','ABCD']
+
+      //@ts-ignore
+      await expect(() => testProduct2Obj.isEqual( product2 )).rejects.toThrow("INVALID PRODUCT TYPE. PRODUCT SHOULD BE AN OBJECT")
+    } )
+
+    test('Not passing an argument to isEqual function should throw "NO PRODUCT HAS BEEN PASSED TO COMPARE WITH"', async () => {
+      //@ts-ignore
+      await expect(() => testProduct2Obj.isEqual( )).rejects.toThrow("NO PRODUCT HAS BEEN PASSED TO COMPARE WITH")
+    })
+
+    test('Passing an argument NULL to isEqual function should throw "NO PRODUCT HAS BEEN PASSED TO COMPARE WITH"', async () => {
+      //@ts-ignore
+      await expect(() => testProduct2Obj.isEqual( null )).rejects.toThrow("NO PRODUCT HAS BEEN PASSED TO COMPARE WITH")
+    })
+
+    test('Passing an argument UNDEFINED to isEqual function should throw "NO PRODUCT HAS BEEN PASSED TO COMPARE WITH"', async () => {
+      //@ts-ignore
+      await expect(() => testProduct2Obj.isEqual( undefined )).rejects.toThrow("NO PRODUCT HAS BEEN PASSED TO COMPARE WITH")
+    })
+
+    test('Passing an EMPTY product object to isEqual function should throw "INVALID OBJECT. AN EMPTY PRODUCT OBJECT CANNOT BE COMPARED"', async () => {
+      //@ts-ignore
+      await expect(() => testProduct2Obj.isEqual({ } )).rejects.toThrow("INVALID OBJECT. AN EMPTY PRODUCT OBJECT CANNOT BE COMPARED")
+    })
+
+    test('Comparing products with different manufacturer ID should return false even if all other attributes match', async () => {
+      const productRecord2: IEqualProduct = {
+        //@ts-ignore
+        name: 'name-1',
+        manufacturerId: 12346,
+        manufacturerProductId: 'ABC',
+      }
+
+      const comparisonStatus = await testProduct2Obj.isEqual( productRecord2 )
+
+      await expect( comparisonStatus ).toBeFalsy()
+    })
+
+    test('isEqual method should return a Boolean', async () => {
+      const productRecord2: IEqualProduct = {
+        //@ts-ignore
+        name: 'name-1',
+        manufacturerId: 12346,
+        manufacturerProductId: 'ABC',
+      }
+
+      const comparisonStatus = await testProduct2Obj.isEqual( productRecord2 )
+
+      await expect( typeof comparisonStatus === 'boolean').toBe( true )
+    })
+
+    test('isEqual should not return any type apart from a Boolean', async () => {
+      const productRecord2: IEqualProduct = {
+        //@ts-ignore
+        name: 'name-1',
+        manufacturerId: 12346,
+        manufacturerProductId: 'ABC',
+      }
+
+      const comparisonStatus = await testProduct2Obj.isEqual( productRecord2 )
+
+      await expect(typeof comparisonStatus !== 'boolean' ).toBeFalsy()
+    })
+
   } )
 
   describe( 'getAll()', () => {
