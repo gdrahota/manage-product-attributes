@@ -746,6 +746,42 @@ describe( 'data objects -> test products', () => {
       expect( comparisonStatus ).toBeTruthy()
     } )
 
+    test( 'comparing name attrs "name-1" and "NAME1" of products with same manufacturer and manufacturer product ID should return true', async () => {
+      const productRecord2: IEqualProduct = {
+        name: 'NAME1',
+        manufacturerId: 1234,
+        manufacturerProductId: 'ABC',
+      }
+
+      const comparisonStatus = await testProduct2Obj.isEqual( productRecord2 )
+
+      expect( comparisonStatus ).toBeTruthy()
+    } )
+
+    test( 'comparing name attrs "name-1" and "NAME0000001" of products with same manufacturer and manufacturer product ID should return true', async () => {
+      const productRecord2: IEqualProduct = {
+        name: 'NAME0000001',
+        manufacturerId: 1234,
+        manufacturerProductId: 'ABC',
+      }
+
+      const comparisonStatus = await testProduct2Obj.isEqual( productRecord2 )
+
+      expect( comparisonStatus ).toBeTruthy()
+    } )
+
+    test( 'comparing name attrs "name-1" and "NAME.0000001" of products with same manufacturer and manufacturer product ID should return true', async () => {
+      const productRecord2: IEqualProduct = {
+        name: 'NAME.0000001',
+        manufacturerId: 1234,
+        manufacturerProductId: 'ABC',
+      }
+
+      const comparisonStatus = await testProduct2Obj.isEqual( productRecord2 )
+
+      expect( comparisonStatus ).toBeTruthy()
+    } )
+
     test( 'comparing name attrs "name-1" and "  NamE   - 1    " of products with same manufacturer ID but different manufacturer product ID should return false', async () => {
       const productRecord2: IEqualProduct = {
         name: '  NamE   - 1    ',
