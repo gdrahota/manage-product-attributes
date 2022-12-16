@@ -150,7 +150,7 @@ export class TestProductModel {
       const productRecord = await this.get()
 
       if (productRecord.manufacturerId === otherProduct.manufacturerId && productRecord.manufacturerProductId === otherProduct.manufacturerProductId) {
-        return stringCleaner(productRecord.name).toLowerCase() == stringCleaner(otherProduct.name).toLowerCase()
+        return getNumbersFromString(stringCleaner(productRecord.name).toLowerCase()) == getNumbersFromString(stringCleaner(otherProduct.name).toLowerCase())
       }
       return false
     }
@@ -162,5 +162,13 @@ export class TestProductModel {
 }
 
 function stringCleaner(str: String) {
-  return str.replace(/([^a-zA-Z1-90-9]+)/g, s0 => '')
+  return str.replace(/([^a-zA-Z0-9]+)/g, s0 => '')
+}
+
+const getNumbersFromString = (str: String) => {
+  const matches =  str.match(/(\d+)/)
+  //@ts-ignore
+  if(matches){
+    return parseInt(matches[0])
+  }
 }
