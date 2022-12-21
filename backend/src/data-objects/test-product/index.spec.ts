@@ -1,20 +1,20 @@
-import {afterAll, afterEach, beforeAll, beforeEach, describe, expect, test} from '@jest/globals'
-import {getSetupAndTeardownForTables, start, stop} from '../../../tests/setup'
+import { afterAll, afterEach, beforeAll, beforeEach, describe, expect, test } from '@jest/globals'
+import { getSetupAndTeardownForTables, start, stop } from '../../../tests/setup'
 
 import productTableDef from '../../seeder/table-defs/products/def'
-import {IProductTable} from '../../db/tables/products'
-import {pg} from '../../db/connect'
-import {snakeToCamelRecord} from '../../db/helper'
+import { IProductTable } from '../../db/tables/products'
+import { pg } from '../../db/connect'
+import { snakeToCamelRecord } from '../../db/helper'
 
-import {IEqualProduct, TestProductModel} from './index'
+import { IEqualProduct, TestProductModel } from './index'
 
-const {setupTables, tearDownTables} = getSetupAndTeardownForTables(
-    [productTableDef],
-    {},
+const { setupTables, tearDownTables } = getSetupAndTeardownForTables(
+  [ productTableDef ],
+  {},
 )
 
 const testProd1: IProductTable = {
-    id: 1000,
+  id: 1000,
     name: '',
     description: null,
     show: true,
@@ -951,8 +951,7 @@ describe('data objects -> test products', () => {
     describe('getAll()', () => {
         // @TODO: Implementation and test looks a bit weired!
         test('show return an empty array', async () => {
-            const obj = new TestProductModel(187492874293)
-            const allProducts = await obj.getAll()
+          const allProducts = await TestProductModel.getAll()
 
             expect(allProducts).toHaveLength(0)
         })
