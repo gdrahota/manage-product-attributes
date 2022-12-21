@@ -12,6 +12,7 @@ import { registerProductRoutes } from './product'
 import { registerProductSearchRoutes } from './product-search'
 import { registerProductToAttributeValueRoutes } from './product-to-attribute-values'
 import { registerProductToProductGroupRoutes } from './product-to-product-group'
+import { registerTestProductRoutes } from './test-products'
 
 export const registerRoutes = ( app: Router ) => {
   const routes = Router()
@@ -27,6 +28,7 @@ export const registerRoutes = ( app: Router ) => {
     .use( '/product-search', registerProductSearchRoutes() )
     .use( '/product-to-attribute-values', registerProductToAttributeValueRoutes() )
     .use( '/product-to-product-groups', registerProductToProductGroupRoutes() )
+    .use( '/test-products', registerTestProductRoutes() )
 
   app.use( '/api', routes )
 }
