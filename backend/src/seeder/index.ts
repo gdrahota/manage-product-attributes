@@ -41,7 +41,7 @@ export const ensureDefaultTables = async () => {
   await BlueBird.each( dirNames, async ( dirName: string ) => {
     try {
       const tableDefDDL = require( `./table-defs/${ dirName }/def` ).default
-      await createTableFromModel( tableDefDDL, 'test' )
+      await createTableFromModel( tableDefDDL, 'public' )
 
     } catch ( err: any ) {
       if ( err.code !== '42P07' ) {
