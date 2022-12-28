@@ -9,8 +9,8 @@ const getAllCb = async ( req: Request, res: Response ) => {
 
 const getById = async ( req: Request, res: Response ) => {
   const productModel = new TestProductModel( parseInt( req.params.id ) )
-  const product = await productModel.get()
-  res.send( product )
+  const productRecord = await productModel.get()
+  res.send( productRecord )
 }
 
 const createCb = async ( req: Request, res: Response ) => {
@@ -20,9 +20,13 @@ const createCb = async ( req: Request, res: Response ) => {
 }
 
 const updateCb = async ( req: Request, res: Response ) => {
+  const productObject = new TestProductModel( parseInt( req.params.id ) )
+  const productRecord = await productObject.update( req.body )
+  res.send( productRecord )
 }
 
 const deleteCb = async ( req: Request, res: Response ) => {
+
 }
 
 export const registerTestProductRoutes = (): Router => {
