@@ -26,7 +26,9 @@ const updateCb = async ( req: Request, res: Response ) => {
 }
 
 const deleteCb = async ( req: Request, res: Response ) => {
-
+  const productObject = new TestProductModel( parseInt( req.params.id ) )
+  const deleteRecord = await productObject.delete()
+  res.send( deleteRecord )
 }
 
 export const registerTestProductRoutes = (): Router => {

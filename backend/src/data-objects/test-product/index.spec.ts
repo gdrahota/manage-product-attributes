@@ -547,7 +547,27 @@ describe('data objects -> test products', () => {
         })
     })
 
-    describe.only('isEqual()', () => {
+    describe('delete()', () => {
+        test.only('Should throw "PRODUCT DOES NOT EXIST"',async () => {
+            const productInstance = new TestProductModel( 999 )
+
+            await expect(() => productInstance.delete()).rejects.toThrow('PRODUCT DOES NOT EXIST')
+        })
+
+        test.only('Should have no record in database after delete', async () => {
+            const testProduct = await TestProductModel.add( testProd2 )
+
+            const testProductRecord = testProduct.get()
+
+            await testProduct.delete()
+
+            const test = (await pg('products')).map( snakeToCamelRecord )
+
+            expect( test ).toHaveLength( 0 )
+        })
+    })
+
+    describe('isEqual()', () => {
         const productRecord: Omit<IProductTable, 'id'> = {
             name: 'name-1',
             show: false,

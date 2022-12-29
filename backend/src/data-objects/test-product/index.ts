@@ -108,6 +108,22 @@ export class TestProductModel {
     }
   }
 
+  async delete(): Promise<any> {
+    try{
+      const record = await pg( TestProductModel.tableName ).where('id', this._id)
+      if( record.length == 0 ){
+        throw new Error('PRODUCT DOES NOT EXIST')
+      }
+
+      const deleteProcess = await pg( TestProductModel.tableName ).where( 'id', this._id).del()
+      console.log(deleteProcess)
+      return deleteProcess
+    }
+    catch ( error: any ){
+      throw error
+    }
+  }
+
   async isEqual( otherProduct: IEqualProduct ): Promise<boolean> {
     if ( ! otherProduct ) {
       throw new Error( 'NO PRODUCT HAS BEEN PASSED TO COMPARE WITH' )
